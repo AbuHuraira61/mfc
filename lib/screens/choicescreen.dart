@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/screens/login.dart';
+import 'package:mfc/screens/signup_login_page.dart';
 
 class OrderScreen extends StatelessWidget {
   @override
@@ -21,7 +22,7 @@ class OrderScreen extends StatelessWidget {
 
                   // Delivery Bike Image
                   Image.asset(
-                    'assets/food-banner.png', // Replace with your image path
+                    'assets/bike.png', // Replace with your image path
                     width: screenWidth * 0.7,
                     height: screenHeight * 0.3,
                     fit: BoxFit.contain,
@@ -73,7 +74,7 @@ class OrderScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -97,7 +98,7 @@ class OrderScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
