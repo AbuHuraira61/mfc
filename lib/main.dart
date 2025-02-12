@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/screens/login.dart';
+import 'package:mfc/screens/splashscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(  // Wrap with MaterialApp
       debugShowCheckedModeBanner: false, // Optional: Hide debug banner
-      home: LoginScreen(), // Set LoginScreen as the home screen
+      home: SplashScreen(), // Set LoginScreen as the home screen
     );
   }
 }
