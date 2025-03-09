@@ -34,6 +34,21 @@ class _LoginScreenState extends State<LoginScreen> {
         
         ),
       ),
+      SizedBox(height: 20,),
+      Tab(
+
+        child: TabBar(
+          controller: TabController(length: 2, vsync: NavigatorState()),
+          tabs: [
+          Container(
+
+            color: Colors.amber,
+          ),
+          Container(
+            color: Colors.red,
+          ),
+        ],),
+      ),
     ],),);
   }
 }
