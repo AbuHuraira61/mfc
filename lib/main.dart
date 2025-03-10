@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/screens/login.dart';
+import 'package:mfc/screens/LoginSignUp.dart';
+import 'package:mfc/screens/Sanan/signup_login_page.dart';
 import 'package:mfc/screens/splashscreen.dart';
 
 void main() {
@@ -16,9 +17,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(  // Wrap with MaterialApp
+    return MaterialApp(  // Wrap with MaterialApp
       debugShowCheckedModeBanner: false, // Optional: Hide debug banner
-      home: SplashScreen(), // Set LoginScreen as the home screen
+      home: LoginSignUpScreen(), // Set LoginScreen as the home screen
     );
   }
 }

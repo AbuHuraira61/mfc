@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/screens/Sanan/favouritpage.dart';
-import 'package:mfc/screens/login.dart';
-import 'package:mfc/screens/signup_login_page.dart';
+import 'package:mfc/screens/LoginSignUp.dart';
+import 'package:mfc/screens/Sanan/signup_login_page.dart';
 
 class OrderScreen extends StatelessWidget {
   @override
