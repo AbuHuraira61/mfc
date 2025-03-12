@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD:lib/screens/choicescreen.dart
-import 'package:mfc/screens/burgerpage.dart';
-import 'package:mfc/screens/favouritpage.dart';
-import 'package:mfc/screens/login.dart';
-import 'package:mfc/screens/signup_login_page.dart';
-=======
 import 'package:mfc/screens/LoginSignUpScreen/LoginSignUpScreen.dart';
-import 'package:mfc/screens/Sanan/favouritpage.dart';
-import 'package:mfc/screens/Sanan/signup_login_page.dart';
->>>>>>> 05259a67c5e2fd0e867eff4ae71ae56a0e6bf581:lib/screens/Sanan/choicescreen.dart
+import 'package:mfc/screens/burgerpage.dart';
+
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
