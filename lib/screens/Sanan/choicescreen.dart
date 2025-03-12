@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/screens/LoginSignUpScreen/LoginSignUpScreen.dart';
 import 'package:mfc/screens/Sanan/favouritpage.dart';
 import 'package:mfc/screens/Sanan/signup_login_page.dart';
 
@@ -100,7 +101,7 @@ class OrderScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FavouritePage()),
+                        MaterialPageRoute(builder: (context) => LoginSignUpScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/screens/singleburger_screen.dart';
 import 'package:mfc/screens/singlepizza_screen.dart';
 import 'orderstatus_screen.dart';
@@ -291,7 +292,7 @@ class PromotionSection extends StatelessWidget {
         15,
       ), // Added 15 padding from top and bottom
       decoration: BoxDecoration(
-        color: Color(0xff570101), // Adjusted red shade
+        color: primaryColor, // Adjusted red shade
         borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
@@ -304,7 +305,7 @@ class PromotionSection extends StatelessWidget {
               Text(
                 "Today's Offer",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: secondaryColor,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),

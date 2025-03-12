@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/screens/ChekoutScreens/checkoutScreen.dart';
 import 'package:mfc/screens/LoginSignUpScreen/LoginSignUpScreen.dart';
+import 'package:mfc/screens/splashscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,7 +45,7 @@ class _MyAppState extends State<MyApp> {
 
 
       ), // Optional: Hide debug banner
-      home: checkoutScreen(), // Set LoginScreen as the home screen
+      home: SplashScreen(), // Set LoginScreen as the home screen
     );
   }
 }
