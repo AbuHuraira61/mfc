@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/screens/LoginSignUpScreen/Commons/SignUpCard.dart';
 final TextEditingController TextController = TextEditingController();
  
 

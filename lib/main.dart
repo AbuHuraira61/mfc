@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/screens/ChekoutScreens/checkoutScreen.dart';
 import 'package:mfc/screens/LoginSignUpScreen/LoginSignUpScreen.dart';
 
 void main() {
@@ -37,11 +38,13 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
        scaffoldBackgroundColor: secondaryColor,
        appBarTheme: AppBarTheme(backgroundColor: primaryColor,  ),
+       iconTheme: IconThemeData(color: primaryColor)
+       
        
 
 
       ), // Optional: Hide debug banner
-      home: LoginSignUpScreen(), // Set LoginScreen as the home screen
+      home: checkoutScreen(), // Set LoginScreen as the home screen
     );
   }
 }
