@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/screens/burgerpage.dart';
 import 'package:mfc/screens/favouritpage.dart';
 import 'package:mfc/screens/login.dart';
 import 'package:mfc/screens/signup_login_page.dart';
@@ -75,7 +76,7 @@ class OrderScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        MaterialPageRoute(builder: (context) => BurgerScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

@@ -63,6 +63,8 @@ flutter:
     - assets/splash-screen.png
     - assets/bike.png
     - assets/pizza-pic.png
+    - assets/yesicon.png
+    - assets/burger.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
