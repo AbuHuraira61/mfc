@@ -107,16 +107,11 @@ class FavouritePage extends StatelessWidget {
                               width: 5,
                             ),
                             GestureDetector(
-<<<<<<< HEAD
-                                onTap: (){
-                                  
-=======
                                 onTap: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => LoginPage()));
->>>>>>> d9d5065c0c879fb5fa314cc778ed7f6be49c3a9e
                                 },
                                 child: Icon(Icons.delete_outline,
                                     color: Colors.white)),
@@ -125,17 +120,12 @@ class FavouritePage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 GestureDetector(
-<<<<<<< HEAD
-                                    onTap: (){
-                                      
-=======
                                     onTap: () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   LoginPage()));
->>>>>>> d9d5065c0c879fb5fa314cc778ed7f6be49c3a9e
                                     },
                                     child: Icon(Icons.add_circle,
                                         color: Colors.white)),
