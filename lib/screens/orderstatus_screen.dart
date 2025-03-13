@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
 
-
 class OrderStatusScreen extends StatelessWidget {
+  const OrderStatusScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +15,7 @@ class OrderStatusScreen extends StatelessWidget {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => HomeScreen()),
-                  (Route<dynamic> route) => false,
+              (Route<dynamic> route) => false,
             );
           },
         ),
@@ -26,7 +27,10 @@ class OrderStatusScreen extends StatelessWidget {
             children: [
               Text(
                 "Order Status",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
               Text(
                 "Order No: 1234",
@@ -100,7 +104,8 @@ class OrderStatusStep extends StatelessWidget {
   final bool isCompleted;
   final bool showTracking;
 
-  OrderStatusStep({
+  const OrderStatusStep({
+    super.key,
     required this.icon,
     required this.title,
     required this.time,

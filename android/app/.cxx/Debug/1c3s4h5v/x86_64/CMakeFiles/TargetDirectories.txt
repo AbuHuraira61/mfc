@@ -1,0 +1,2 @@
+C:/Users/Syed Ali Hassan/OneDrive/Documents/GitHub/mfc/mfc/android/app/.cxx/Debug/1c3s4h5v/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Syed Ali Hassan/OneDrive/Documents/GitHub/mfc/mfc/android/app/.cxx/Debug/1c3s4h5v/x86_64/CMakeFiles/rebuild_cache.dir

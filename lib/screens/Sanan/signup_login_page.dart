@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -66,7 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       color: Color(0xFF570101),
                       child: Center(
-                        child: Image(image: AssetImage('assets/food-banner.png')),
+                        child:
+                            Image(image: AssetImage('assets/food-banner.png')),
                       ),
                     ),
                   ),
@@ -82,9 +85,13 @@ class _LoginPageState extends State<LoginPage> {
                                   setState(() => isLogin = false);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  foregroundColor: isLogin ? Color(0xFF570101) : Colors.white,
-                                  backgroundColor: isLogin ? Colors.white : Color(0xFF570101),
-                                  side: BorderSide(color: Color(0xFF570101)!),
+                                  foregroundColor: isLogin
+                                      ? Color(0xFF570101)
+                                      : Colors.white,
+                                  backgroundColor: isLogin
+                                      ? Colors.white
+                                      : Color(0xFF570101),
+                                  side: BorderSide(color: Color(0xFF570101)),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
@@ -101,9 +108,13 @@ class _LoginPageState extends State<LoginPage> {
                                   setState(() => isLogin = true);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  foregroundColor: isLogin ? Colors.white : Color(0xFF570101),
-                                  backgroundColor: isLogin ? Color(0xFF570101) : Colors.white,
-                                  side: BorderSide(color: Color(0xFF570101)!),
+                                  foregroundColor: isLogin
+                                      ? Colors.white
+                                      : Color(0xFF570101),
+                                  backgroundColor: isLogin
+                                      ? Color(0xFF570101)
+                                      : Colors.white,
+                                  side: BorderSide(color: Color(0xFF570101)),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
@@ -136,10 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                                     hintText: 'Enter Email',
                                     hintStyle: TextStyle(color: Colors.white),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                     ),
                                     focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                     ),
                                     errorBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -170,10 +183,12 @@ class _LoginPageState extends State<LoginPage> {
                                     errorStyle: TextStyle(color: Colors.white),
                                     hintStyle: TextStyle(color: Colors.white),
                                     enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                     ),
                                     focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
                                     ),
                                     errorBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -218,21 +233,26 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   child: Text(
                                     isLogin ? 'Log in' : 'Sign up',
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 SizedBox(height: 10),
-                                Text('OR', style: TextStyle(color: Colors.white)),
+                                Text('OR',
+                                    style: TextStyle(color: Colors.white)),
                                 SizedBox(height: 5),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.facebook, color: Colors.white),
+                                      icon: Icon(Icons.facebook,
+                                          color: Colors.white),
                                       onPressed: () {},
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.g_mobiledata, color: Colors.white, size: 30),
+                                      icon: Icon(Icons.g_mobiledata,
+                                          color: Colors.white, size: 30),
                                       onPressed: () {},
                                     ),
                                   ],
@@ -254,14 +274,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-
-
 class BottomCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
     path.lineTo(0, size.height - 50);
-    path.quadraticBezierTo(size.width / 2, size.height + 50, size.width, size.height - 50);
+    path.quadraticBezierTo(
+        size.width / 2, size.height + 50, size.width, size.height - 50);
     path.lineTo(size.width, 0);
     path.close();
     return path;

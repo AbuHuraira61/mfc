@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/screens/confirmorder.dart';
 
-
-
-
 class BurgerScreen extends StatelessWidget {
   final List<Map<String, String>> burgers = List.generate(
     10,
-        (index) => {
+    (index) => {
       "name": "Beef Burger",
       "price": "\$20",
       "image": "assets/pizza-pic.png",
     },
   );
+
+  BurgerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,11 @@ class BurgerScreen extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {},
         ),
-        title: Text("Burgers", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+        title: Text("Burgers",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold)),
         centerTitle: true,
         elevation: 0,
       ),
@@ -56,7 +59,11 @@ class BurgerCard extends StatelessWidget {
   final String price;
   final String image;
 
-  BurgerCard({required this.name, required this.price, required this.image});
+  const BurgerCard(
+      {super.key,
+      required this.name,
+      required this.price,
+      required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -114,9 +121,14 @@ class BurgerCard extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderConfirmationScreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      OrderConfirmationScreen()));
                         },
-                        child: Icon(Icons.shopping_cart_outlined, color: Colors.white),
+                        child: Icon(Icons.shopping_cart_outlined,
+                            color: Colors.white),
                       ),
                     ],
                   ),
@@ -136,5 +148,3 @@ class BurgerCard extends StatelessWidget {
     );
   }
 }
-
-

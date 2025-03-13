@@ -4,7 +4,7 @@ import 'package:mfc/screens/Sanan/signup_login_page.dart';
 class FavouritePage extends StatelessWidget {
   final List<Map<String, dynamic>> favoriteItems = List.generate(
     10,
-        (index) => {
+    (index) => {
       "name": "Pizza",
       "description": "Spicy pizza gladiola is a fan",
       "price": "RS 1050.00",
@@ -13,11 +13,14 @@ class FavouritePage extends StatelessWidget {
     },
   );
 
+  FavouritePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorite Page", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+        title: Text("Favorite Page",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Color(0xFF6A0202),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -83,48 +86,67 @@ class FavouritePage extends StatelessWidget {
                               SizedBox(height: 4),
                               Text(
                                 item["description"],
-                                style: TextStyle(color: Colors.white70, fontSize: 12),
+                                style: TextStyle(
+                                    color: Colors.white70, fontSize: 12),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               SizedBox(height: 6),
                               Text(
                                 item["price"],
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
-
                           children: [
-                            SizedBox(width: 5,),
+                            SizedBox(
+                              width: 5,
+                            ),
                             GestureDetector(
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginPage()));
                                 },
-                                child: Icon(Icons.delete_outline, color: Colors.white)),
+                                child: Icon(Icons.delete_outline,
+                                    color: Colors.white)),
                             SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 GestureDetector(
-                                    onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()));
                                     },
-                                    child: Icon(Icons.add_circle, color: Colors.white)),
+                                    child: Icon(Icons.add_circle,
+                                        color: Colors.white)),
                                 SizedBox(width: 5),
                                 Text(
                                   item["quantity"].toString(),
                                   style: TextStyle(
-                                      color: Colors.white, fontWeight: FontWeight.bold),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(width: 5),
                                 GestureDetector(
-                                    onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()));
                                     },
-                                    child: Icon(Icons.remove_circle, color: Colors.white)),
+                                    child: Icon(Icons.remove_circle,
+                                        color: Colors.white)),
                               ],
                             ),
                           ],

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mfc/screens/LoginSignUpScreen/LoginSignUpScreen.dart';
 import 'package:mfc/screens/burgerpage.dart';
 
-
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
 
@@ -58,7 +57,7 @@ class OrderScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       3,
-                          (index) => Container(
+                      (index) => Container(
                         margin: EdgeInsets.symmetric(horizontal: 4),
                         width: 10,
                         height: 10,
@@ -82,7 +81,8 @@ class OrderScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF570101),
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       minimumSize: Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -90,7 +90,8 @@ class OrderScreen extends StatelessWidget {
                     ),
                     child: Text(
                       "Home Delivery",
-                      style: TextStyle(fontSize: screenWidth * 0.045, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: screenWidth * 0.045, color: Colors.white),
                     ),
                   ),
 
@@ -101,12 +102,14 @@ class OrderScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginSignUpScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => LoginSignUpScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF570101),
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       minimumSize: Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -114,7 +117,8 @@ class OrderScreen extends StatelessWidget {
                     ),
                     child: Text(
                       "Take Away",
-                      style: TextStyle(fontSize: screenWidth * 0.045, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: screenWidth * 0.045, color: Colors.white),
                     ),
                   ),
 

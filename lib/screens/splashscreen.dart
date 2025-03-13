@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/screens/Sanan/choicescreen.dart';
 import 'dart:async';
-import 'package:mfc/screens/LoginSignUpScreen/LoginSignUpScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,9 +28,9 @@ class _SplashScreenState extends State<SplashScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Timer(
         const Duration(seconds: 5),
-            () => Navigator.pushReplacement(
+        () => Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  OrderScreen()),
+          MaterialPageRoute(builder: (context) => OrderScreen()),
         ),
       );
     });
@@ -59,7 +58,8 @@ class _SplashScreenState extends State<SplashScreen>
                 animation: _controller,
                 builder: (context, child) {
                   return Transform(
-                    transform: Matrix4.rotationY(_controller.value * 2 * 3.1416),
+                    transform:
+                        Matrix4.rotationY(_controller.value * 2 * 3.1416),
                     alignment: Alignment.center,
                     child: child,
                   );
