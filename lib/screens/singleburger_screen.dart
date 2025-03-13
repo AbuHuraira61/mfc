@@ -55,7 +55,7 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(color: Color(0xff570101)),
                 child: Center(
-                  child: Image.asset('assets/burger.png', height: 220),
+                  child: Image.asset('assets/burger.png', height: 350),
                 ),
               ),
               Positioned(

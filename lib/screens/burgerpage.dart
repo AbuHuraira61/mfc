@@ -7,7 +7,7 @@ class BurgerScreen extends StatelessWidget {
     (index) => {
       "name": "Beef Burger",
       "price": "\$20",
-      "image": "assets/pizza-pic.png",
+      "image": "assets/burger.png",
     },
   );
 
@@ -37,8 +37,8 @@ class BurgerScreen extends StatelessWidget {
           itemCount: burgers.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
             childAspectRatio: 0.75,
           ),
           itemBuilder: (context, index) {

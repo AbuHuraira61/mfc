@@ -365,7 +365,7 @@ class PopularSection extends StatelessWidget {
                 'Beef Burger',
                 20,
                 'assets/burger.png',
-                imageHeight: 180,
+                imageHeight: 300,
               ),
             ),
             SizedBox(width: 10),
