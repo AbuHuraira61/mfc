@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/screens/Sanan/favouritpage.dart';
+import 'package:mfc/screens/burgerpage.dart';
 import 'package:mfc/screens/singleburger_screen.dart';
 import 'package:mfc/screens/singlepizza_screen.dart';
 import 'orderstatus_screen.dart';
@@ -240,12 +242,12 @@ class CategorySection extends StatelessWidget {
                 if (category['title'] == "Burger") {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SingleBurgerScreen()),
+                    MaterialPageRoute(builder: (context) => BurgerScreen()),
                   );
                 } else if (category['title'] == "Pizza") {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SinglePizzaScreen()),
+                    MaterialPageRoute(builder: (context) => BurgerScreen()),
                   );
                 }
               },
@@ -509,6 +511,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 1:
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => FavouritePage()),
+        );
         break;
       case 2:
         Navigator.pushReplacement(

@@ -101,7 +101,7 @@ class FavouritePage extends StatelessWidget {
                             SizedBox(width: 5,),
                             GestureDetector(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                                  
                                 },
                                 child: Icon(Icons.delete_outline, color: Colors.white)),
                             SizedBox(height: 20),
@@ -110,7 +110,7 @@ class FavouritePage extends StatelessWidget {
                               children: [
                                 GestureDetector(
                                     onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                                      
                                     },
                                     child: Icon(Icons.add_circle, color: Colors.white)),
                                 SizedBox(width: 5),
