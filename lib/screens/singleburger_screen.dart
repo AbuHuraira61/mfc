@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SingleBurgerScreen extends StatefulWidget {
+  const SingleBurgerScreen({super.key});
+
   @override
   _SingleBurgerScreenState createState() => _SingleBurgerScreenState();
 }
@@ -53,7 +55,7 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(color: Color(0xff570101)),
                 child: Center(
-                  child: Image.asset('assets/burger.png', height: 220),
+                  child: Image.asset('assets/burger.png', height: 350),
                 ),
               ),
               Positioned(
@@ -65,7 +67,8 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                     color: Colors.white.withOpacity(0.9),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.favorite_border, color: Colors.red, size: 24),
+                    icon: Icon(Icons.favorite_border,
+                        color: Colors.red, size: 24),
                     onPressed: () {},
                   ),
                 ),
@@ -77,7 +80,8 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
             child: Container(
               height: screenHeight * 0.56,
               width: double.infinity,
-              padding: EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 12),
+              padding:
+                  EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -92,7 +96,8 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                         width: 70,
                         height: 35,
                         decoration: BoxDecoration(
@@ -103,11 +108,17 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                           children: [
                             Icon(Icons.star, color: Colors.yellow, size: 20),
                             SizedBox(width: 5),
-                            Text("4.8", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                            Text("4.8",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
-                      Text("\$20", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      Text("\$20",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold)),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -121,8 +132,11 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                     style: TextStyle(color: Colors.black54),
                   ),
                   SizedBox(height: 12),
-                  Text("Variations:", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                  Text("Please select one option:", style: TextStyle(color: Colors.black54, fontSize: 13)),
+                  Text("Variations:",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  Text("Please select one option:",
+                      style: TextStyle(color: Colors.black54, fontSize: 13)),
                   SizedBox(height: 8),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -158,14 +172,16 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.remove, color: Colors.white, size: 16),
+                              icon: Icon(Icons.remove,
+                                  color: Colors.white, size: 16),
                               onPressed: decreaseQuantity,
                               padding: EdgeInsets.zero,
                             ),
                           ),
                           SizedBox(width: 12),
                           Text("$quantity",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
                           SizedBox(width: 12),
                           Container(
                             height: 28,
@@ -175,7 +191,8 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.add, color: Colors.white, size: 16),
+                              icon: Icon(Icons.add,
+                                  color: Colors.white, size: 16),
                               onPressed: increaseQuantity,
                               padding: EdgeInsets.zero,
                             ),
@@ -186,11 +203,16 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff570101),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 14, vertical: 0),
                         ),
-                        icon: Icon(Icons.shopping_cart, color: Colors.white, size: 18),
-                        label: Text("Add To Cart", style: TextStyle(color: Colors.white, fontSize: 14)),
+                        icon: Icon(Icons.shopping_cart,
+                            color: Colors.white, size: 18),
+                        label: Text("Add To Cart",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14)),
                       ),
                     ],
                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
+  const OrderConfirmationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +17,6 @@ class OrderConfirmationScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
-
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -28,7 +29,10 @@ class OrderConfirmationScreen extends StatelessWidget {
             SizedBox(height: 20),
             Text(
               "Your order is",
-              style: TextStyle(fontSize: 26, color: Colors.white,fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 26,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
             Text(
               "Confirmed",
@@ -39,17 +43,15 @@ class OrderConfirmationScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            const  Text(
+            const Text(
               "Your order has been confirmed\nGet delivery within 40 minutes on your door-step",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white70, fontSize: 14),
             ),
-
             SizedBox(height: 100),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-
                 padding: EdgeInsets.symmetric(horizontal: 90, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),

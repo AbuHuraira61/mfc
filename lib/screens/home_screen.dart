@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/screens/Sanan/favouritpage.dart';
-import 'package:mfc/screens/burgerpage.dart';
 import 'package:mfc/screens/singleburger_screen.dart';
 import 'package:mfc/screens/singlepizza_screen.dart';
 import 'orderstatus_screen.dart';
@@ -11,6 +9,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen());
@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -39,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Container(
-              color: Color(0xff570101), // Dark red background for profile section
+              color:
+                  Color(0xff570101), // Dark red background for profile section
               padding: EdgeInsets.only(top: 40, bottom: 20),
               width: double.infinity,
               child: Column(
@@ -125,7 +128,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             leading: Builder(
               builder: (context) => IconButton(
-                icon: Icon(Icons.menu, color: Colors.white, size: 27), // ✅ Increased size
+                icon: Icon(Icons.menu,
+                    color: Colors.white, size: 27), // ✅ Increased size
                 onPressed: () {
                   Scaffold.of(context).openDrawer();
                 },
@@ -135,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Positioned(
                   top: 110, // ✅ Added 10px extra margin (originally 70, now 80)
-                  left: MediaQuery.of(context).size.width * 0.5 - 168, // Centers the search bar
+                  left: MediaQuery.of(context).size.width * 0.5 -
+                      168, // Centers the search bar
                   child: Container(
                     width: 336,
                     height: 53,
@@ -157,12 +162,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             actions: [
               IconButton(
-                icon: Icon(Icons.shopping_cart, color: Colors.white, size: 27), // ✅ Increased size
+                icon: Icon(Icons.shopping_cart,
+                    color: Colors.white, size: 27), // ✅ Increased size
                 onPressed: () {},
               ),
             ],
           ),
-
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.all(16.0),
@@ -203,7 +208,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
       bottomNavigationBar: BottomNavBar(selectedIndex: 0),
     );
   }
@@ -214,7 +218,8 @@ class CategorySection extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onCategorySelected;
 
-  CategorySection({
+  const CategorySection({
+    super.key,
     required this.categories,
     required this.selectedIndex,
     required this.onCategorySelected,
@@ -224,13 +229,12 @@ class CategorySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children:
-      categories.asMap().entries.map((entry) {
+      children: categories.asMap().entries.map((entry) {
         int index = entry.key;
         var category = entry.value;
 
         double imageSize =
-        (index == 0 || index == categories.length - 1) ? 60 : 50;
+            (index == 0 || index == categories.length - 1) ? 60 : 50;
 
         return Column(
           children: [
@@ -255,8 +259,7 @@ class CategorySection extends StatelessWidget {
                 width: 75,
                 height: 75,
                 decoration: BoxDecoration(
-                  color:
-                  selectedIndex == index
+                  color: selectedIndex == index
                       ? Color(0xff570101)
                       : Colors.grey[300],
                   borderRadius: BorderRadius.circular(10),
@@ -283,6 +286,8 @@ class CategorySection extends StatelessWidget {
 }
 
 class PromotionSection extends StatelessWidget {
+  const PromotionSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -334,8 +339,8 @@ class PromotionSection extends StatelessWidget {
             ],
           ),
           Positioned(
-            top: -52,
-            left: 160,
+            top: -55,
+            left: 215,
             child: Image.asset('assets/fries.png', height: 100),
           ),
         ],
@@ -345,6 +350,8 @@ class PromotionSection extends StatelessWidget {
 }
 
 class PopularSection extends StatelessWidget {
+  const PopularSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -357,7 +364,7 @@ class PopularSection extends StatelessWidget {
                 'Beef Burger',
                 20,
                 'assets/burger.png',
-                imageHeight: 180,
+                imageHeight: 300,
               ),
             ),
             SizedBox(width: 10),
@@ -390,7 +397,8 @@ class PopularItem extends StatelessWidget {
   final String imagePath;
   final double? imageHeight; // Optional image height parameter
 
-  PopularItem(this.name, this.price, this.imagePath, {this.imageHeight});
+  const PopularItem(this.name, this.price, this.imagePath,
+      {super.key, this.imageHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +438,8 @@ class PopularItem extends StatelessWidget {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start, // Align text to left
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // Align text to left
               children: [
                 SizedBox(height: 5),
                 SizedBox(
@@ -438,7 +447,8 @@ class PopularItem extends StatelessWidget {
                   child: Center(
                     child: Image.asset(
                       imagePath,
-                      height: imageHeight ?? defaultHeight, // Use provided height or default
+                      height: imageHeight ??
+                          defaultHeight, // Use provided height or default
                     ),
                   ),
                 ),
@@ -456,7 +466,8 @@ class PopularItem extends StatelessWidget {
               child: IconButton(
                 icon: Icon(Icons.favorite_border, color: Colors.white),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/favorites', arguments: {'name': name});
+                  Navigator.pushNamed(context, '/favorites',
+                      arguments: {'name': name});
                 },
               ),
             ),
@@ -466,7 +477,8 @@ class PopularItem extends StatelessWidget {
               child: IconButton(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/cart', arguments: {'name': name, 'price': price});
+                  Navigator.pushNamed(context, '/cart',
+                      arguments: {'name': name, 'price': price});
                 },
               ),
             ),
@@ -477,11 +489,10 @@ class PopularItem extends StatelessWidget {
   }
 }
 
-
 class BottomNavBar extends StatefulWidget {
   final int selectedIndex;
 
-  const BottomNavBar({Key? key, required this.selectedIndex}) : super(key: key);
+  const BottomNavBar({super.key, required this.selectedIndex});
 
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
@@ -523,7 +534,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 3:
-      // Future: Add navigation for Favorite, Cart, Profile
+        // Future: Add navigation for Favorite, Cart, Profile
         break;
     }
   }
