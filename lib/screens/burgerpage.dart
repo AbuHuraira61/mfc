@@ -73,7 +73,6 @@ class BurgerCard extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              //color: Color(0xFF570101),
               gradient: LinearGradient(
                 colors: [
                   Color(0xFF570101), // Dark Red
