@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 100,
+                  fontSize: 60,
                   color: Colors.yellow,
                 ),
               ),
