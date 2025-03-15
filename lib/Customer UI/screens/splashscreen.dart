@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/screens/Sanan/choicescreen.dart';
+import 'package:mfc/Customer%20UI/screens/Sanan/choicescreen.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {

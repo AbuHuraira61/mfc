@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/screens/splashscreen.dart';
+import 'package:mfc/Customer%20UI/screens/splashscreen.dart';
 
 void main() {
   runApp(const MyApp());

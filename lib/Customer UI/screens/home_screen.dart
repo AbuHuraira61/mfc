@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/screens/Sanan/favouritpage.dart';
-import 'package:mfc/screens/burgerpage.dart';
-import 'package:mfc/screens/singleburger_screen.dart';
-import 'package:mfc/screens/singlepizza_screen.dart';
+import 'package:mfc/Customer%20UI/screens/Sanan/favouritpage.dart';
+import 'package:mfc/Customer%20UI/screens/burgerpage.dart';
+import 'package:mfc/Customer%20UI/screens/singleburger_screen.dart';
+import 'package:mfc/Customer%20UI/screens/singlepizza_screen.dart';
 import 'orderstatus_screen.dart';
 
 void main() {
