@@ -14,10 +14,10 @@ class CustomCard extends StatefulWidget {
       required this.image});
 
   @override
-  State<CustomCard> createState() => _BurgerCardState();
+  State<CustomCard> createState() => _CustomCardState();
 }
 
-class _BurgerCardState extends State<CustomCard> {
+class _CustomCardState extends State<CustomCard> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
