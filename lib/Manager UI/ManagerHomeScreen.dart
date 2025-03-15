@@ -10,6 +10,8 @@ class ManagerHommeScreen extends StatefulWidget {
 class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return const Scaffold(
+      body: Text("Hello Manager"),
+    );
   }
 }
