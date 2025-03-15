@@ -1,7 +1,7 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/screens/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
+import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 
 class SignUpCard extends StatefulWidget {
   const SignUpCard({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/screens/LoginSignUpScreen/Commons/LogInCard.dart';
-import 'package:mfc/screens/LoginSignUpScreen/Commons/SignUpCard.dart';
+import 'package:mfc/auth/LoginSignUpScreen/Commons/LogInCard.dart';
+import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpCard.dart';
 
 class LoginSignUpScreen extends StatefulWidget {
   const LoginSignUpScreen({super.key});
