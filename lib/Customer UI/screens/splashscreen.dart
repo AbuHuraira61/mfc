@@ -76,16 +76,16 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.05),
-              const Text(
-                'MFC',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 60,
-                  color: Colors.yellow,
-                ),
-              ),
+              // SizedBox(height: screenHeight * 0.05),
+              // const Text(
+              //   'MFC',
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 60,
+              //     color: Colors.yellow,
+              //   ),
+              // ),
             ],
           ),
         ),
