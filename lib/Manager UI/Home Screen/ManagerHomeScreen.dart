@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/Manager%20UI/MenuScreen/SelectMenuScreen.dart';
 
 class ManagerHommeScreen extends StatefulWidget {
   const ManagerHommeScreen({super.key});
@@ -51,6 +52,10 @@ class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
         children: [
           InkWell(
             onTap: () {
+
+               Navigator.push(context, MaterialPageRoute(builder: (context) {
+                 return SelectMenuScreen();
+              },));
       // Handle button tap
     },
     splashColor: Colors.white.withOpacity(0.3), // Ripple effect color
