@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Customer%20UI/screens/splashscreen.dart';
+<<<<<<< HEAD
 import 'package:firebase_core/firebase_core.dart';
+=======
+import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
+>>>>>>> ca95b3caad24ddba5edbcdd3cb7aee6d7c65a019
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +30,7 @@ class MyApp extends StatefulWidget {
       900: Color.fromRGBO(color.r as int, color.g as int, color.b as int, 1.0),
     });
   }
-
+ 
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -44,7 +48,7 @@ class _MyAppState extends State<MyApp> {
           ),
           iconTheme: IconThemeData(
               color: primaryColor)), // Optional: Hide debug banner
-      home: SplashScreen(), // Set LoginScreen as the home screen
+      home: ManagerHommeScreen(), // Set LoginScreen as the home screen
     );
   }
 }
