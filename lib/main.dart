@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Customer%20UI/screens/splashscreen.dart';
-<<<<<<< HEAD
-import 'package:firebase_core/firebase_core.dart';
-=======
-import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
->>>>>>> ca95b3caad24ddba5edbcdd3cb7aee6d7c65a019
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
