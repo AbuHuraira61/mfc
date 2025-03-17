@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/Customer%20UI/screens/Sanan/signup_login_page.dart';
+
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FavouritePage extends StatelessWidget {
@@ -80,7 +80,7 @@ class FavouritePage extends StatelessWidget {
                                 item["name"],
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -108,12 +108,7 @@ class FavouritePage extends StatelessWidget {
                               width: 5,
                             ),
                             GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginPage()));
-                                },
+                                onTap: () {},
                                 child: Icon(Icons.delete_outline,
                                     color: Colors.white)),
                             SizedBox(height: 20),
@@ -121,13 +116,7 @@ class FavouritePage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginPage()));
-                                    },
+                                    onTap: () {},
                                     child: Icon(Icons.add_circle,
                                         color: Colors.white)),
                                 SizedBox(width: 5),
@@ -139,13 +128,7 @@ class FavouritePage extends StatelessWidget {
                                 ),
                                 SizedBox(width: 5),
                                 GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginPage()));
-                                    },
+                                    onTap: () {},
                                     child: Icon(Icons.remove_circle,
                                         color: Colors.white)),
                               ],

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/Customer%20UI/screens/splashscreen.dart';
+import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
+void main() {
   runApp(const MyApp());
 }
 
@@ -26,7 +23,7 @@ class MyApp extends StatefulWidget {
       900: Color.fromRGBO(color.r as int, color.g as int, color.b as int, 1.0),
     });
   }
- 
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
