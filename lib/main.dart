@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-<<<<<<< HEAD
-// import 'package:mfc/Manager%20UI/AddItem_screen.dart';
-import 'package:mfc/Manager%20UI/PendingOrder_screen.dart';
-=======
 import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
->>>>>>> main
 
 void main() {
   runApp(const MyApp());
@@ -46,11 +41,7 @@ class _MyAppState extends State<MyApp> {
           ),
           iconTheme: IconThemeData(
               color: primaryColor)), // Optional: Hide debug banner
-<<<<<<< HEAD
-      home: PendingOrderScreen(), // Set LoginScreen as the home screen
-=======
       home: ManagerHommeScreen(), // Set LoginScreen as the home screen
->>>>>>> main
     );
   }
 }
