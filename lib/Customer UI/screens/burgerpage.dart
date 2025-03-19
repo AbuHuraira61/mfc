@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Customer%20UI/Common/CustomCard.dart';
-import 'package:mfc/Customer%20UI/screens/confirmorder.dart';
 
 class BurgerScreen extends StatelessWidget {
   final List<Map<String, String>> burgers = List.generate(

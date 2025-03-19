@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Customer%20UI/screens/splashscreen.dart';
+import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 import 'package:mfc/Manager%20UI/ManagerPizzaScreen.dart';
 
 void main() {
@@ -42,7 +43,7 @@ class _MyAppState extends State<MyApp> {
           ),
           iconTheme: IconThemeData(
               color: primaryColor)), // Optional: Hide debug banner
-      home: SplashScreen(), // Set LoginScreen as the home screen
+      home: ManagerHommeScreen(), // Set LoginScreen as the home screen
     );
   }
 }
