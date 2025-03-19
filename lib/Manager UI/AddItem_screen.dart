@@ -13,11 +13,18 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final List<Map<String, dynamic>> _ingredients = [];
+
   String _selectedCategory = 'Pizza';
   File? _selectedImage;
-
   final ImagePicker _picker = ImagePicker();
+
+  List<Map<String, String>> _ingredients = [
+    {"name": "", "price": ""},
+    {"name": "", "price": ""},
+    {"name": "", "price": ""}
+  ];
+
+  String? _selectedIngredient;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -30,8 +37,16 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
   void _addIngredientField() {
     setState(() {
-      _ingredients.add(
-          {"name": TextEditingController(), "price": TextEditingController()});
+      _ingredients.add({"name": "", "price": ""});
+    });
+  }
+
+  void _removeIngredient(int index) {
+    setState(() {
+      if (_selectedIngredient == _ingredients[index]["name"]) {
+        _selectedIngredient = null;
+      }
+      _ingredients.removeAt(index);
     });
   }
 
@@ -39,11 +54,16 @@ class _AddItemScreenState extends State<AddItemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text("Add Item", style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -51,10 +71,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Dropdown for selecting item type
+              SizedBox(
+                height: 10,
+              ),
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
-                items: ['Pizza', 'Burger', 'Dessert']
+                items: ['Pizza', 'Burger', 'Dessert', 'Fries']
                     .map((type) =>
                         DropdownMenuItem(value: type, child: Text(type)))
                     .toList(),
@@ -64,109 +86,145 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   });
                 },
                 decoration: InputDecoration(
-                    labelText: "Select Item Type",
-                    border: OutlineInputBorder()),
+                  labelText: "Select Item Type",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
               ),
-              SizedBox(height: 10),
-
-              // Item Name
+              SizedBox(height: 12),
               TextField(
                 controller: _itemNameController,
                 decoration: InputDecoration(
-                    labelText: "Item Name", border: OutlineInputBorder()),
+                  labelText: "Item Name",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
               ),
-              SizedBox(height: 10),
-
-              // Item Price
+              SizedBox(height: 12),
               TextField(
                 controller: _itemPriceController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                    labelText: "Item Price", border: OutlineInputBorder()),
+                  labelText: "Item Price",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
               ),
-              SizedBox(height: 10),
-
-              // Image Picker
-              Row(
-                children: [
-                  Text("Item Image", style: TextStyle(fontSize: 16)),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.add_a_photo),
-                    onPressed: _pickImage,
+              SizedBox(height: 12),
+              Text("Item Image", style: TextStyle(fontSize: 16)),
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
+                  child: _selectedImage != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(_selectedImage!,
+                              height: 150,
+                              width: double.infinity,
+                              fit: BoxFit.cover))
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_a_photo,
+                                  size: 40, color: Colors.grey),
+                              SizedBox(height: 5),
+                              Text("Tap to select image",
+                                  style: TextStyle(color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                ),
               ),
-              _selectedImage != null
-                  ? Image.file(_selectedImage!, height: 120, fit: BoxFit.cover)
-                  : Container(
-                      height: 120,
-                      color: Colors.grey[300],
-                      child: Center(child: Text("No Image Selected"))),
-              SizedBox(height: 10),
-
-              // Short Description
+              SizedBox(height: 12),
               TextField(
                 controller: _descriptionController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                    labelText: "Short Description",
-                    border: OutlineInputBorder()),
+                  labelText: "Short Description",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.all(12),
+                ),
               ),
-              SizedBox(height: 10),
-
-              // Ingredients Section
+              SizedBox(height: 12),
               Text("Ingredients",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              ..._ingredients.map((ingredient) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: ingredient["name"],
-                        decoration: InputDecoration(
-                            labelText: "Ingredient Name",
-                            border: OutlineInputBorder()),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: ingredient["price"],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            labelText: "Price", border: OutlineInputBorder()),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.remove_circle, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          _ingredients.remove(ingredient);
-                        });
-                      },
-                    ),
-                  ],
-                );
-              }),
+              Column(
+                children: _ingredients.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var ingredient = entry.value;
 
-              // Add Ingredient Button
+                  return Row(
+                    children: [
+                      Radio<String>(
+                        value: ingredient["name"]!,
+                        groupValue: _selectedIngredient,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedIngredient = value;
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "Name",
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _ingredients[index]["name"] = value;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: "Price",
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _ingredients[index]["price"] = value;
+                            });
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          _removeIngredient(index);
+                        },
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
               TextButton.icon(
                 onPressed: _addIngredientField,
                 icon: Icon(Icons.add, color: Colors.blue),
                 label: Text("Add Ingredient",
                     style: TextStyle(color: Colors.blue)),
               ),
-              SizedBox(height: 20),
-
-              // Submit Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.brown,
-                      padding: EdgeInsets.symmetric(vertical: 15)),
+                    backgroundColor: Color(0xff570101),
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
                   onPressed: () {
                     // Handle form submission
                   },
