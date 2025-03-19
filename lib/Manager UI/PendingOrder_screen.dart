@@ -82,8 +82,8 @@ class OrderCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 50,
               height: 50,
+              width: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
@@ -92,7 +92,7 @@ class OrderCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            SizedBox(height: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
