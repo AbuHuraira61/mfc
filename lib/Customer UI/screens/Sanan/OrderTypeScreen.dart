@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/Customer%20UI/screens/Sanan/BurgerScreen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
-import 'package:mfc/Customer%20UI/screens/burgerpage.dart';
 
-class OrderScreen extends StatelessWidget {
-  const OrderScreen({super.key});
+class OrderTypeScreen extends StatelessWidget {
+  const OrderTypeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

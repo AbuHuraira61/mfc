@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/Customer%20UI/screens/splashscreen.dart';
 import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 import 'package:mfc/Manager%20UI/ManagerPizzaScreen.dart';
 
