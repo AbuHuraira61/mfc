@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "752806802358",
+    "project_id": "mfcfooddeliveryapp",
+    "storage_bucket": "mfcfooddeliveryapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752806802358:android:1c406ab32f2e66de648717",
+        "android_client_info": {
+          "package_name": "com.example.mfc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHrvH5WCD9T1zohAHzLgNW3c_i5zJYekU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
