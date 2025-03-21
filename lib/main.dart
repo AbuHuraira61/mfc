@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 // import 'package:mfc/Manager%20UI/AddItem_screen.dart';
-import 'package:mfc/Manager%20UI/PendingOrder_screen.dart';
-import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
-import 'package:mfc/Manager%20UI/ManagerPizzaScreen.dart';
-import 'package:mfc/Manager%20UI/AddNewRider_screen.dart';
 import 'package:mfc/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 
 void main() {

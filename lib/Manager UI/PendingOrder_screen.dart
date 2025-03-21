@@ -5,6 +5,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,6 +17,8 @@ class MyApp extends StatelessWidget {
 }
 
 class PendingOrderScreen extends StatelessWidget {
+  const PendingOrderScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -54,7 +58,7 @@ class PendingOrderScreen extends StatelessWidget {
 
 class OrdersList extends StatelessWidget {
   final String orderStatus;
-  OrdersList({required this.orderStatus});
+  const OrdersList({super.key, required this.orderStatus});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +74,7 @@ class OrdersList extends StatelessWidget {
 
 class OrderCard extends StatelessWidget {
   final String orderStatus;
-  OrderCard({required this.orderStatus});
+  const OrderCard({super.key, required this.orderStatus});
 
   @override
   Widget build(BuildContext context) {

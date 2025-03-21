@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AddNewRiderScreen extends StatefulWidget {
+  const AddNewRiderScreen({super.key});
+
   @override
   _AddNewRiderScreenState createState() => _AddNewRiderScreenState();
 }

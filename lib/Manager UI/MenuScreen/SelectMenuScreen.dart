@@ -20,8 +20,8 @@ class _SelectMenuScreenState extends State<SelectMenuScreen> {
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all(secondaryColor),
-                      backgroundColor: MaterialStateProperty.all(primaryColor)),
+                      foregroundColor: WidgetStateProperty.all(secondaryColor),
+                      backgroundColor: WidgetStateProperty.all(primaryColor)),
                     onPressed: (){}, child: Padding(
 
                       padding: const EdgeInsets.symmetric(horizontal: 100),
@@ -30,8 +30,8 @@ class _SelectMenuScreenState extends State<SelectMenuScreen> {
                   SizedBox(height: 20,),
                    ElevatedButton(
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all(secondaryColor) ,
-                      backgroundColor: MaterialStateProperty.all(primaryColor)),
+                      foregroundColor: WidgetStateProperty.all(secondaryColor) ,
+                      backgroundColor: WidgetStateProperty.all(primaryColor)),
                     onPressed: (){}, child: Padding(
                      padding: const EdgeInsets.symmetric(horizontal: 100),
                      child: Text('Selct Burger'),
@@ -39,8 +39,8 @@ class _SelectMenuScreenState extends State<SelectMenuScreen> {
                     SizedBox(height: 20,),
                     ElevatedButton(
                       style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all(secondaryColor),
-                        backgroundColor: MaterialStateProperty.all(primaryColor)),
+                        foregroundColor: WidgetStateProperty.all(secondaryColor),
+                        backgroundColor: WidgetStateProperty.all(primaryColor)),
                       onPressed: (){}, child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 100),
                       child: Text('Selct Desert'),
