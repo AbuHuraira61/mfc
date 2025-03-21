@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/Customer%20UI/screens/Sanan/choicescreen.dart';
 import 'dart:async';
+
+import 'package:mfc/Customer%20UI/screens/Sanan/OrderTypeScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
         const Duration(seconds: 5),
         () => Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => OrderScreen()),
+          MaterialPageRoute(builder: (context) => OrderTypeScreen()),
         ),
       );
     });
