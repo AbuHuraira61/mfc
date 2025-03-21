@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mfc/Manager%20UI/ManagerBurgerScreen.dart';
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -226,7 +227,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
                         borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: () {
-                    // Handle form submission
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ManagerBurgerScreen()),
+                    );
                   },
                   child: Text("Add Item",
                       style: TextStyle(color: Colors.white, fontSize: 18)),
