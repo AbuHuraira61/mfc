@@ -1,0 +1,2 @@
+C:/Users/PMLS/Desktop/Flutter_Projects/mfc/android/app/.cxx/RelWithDebInfo/2q2o6e2z/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/PMLS/Desktop/Flutter_Projects/mfc/android/app/.cxx/RelWithDebInfo/2q2o6e2z/x86_64/CMakeFiles/rebuild_cache.dir
