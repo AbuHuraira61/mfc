@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/Customer%20UI/screens/Sanan/BurgerScreen.dart';
-import 'package:mfc/Customer%20UI/screens/Sanan/FavouritePage.dart';
-import 'package:mfc/Customer%20UI/screens/orderstatus_screen.dart';
-import 'package:mfc/Customer%20UI/screens/singleburger_screen.dart';
-import 'package:mfc/Customer%20UI/screens/singlepizza_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Sanan/BurgerScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Sanan/FavouritePage.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/singlepizza_screen.dart';
+import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
+import 'orderstatus_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -108,7 +110,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ListTile(
                       leading: Icon(Icons.logout, color: Colors.black),
                       title: Text('Log out'),
-                      onTap: () {},
+                      onTap: () {
+                         FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
+      (route) => false,
+    );
+                      },
                     ),
                   ],
                 ),
@@ -524,7 +533,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 1:
-        Navigator.pushReplacement(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => FavouritePage()),
         );

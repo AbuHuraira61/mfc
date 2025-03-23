@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/Manager%20UI/AddItem_screen.dart';
-import 'package:mfc/Manager%20UI/AddNewRider_screen.dart';
-import 'package:mfc/Manager%20UI/ManagerPizzaScreen.dart';
-import 'package:mfc/Manager%20UI/PendingOrder_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AddItem_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AddNewRider_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/PendingOrder_screen.dart';
+import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
-class ManagerHommeScreen extends StatefulWidget {
-  const ManagerHommeScreen({super.key});
+class ManagerHomeScreen extends StatefulWidget {
+  const ManagerHomeScreen({super.key});
 
   @override
-  State<ManagerHommeScreen> createState() => _ManagerHommeScreenState();
+  State<ManagerHomeScreen> createState() => _ManagerHomeScreenState();
 }
 
-class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
+class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,12 +74,9 @@ class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
                           return AddItemScreen();
                         },
                       ));
-                      // Handle button tap
                     },
-                    splashColor:
-                        Colors.white.withOpacity(0.3), // Ripple effect color
-                    highlightColor: Colors.white
-                        .withOpacity(0.2), // Slight highlight when tapped
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.add, "Add Menu")),
                 InkWell(
@@ -79,22 +87,10 @@ class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
                             builder: (context) => ManagerPizzaScreen()),
                       );
                     },
-                    splashColor:
-                        Colors.white.withOpacity(0.3), // Ripple effect color
-                    highlightColor: Colors.white
-                        .withOpacity(0.2), // Slight highlight when tapped
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.remove_red_eye, "All Item Menu")),
-                // InkWell(
-                //     onTap: () {
-                //       //
-                //     },
-                //     splashColor:
-                //         Colors.white.withOpacity(0.3), // Ripple effect color
-                //     highlightColor: Colors.white
-                //         .withOpacity(0.2), // Slight highlight when tapped
-                //     borderRadius: BorderRadius.circular(10),
-                //     child: _buildButton(Icons.person, "Profile")),
                 InkWell(
                     onTap: () {
                       Navigator.push(
@@ -103,10 +99,8 @@ class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
                             builder: (context) => AddNewRiderScreen()),
                       );
                     },
-                    splashColor:
-                        Colors.white.withOpacity(0.3), // Ripple effect color
-                    highlightColor: Colors.white
-                        .withOpacity(0.2), // Slight highlight when tapped
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.person_add, "Add New Rider")),
                 InkWell(
@@ -117,20 +111,16 @@ class _ManagerHommeScreenState extends State<ManagerHommeScreen> {
                             builder: (context) => PendingOrderScreen()),
                       );
                     },
-                    splashColor:
-                        Colors.white.withOpacity(0.3), // Ripple effect color
-                    highlightColor: Colors.white
-                        .withOpacity(0.2), // Slight highlight when tapped
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.local_shipping, "Order Status")),
                 InkWell(
                     onTap: () {
-                      //
+                      _logout(context); // Call logout function
                     },
-                    splashColor:
-                        Colors.white.withOpacity(0.3), // Ripple effect color
-                    highlightColor: Colors.white
-                        .withOpacity(0.2), // Slight highlight when tapped
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.logout, "Log Out")),
               ],

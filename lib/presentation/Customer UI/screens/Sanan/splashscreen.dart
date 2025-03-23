@@ -1,10 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:mfc/Customer%20UI/screens/Sanan/OrderTypeScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/home_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
+import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -17,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    
     _controller = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
@@ -26,15 +32,41 @@ class _SplashScreenState extends State<SplashScreen>
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Timer(
-        const Duration(seconds: 5),
-        () => Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => OrderTypeScreen()),
-        ),
-      );
-    });
+    // Check user authentication status and role
+    _checkUserStatus();
+  }
+
+  Future<void> _checkUserStatus() async {
+    await Future.delayed(const Duration(seconds: 3)); // Show splash for 3 seconds
+
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String role = await _getUserRole(user.uid);
+      _navigateTo(role);
+    } else {
+      _navigateTo(null);
+    }
+  }
+
+  Future<String> _getUserRole(String uid) async {
+    final userDoc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    return userDoc.exists ? userDoc["role"] : "customer";
+  }
+
+  void _navigateTo(String? role) {
+    Widget nextScreen;
+    if (role == "admin") {
+      nextScreen = ManagerHomeScreen();
+    } else if (role == "customer") {
+      nextScreen = HomeScreen();
+    } else {
+      nextScreen = LoginSignUpScreen();
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextScreen),
+    );
   }
 
   @override
@@ -49,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color(0xFF570101),
+      backgroundColor: const Color(0xFF570101),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -77,16 +109,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
               ),
-              // SizedBox(height: screenHeight * 0.05),
-              // const Text(
-              //   'MFC',
-              //   textAlign: TextAlign.center,
-              //   style: TextStyle(
-              //     fontWeight: FontWeight.bold,
-              //     fontSize: 60,
-              //     color: Colors.yellow,
-              //   ),
-              // ),
             ],
           ),
         ),

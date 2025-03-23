@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/Customer%20UI/screens/Sanan/BurgerScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Sanan/BurgerScreen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
 class OrderTypeScreen extends StatelessWidget {
