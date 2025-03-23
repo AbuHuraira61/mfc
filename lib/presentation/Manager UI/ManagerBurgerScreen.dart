@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/Manager%20UI/ManagerFriesScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/ManagerFriesScreen.dart';
 
 class ManagerBurgerScreen extends StatelessWidget {
   final List<Map<String, dynamic>> favoriteItems = List.generate(

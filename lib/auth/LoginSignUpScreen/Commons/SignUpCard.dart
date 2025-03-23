@@ -1,6 +1,8 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 
 class SignUpCard extends StatefulWidget {
@@ -12,6 +14,8 @@ class SignUpCard extends StatefulWidget {
 
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
+final AuthService authService = AuthService();
+final _signUpformkey = GlobalKey<FormState>();
 
 String email = emailController.text;
 String password = passwordController.text;
@@ -19,70 +23,81 @@ String password = passwordController.text;
 class _SignUpCardState extends State<SignUpCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: customTextFormField(
-                  labletext: 'Enter your email!',
-                  TextController: emailController),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: customTextFormField(
-                  labletext: 'Enter your password',
-                  TextController: passwordController),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: ContinuousRectangleBorder(
-                      borderRadius: BorderRadius.circular(20))),
-              onPressed: () {},
-              child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 70),
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(color: primaryColor),
-                  )),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Center(
-              child: Text(
-                'Or',
-                style: TextStyle(color: secondaryColor),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Signup with Google',
-                  style: TextStyle(color: secondaryColor),
+    return Form(
+      key: _signUpformkey,
+      child: SingleChildScrollView(
+        child: Container(
+            decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 30,
                 ),
-              ),
-            ),
-          ],
-        ));
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: customTextFormField(
+                      labletext: 'Enter your email!',
+                      TextController: emailController, validatorText: 'Password'),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  child: customTextFormField(
+                    validatorText:'Password' ,
+                      labletext: 'Enter your password',
+                      TextController: passwordController),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                  onPressed: () {
+                    if(_signUpformkey.currentState!.validate()){
+                       authService.signUpUser(emailController.text, passwordController.text, context);
+                    }
+                             
+                  },
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 70),
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(color: primaryColor),
+                      )),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Center(
+                  child: Text(
+                    'Or',
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Center(
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Signup with Google',
+                      style: TextStyle(color: secondaryColor),
+                    ),
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
   }
 }
