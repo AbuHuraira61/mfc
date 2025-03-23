@@ -4,8 +4,13 @@ final TextEditingController TextController = TextEditingController();
  
 
 
-TextFormField customTextFormField ({required String labletext, required TextEditingController TextController}) {
+TextFormField customTextFormField ({required String labletext, required TextEditingController TextController, required String validatorText,}) {
  return TextFormField(
+             validator: (value) {
+               if(value!.isEmpty){
+                return 'Please enter ${validatorText}';
+               }
+             },
               controller: TextController,
               cursorColor: secondaryColor,
               style: TextStyle(color: const Color.fromARGB(217, 255, 255, 255),),

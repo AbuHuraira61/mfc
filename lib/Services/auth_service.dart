@@ -16,8 +16,8 @@ class AuthService {
         password: password,
       );
 
-      // Determine role based on email
-      String role = (email == "admin@mfc.com") ? "admin" : "customer";
+      // Determine role based on email or password
+      String role = (email == "admin@example.com"  || password == "Admin@123") ? "admin" : "customer";
 
       // Save user data in Firestore
       await _firestore.collection("users").doc(userCredential.user!.uid).set({
@@ -52,7 +52,7 @@ class AuthService {
 
   void _navigateUser(String role, BuildContext context) {
     if (role == "admin") {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ManagerHommeScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ManagerHomeScreen()));
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }
