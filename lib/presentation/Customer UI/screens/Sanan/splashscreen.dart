@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
 import 'dart:async';
-
-import 'package:mfc/presentation/Customer%20UI/screens/home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
@@ -22,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
@@ -37,7 +36,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _checkUserStatus() async {
-    await Future.delayed(const Duration(seconds: 3)); // Show splash for 3 seconds
+    await Future.delayed(
+        const Duration(seconds: 3)); // Show splash for 3 seconds
 
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -49,7 +49,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<String> _getUserRole(String uid) async {
-    final userDoc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    final userDoc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
     return userDoc.exists ? userDoc["role"] : "customer";
   }
 

@@ -3,7 +3,7 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpCard.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/home_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
 
 class LogInCard extends StatefulWidget {
   const LogInCard({super.key});
@@ -11,6 +11,7 @@ class LogInCard extends StatefulWidget {
   @override
   State<LogInCard> createState() => _LogInCardState();
 }
+
 final TextEditingController EmailController = TextEditingController();
 final TextEditingController PasswordController = TextEditingController();
 final AuthService authService = AuthService();
@@ -36,7 +37,8 @@ class _LogInCardState extends State<LogInCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: customTextFormField(
                       labletext: 'Enter your email!',
-                      TextController: EmailController, validatorText: 'Email'),
+                      TextController: EmailController,
+                      validatorText: 'Email'),
                 ),
                 SizedBox(
                   height: 40,
@@ -47,7 +49,8 @@ class _LogInCardState extends State<LogInCard> {
                   ),
                   child: customTextFormField(
                       labletext: 'Enter your password',
-                      TextController: PasswordController, validatorText: 'Email'),
+                      TextController: PasswordController,
+                      validatorText: 'Email'),
                 ),
                 SizedBox(
                   height: 40,
@@ -57,8 +60,9 @@ class _LogInCardState extends State<LogInCard> {
                       shape: ContinuousRectangleBorder(
                           borderRadius: BorderRadius.circular(20))),
                   onPressed: () {
-                    if(_loginFormkey.currentState!.validate()){
-                      authService.loginUser(EmailController.text, PasswordController.text, context);
+                    if (_loginFormkey.currentState!.validate()) {
+                      authService.loginUser(EmailController.text,
+                          PasswordController.text, context);
                     }
                   },
                   child: Padding(
@@ -83,7 +87,8 @@ class _LogInCardState extends State<LogInCard> {
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
                         return HomeScreen();
                       }));
                     },

@@ -12,9 +12,14 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen());
@@ -32,35 +37,38 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedCategoryIndex = -1;
 
   final List<Map<String, dynamic>> categories = [
-    {'title': 'All', 'image': 'assets/food-banner.png'},
+    {'title': 'All', 'image': 'assets/platter.png'},
     {'title': 'Pizza', 'image': 'assets/largepizza.png'},
-    {'title': 'Burger', 'image': 'assets/burger.png'},
+    {'title': 'Burger', 'image': 'assets/beefburger.png'},
     {'title': 'Deserts', 'image': 'assets/desert.png'},
   ];
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       drawer: Drawer(
         child: Column(
           children: [
             Container(
-              color:
-                  Color(0xff570101), // Dark red background for profile section
-              padding: EdgeInsets.only(top: 40, bottom: 20),
+              color: Color(0xff570101),
+              padding: EdgeInsets.only(
+                  top: screenHeight * 0.05, bottom: screenHeight * 0.03),
               width: double.infinity,
               child: Column(
                 children: [
                   CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/gentle.webp'),
+                    radius: screenWidth * 0.1,
+                    backgroundImage: AssetImage('assets/gentle.png'),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.01),
                   Text(
                     'Ali Hassan',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -69,56 +77,26 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               child: Container(
-                color: Colors.white, // White background for menu items
+                color: Colors.white,
                 child: ListView(
                   children: [
-                    ListTile(
-                      leading: Icon(Icons.local_offer, color: Colors.black),
-                      title: Text('Deals'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.list_alt, color: Colors.black),
-                      title: Text('Orders'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.location_on, color: Colors.black),
-                      title: Text('Address'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.favorite, color: Colors.black),
-                      title: Text('Favorite'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.shopping_cart, color: Colors.black),
-                      title: Text('Cart'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.article, color: Colors.black),
-                      title: Text('Terms or Conditions'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.chat, color: Colors.black),
-                      title: Text('Chat with us'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.logout, color: Colors.black),
-                      title: Text('Log out'),
-                      onTap: () {
-                         FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
-      (route) => false,
-    );
-                      },
-                    ),
+                    _buildDrawerItem(Icons.local_offer, 'Deals', () {}),
+                    _buildDrawerItem(Icons.list_alt, 'Orders', () {}),
+                    _buildDrawerItem(Icons.location_on, 'Address', () {}),
+                    _buildDrawerItem(Icons.favorite, 'Favorite', () {}),
+                    _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
+                    _buildDrawerItem(
+                        Icons.article, 'Terms or Conditions', () {}),
+                    _buildDrawerItem(Icons.chat, 'Chat with us', () {}),
+                    _buildDrawerItem(Icons.logout, 'Log out', () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginSignUpScreen()),
+                        (route) => false,
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -129,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 150, // ✅ Increased height by 20px
+            expandedHeight: screenHeight * 0.2,
             floating: false,
             pinned: false,
             backgroundColor: Color(0xff570101),
@@ -140,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
             leading: Builder(
               builder: (context) => IconButton(
                 icon: Icon(Icons.menu,
-                    color: Colors.white, size: 27), // ✅ Increased size
+                    color: Colors.white, size: screenWidth * 0.07),
                 onPressed: () {
                   Scaffold.of(context).openDrawer();
                 },
@@ -149,12 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
             flexibleSpace: Stack(
               children: [
                 Positioned(
-                  top: 110, // ✅ Added 10px extra margin (originally 70, now 80)
-                  left: MediaQuery.of(context).size.width * 0.5 -
-                      168, // Centers the search bar
+                  top: screenHeight * 0.14,
+                  left: screenWidth * 0.5 - (screenWidth * 0.45),
                   child: Container(
-                    width: 336,
-                    height: 53,
+                    width: screenWidth * 0.9,
+                    height: screenHeight * 0.07,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(25),
@@ -164,7 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: 'Search',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 15),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       ),
                     ),
                   ),
@@ -174,22 +152,19 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: Icon(Icons.shopping_cart,
-                    color: Colors.white, size: 27), // ✅ Increased size
+                    color: Colors.white, size: screenWidth * 0.07),
                 onPressed: () {},
               ),
             ],
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(screenWidth * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Categories',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
+                  _buildSectionTitle('Categories', screenWidth),
+                  SizedBox(height: screenHeight * 0.015),
                   CategorySection(
                     categories: categories,
                     selectedIndex: selectedCategoryIndex,
@@ -199,19 +174,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Promotion',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.03),
+                  _buildSectionTitle('Deals and Discounts', screenWidth),
+                  SizedBox(height: screenHeight * 0.015),
                   PromotionSection(),
-                  SizedBox(height: 20),
-                  Text(
-                    'Popular',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.03),
+                  _buildSectionTitle('Popular', screenWidth),
+                  SizedBox(height: screenHeight * 0.015),
                   PopularSection(),
                 ],
               ),
@@ -220,6 +189,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavBar(selectedIndex: 0),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.black),
+      title: Text(title),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildSectionTitle(String title, double screenWidth) {
+    return Text(
+      title,
+      style:
+          TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold),
     );
   }
 }
@@ -272,7 +257,7 @@ class CategorySection extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: selectedIndex == index
                       ? Color(0xff570101)
-                      : Colors.grey[300],
+                      : Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -308,7 +293,7 @@ class PromotionSection extends StatelessWidget {
         15,
         12,
         15,
-      ), // Added 15 padding from top and bottom
+      ),
       decoration: BoxDecoration(
         color: primaryColor, // Adjusted red shade
         borderRadius: BorderRadius.circular(12),
@@ -351,7 +336,7 @@ class PromotionSection extends StatelessWidget {
           ),
           Positioned(
             top: -55,
-            left: 215,
+            left: 170,
             child: Image.asset('assets/fries.png', height: 100),
           ),
         ],
@@ -365,6 +350,8 @@ class PopularSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Column(
       children: [
         Row(
@@ -374,26 +361,41 @@ class PopularSection extends StatelessWidget {
               child: PopularItem(
                 'Beef Burger',
                 20,
-                'assets/burger.png',
-                imageHeight: 300,
+                'assets/beefburger.png',
+                imageHeight: screenWidth * 0.5,
               ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: screenWidth * 0.02),
             Expanded(
-              child: PopularItem('Special Pizza', 32, 'assets/largepizza.png'),
+              child: PopularItem(
+                'Special Pizza',
+                32,
+                'assets/largepizza.png',
+                imageHeight: screenWidth * 0.3,
+              ),
             ),
           ],
         ),
-        SizedBox(height: 15),
+        SizedBox(height: screenWidth * 0.04),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: PopularItem('Beef Burger', 20, 'assets/burger.png'),
+              child: PopularItem(
+                'Beef Burger',
+                20,
+                'assets/beefburger.png',
+                imageHeight: screenWidth * 0.3,
+              ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: screenWidth * 0.02),
             Expanded(
-              child: PopularItem('Special Pizza', 32, 'assets/largepizza.png'),
+              child: PopularItem(
+                'Special Pizza',
+                32,
+                'assets/largepizza.png',
+                imageHeight: screenWidth * 0.3,
+              ),
             ),
           ],
         ),
@@ -406,41 +408,38 @@ class PopularItem extends StatelessWidget {
   final String name;
   final int price;
   final String imagePath;
-  final double? imageHeight; // Optional image height parameter
+  final double? imageHeight;
 
   const PopularItem(this.name, this.price, this.imagePath,
       {super.key, this.imageHeight});
 
   @override
   Widget build(BuildContext context) {
-    double defaultHeight = 110; // Default height
-
-    // Set default size based on food type
-    if (name.toLowerCase().contains('burger')) {
-      defaultHeight = 150;
-    } else if (name.toLowerCase().contains('pizza')) {
-      defaultHeight = 110;
-    }
+    double screenWidth = MediaQuery.of(context).size.width;
+    double defaultHeight = screenWidth * 0.3;
 
     return GestureDetector(
       onTap: () {
-        // Navigate based on item name
         if (name.toLowerCase().contains('burger')) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SingleBurgerScreen()),
+            MaterialPageRoute(
+              builder: (context) => SingleBurgerScreen(),
+            ),
           );
         } else if (name.toLowerCase().contains('pizza')) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SinglePizzaScreen()),
+            MaterialPageRoute(
+              builder: (context) => SinglePizzaScreen(),
+            ),
           );
         }
       },
       child: Container(
         width: double.infinity,
-        height: 200,
-        padding: EdgeInsets.all(10),
+        height: screenWidth * 0.5,
+        padding: EdgeInsets.all(screenWidth * 0.02),
         decoration: BoxDecoration(
           color: Color(0xff570101),
           borderRadius: BorderRadius.circular(15),
@@ -449,31 +448,34 @@ class PopularItem extends StatelessWidget {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to left
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 5),
+                SizedBox(height: screenWidth * 0.01),
                 SizedBox(
-                  height: 110,
+                  height: screenWidth * 0.3,
                   child: Center(
                     child: Image.asset(
                       imagePath,
-                      height: imageHeight ??
-                          defaultHeight, // Use provided height or default
+                      height: imageHeight ?? defaultHeight,
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
-                Text(name, style: TextStyle(color: Colors.white, fontSize: 16)),
+                SizedBox(height: screenWidth * 0.01),
+                Text(
+                  name,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.04),
+                ),
                 Text(
                   '\$$price',
-                  style: TextStyle(color: Colors.white, fontSize: 15),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.035),
                 ),
               ],
             ),
             Positioned(
-              top: -10,
-              right: -5,
+              top: screenWidth * -0.02,
+              right: screenWidth * -0.02,
               child: IconButton(
                 icon: Icon(Icons.favorite_border, color: Colors.white),
                 onPressed: () {
@@ -483,8 +485,8 @@ class PopularItem extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: -5,
-              right: -5,
+              bottom: screenWidth * -0.02,
+              right: screenWidth * -0.02,
               child: IconButton(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
@@ -533,7 +535,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 1:
-      Navigator.pushReplacement(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => FavouritePage()),
         );
