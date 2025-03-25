@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
@@ -37,7 +37,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _checkUserStatus() async {
-    await Future.delayed(const Duration(seconds: 3)); // Show splash for 3 seconds
+    await Future.delayed(
+        const Duration(seconds: 3)); // Show splash for 3 seconds
 
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -49,7 +50,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<String> _getUserRole(String uid) async {
-    final userDoc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    final userDoc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
     return userDoc.exists ? userDoc["role"] : "customer";
   }
 
@@ -101,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
                   opacity: _fadeInAnimation,
                   child: SizedBox(
                     width: screenWidth * 0.5,
-                    height: screenHeight * 0.3,
+                    height: screenHeight * 0.4,
                     child: const Image(
                       image: AssetImage("assets/splash-screen.png"),
                       fit: BoxFit.cover,

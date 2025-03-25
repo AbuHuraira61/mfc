@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/OrderConfirmationScreen.dart';
 
-
-
 class CustomCard extends StatefulWidget {
   final String name;
   final String price;
@@ -27,15 +25,7 @@ class _CustomCardState extends State<CustomCard> {
         children: [
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF570101), // Dark Red
-                  Color(0xFF750202), // Slightly lighter red
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-
+              color: Color(0xFF570101),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -70,7 +60,7 @@ class _CustomCardState extends State<CustomCard> {
                     children: [
                       Text(
                         widget.price,
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       GestureDetector(
                         onTap: () {
