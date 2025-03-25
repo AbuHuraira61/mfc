@@ -49,15 +49,16 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: Image.asset(
-                'assets/food-banner.png', // Replace with your actual image
-                height: 300,
+                'assets/platter.png', // Replace with your actual image
+                height: 230,
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             OrderStatusStep(
               icon: Icons.check_circle,
               title: "Order Received",

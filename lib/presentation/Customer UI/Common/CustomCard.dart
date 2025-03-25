@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/OrderConfirmationScreen.dart';
 
-
-
 class CustomCard extends StatefulWidget {
   final String name;
   final String price;
@@ -12,7 +10,9 @@ class CustomCard extends StatefulWidget {
       {super.key,
       required this.name,
       required this.price,
-      required this.image});
+      required this.image,
+      required int imageHeight,
+      required int imageWidth});
 
   @override
   State<CustomCard> createState() => _CustomCardState();
@@ -35,7 +35,6 @@ class _CustomCardState extends State<CustomCard> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(

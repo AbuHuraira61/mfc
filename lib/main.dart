@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/orderstatus_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 
 void main() async {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: OrderStatusScreen(),
     );
   }
 }
