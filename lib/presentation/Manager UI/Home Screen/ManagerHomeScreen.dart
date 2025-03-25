@@ -17,13 +17,16 @@ class ManagerHomeScreen extends StatefulWidget {
 
 class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
   void _logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
+  await FirebaseAuth.instance.signOut();
+
+  if (context.mounted) {  // ✅ Ensure context is still valid
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
       (route) => false,
     );
   }
+}
 
   @override
   Widget build(BuildContext context) {

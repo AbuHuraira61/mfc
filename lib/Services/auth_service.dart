@@ -29,7 +29,9 @@ class AuthService {
       });
 
       // Navigate to the correct screen
+      if (context.mounted) {  // ✅ Safe check before using context
       _navigateUser(role, context);
+    }
     } catch (e) {
       print("Error: $e");
     }
@@ -50,7 +52,9 @@ class AuthService {
 
       if (userDoc.exists) {
         String role = userDoc["role"];
-        _navigateUser(role, context);
+       if (context.mounted) {  // ✅ Safe check before using context
+      _navigateUser(role, context);
+    }
       }
     } catch (e) {
       print("Error: $e");
