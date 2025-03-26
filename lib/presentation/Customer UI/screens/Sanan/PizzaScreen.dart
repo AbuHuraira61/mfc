@@ -45,7 +45,7 @@ class PizzaScreen extends StatelessWidget {
             return CustomCard(
               name: burgers[index]["name"]!,
               price: burgers[index]["price"]!,
-              image: burgers[index]["image"]!,
+              image: burgers[index]["image"]!, imageHeight: 20, imageWidth: 20,
             );
           },
         ),
