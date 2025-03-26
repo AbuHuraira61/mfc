@@ -1,0 +1,2 @@
+C:/Users/Syed Ali Hassan/OneDrive/Desktop/mfc/android/app/.cxx/Debug/5a6m6x1f/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Syed Ali Hassan/OneDrive/Desktop/mfc/android/app/.cxx/Debug/5a6m6x1f/armeabi-v7a/CMakeFiles/rebuild_cache.dir

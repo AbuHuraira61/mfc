@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
 
-import 'home_screen.dart';
-
-class OrderStatusScreen extends StatelessWidget {
+class OrderStatusScreen extends StatefulWidget {
   const OrderStatusScreen({super.key});
 
+  @override
+  State<OrderStatusScreen> createState() => _OrderStatusScreenState();
+}
+
+class _OrderStatusScreenState extends State<OrderStatusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,15 +49,16 @@ class OrderStatusScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: Image.asset(
-                'assets/food-banner.png', // Replace with your actual image
-                height: 300,
+                'assets/platter.png', // Replace with your actual image
+                height: 230,
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 40),
             OrderStatusStep(
               icon: Icons.check_circle,
               title: "Order Received",

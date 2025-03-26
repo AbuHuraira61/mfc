@@ -10,7 +10,9 @@ class CustomCard extends StatefulWidget {
       {super.key,
       required this.name,
       required this.price,
-      required this.image});
+      required this.image,
+      required int imageHeight,
+      required int imageWidth});
 
   @override
   State<CustomCard> createState() => _CustomCardState();
@@ -26,6 +28,14 @@ class _CustomCardState extends State<CustomCard> {
           Container(
             decoration: BoxDecoration(
               color: Color(0xFF570101),
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF570101), // Dark Red
+                  Color(0xFF750202), // Slightly lighter red
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(

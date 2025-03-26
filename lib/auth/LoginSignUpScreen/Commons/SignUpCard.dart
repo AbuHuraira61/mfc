@@ -1,6 +1,5 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';

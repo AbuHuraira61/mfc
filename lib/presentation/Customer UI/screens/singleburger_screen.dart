@@ -8,10 +8,8 @@ class SingleBurgerScreen extends StatefulWidget {
 }
 
 class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
-  String selectedVariation = "Extra Dip Sauce";
+  String selectedVariation = "Small";
   int quantity = 1;
-  double basePrice = 20.0;
-
   Map<String, double> variationPrices = {
     "Extra Dip Sauce": 100.0,
     "Cheese Petty": 150.0,
@@ -44,18 +42,29 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xff570101),
+      backgroundColor: const Color(0xff570101),
       body: Column(
         children: [
           Stack(
             children: [
               Container(
-                padding: EdgeInsets.only(top: 70),
+                padding: const EdgeInsets.only(top: 70),
                 height: screenHeight * 0.42,
                 width: double.infinity,
-                decoration: BoxDecoration(color: Color(0xff570101)),
+                decoration: const BoxDecoration(color: Color(0xff570101)),
                 child: Center(
-                  child: Image.asset('assets/burger.png', height: 350),
+                  child: Image.asset('assets/beefburger.png', height: 200),
+                ),
+              ),
+              Positioned(
+                top: 50,
+                left: 20, // Added back button on the left
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.white, size: 28),
+                  onPressed: () {
+                    Navigator.pop(context); // Go back to the previous screen
+                  },
                 ),
               ),
               Positioned(
@@ -67,7 +76,7 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                     color: Colors.white.withOpacity(0.9),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.favorite_border,
+                    icon: const Icon(Icons.favorite_border,
                         color: Colors.red, size: 24),
                     onPressed: () {},
                   ),
@@ -80,9 +89,9 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
             child: Container(
               height: screenHeight * 0.56,
               width: double.infinity,
-              padding:
-                  EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 12),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.only(
+                  top: 30, left: 20, right: 20, bottom: 12),
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(50),
@@ -96,16 +105,16 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 3),
                         width: 70,
                         height: 35,
                         decoration: BoxDecoration(
-                          color: Color(0xff570101),
+                          color: const Color(0xff570101),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
-                          children: [
+                          children: const [
                             Icon(Icons.star, color: Colors.yellow, size: 20),
                             SizedBox(width: 5),
                             Text("4.8",
@@ -116,28 +125,27 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                           ],
                         ),
                       ),
-                      Text("\$20",
+                      const Text("\$20",
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold)),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Beef Burger",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    "It's juicy, meaty, greasily satisfying. The bun should be slightly crunchy. The cheese should be happily melting over the meat..",
+                  const SizedBox(height: 10),
+                  const Text("Beef burger",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 6),
+                  const Text(
+                    "It's juicy, meaty, greasily satisfying. The bun should be slightly crunchy. The cheese should be happily melting over the meat.",
                     style: TextStyle(color: Colors.black54),
                   ),
-                  SizedBox(height: 12),
-                  Text("Variations:",
+                  const SizedBox(height: 12),
+                  const Text("Variations:",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                  Text("Please select one option:",
+                  const Text("Please select one option:",
                       style: TextStyle(color: Colors.black54, fontSize: 13)),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: variationPrices.keys.map((variation) {
@@ -146,19 +154,19 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                         dense: true,
                         visualDensity: VisualDensity.compact,
                         title: Text(
-                          "$variation  RS ${variationPrices[variation].toString()}",
-                          style: TextStyle(fontSize: 14),
+                          "$variation  RS ${variationPrices[variation]?.toStringAsFixed(0)}",
+                          style: const TextStyle(fontSize: 14),
                         ),
                         value: variation,
                         groupValue: selectedVariation,
-                        activeColor: Color(0xff570101),
+                        activeColor: const Color(0xff570101),
                         onChanged: (value) {
                           selectVariation(value as String);
                         },
                       );
                     }).toList(),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -167,31 +175,31 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                           Container(
                             height: 28,
                             width: 28,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Color(0xff570101),
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.remove,
+                              icon: const Icon(Icons.remove,
                                   color: Colors.white, size: 16),
                               onPressed: decreaseQuantity,
                               padding: EdgeInsets.zero,
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text("$quantity",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Container(
                             height: 28,
                             width: 28,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Color(0xff570101),
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.add,
+                              icon: const Icon(Icons.add,
                                   color: Colors.white, size: 16),
                               onPressed: increaseQuantity,
                               padding: EdgeInsets.zero,
@@ -202,15 +210,15 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
                       ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff570101),
+                          backgroundColor: const Color(0xff570101),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 0),
                         ),
-                        icon: Icon(Icons.shopping_cart,
+                        icon: const Icon(Icons.shopping_cart,
                             color: Colors.white, size: 18),
-                        label: Text("Add To Cart",
+                        label: const Text("Add To Cart",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 14)),
                       ),
@@ -227,7 +235,7 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: SingleBurgerScreen(),
     debugShowCheckedModeBanner: false,
   ));

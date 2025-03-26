@@ -8,8 +8,9 @@ TextFormField customTextFormField ({required String labletext, required TextEdit
  return TextFormField(
              validator: (value) {
                if(value!.isEmpty){
-                return 'Please enter ${validatorText}';
+                return 'Please enter $validatorText';
                }
+               return null;
              },
               controller: TextController,
               cursorColor: secondaryColor,

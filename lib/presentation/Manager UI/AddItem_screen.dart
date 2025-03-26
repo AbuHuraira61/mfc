@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mfc/presentation/Manager%20UI/ManagerBurgerScreen.dart';
+import 'dart:convert';
+
+import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -19,14 +23,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
-  List<Map<String, String>> _ingredients = [
-    {"name": "", "price": ""},
-    {"name": "", "price": ""},
-    {"name": "", "price": ""}
-  ];
-
-  String? _selectedIngredient;
-
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -36,19 +32,46 @@ class _AddItemScreenState extends State<AddItemScreen> {
     }
   }
 
-  void _addIngredientField() {
-    setState(() {
-      _ingredients.add({"name": "", "price": ""});
-    });
+  Future<String?> _encodeImageToBase64() async {
+    if (_selectedImage == null) return null;
+    List<int> imageBytes = await _selectedImage!.readAsBytes();
+    return base64Encode(imageBytes);
   }
 
-  void _removeIngredient(int index) {
-    setState(() {
-      if (_selectedIngredient == _ingredients[index]["name"]) {
-        _selectedIngredient = null;
-      }
-      _ingredients.removeAt(index);
-    });
+  Future<void> _addItemToFirestore() async {
+    if (_itemNameController.text.isEmpty ||
+        _itemPriceController.text.isEmpty ||
+        _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    String? imageBase64 = await _encodeImageToBase64();
+
+    Map<String, dynamic> itemData = {
+      "name": _itemNameController.text,
+      "price": _itemPriceController.text,
+      "description": _descriptionController.text,
+      "image": imageBase64 ?? "",
+      "timestamp": FieldValue.serverTimestamp(),
+    };
+
+    await FirebaseFirestore.instance
+        .collection("food_items")
+        .doc(_selectedCategory)
+        .collection("items")
+        .add(itemData);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Item added successfully!")),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ManagerPizzaScreen()),
+    );
   }
 
   @override
@@ -72,9 +95,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 items: ['Pizza', 'Burger', 'Dessert', 'Fries']
@@ -153,70 +174,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 ),
               ),
               SizedBox(height: 12),
-              Text("Ingredients",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Column(
-                children: _ingredients.asMap().entries.map((entry) {
-                  int index = entry.key;
-                  var ingredient = entry.value;
-
-                  return Row(
-                    children: [
-                      Radio<String>(
-                        value: ingredient["name"]!,
-                        groupValue: _selectedIngredient,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedIngredient = value;
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: "Name",
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _ingredients[index]["name"] = value;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            hintText: "Price",
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _ingredients[index]["price"] = value;
-                            });
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _removeIngredient(index);
-                        },
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-              TextButton.icon(
-                onPressed: _addIngredientField,
-                icon: Icon(Icons.add, color: Colors.blue),
-                label: Text("Add Ingredient",
-                    style: TextStyle(color: Colors.blue)),
-              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -226,13 +183,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ManagerBurgerScreen()),
-                    );
-                  },
+                  onPressed: _addItemToFirestore,
                   child: Text("Add Item",
                       style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),

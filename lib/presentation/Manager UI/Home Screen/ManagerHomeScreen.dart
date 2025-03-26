@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/AddItem_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/AddNewRider_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/PendingOrder_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
@@ -16,13 +17,16 @@ class ManagerHomeScreen extends StatefulWidget {
 
 class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
   void _logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
+  await FirebaseAuth.instance.signOut();
+
+  if (context.mounted) {  // ✅ Ensure context is still valid
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
       (route) => false,
     );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +119,18 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.local_shipping, "Order Status")),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
+                    },
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    child: _buildButton(Icons.feedback_outlined, "Feedback")),
                 InkWell(
                     onTap: () {
                       _logout(context); // Call logout function

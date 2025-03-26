@@ -1,20 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/FourPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/OnePersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/FavouritePage.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/ThreePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/TwoPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/singleburger_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/singlepizza_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
-import 'orderstatus_screen.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen());
@@ -32,35 +41,38 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedCategoryIndex = -1;
 
   final List<Map<String, dynamic>> categories = [
-    {'title': 'All', 'image': 'assets/food-banner.png'},
+    {'title': 'All', 'image': 'assets/platter.png'},
     {'title': 'Pizza', 'image': 'assets/largepizza.png'},
-    {'title': 'Burger', 'image': 'assets/burger.png'},
+    {'title': 'Burger', 'image': 'assets/beefburger.png'},
     {'title': 'Deserts', 'image': 'assets/desert.png'},
   ];
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       drawer: Drawer(
         child: Column(
           children: [
             Container(
-              color:
-                  Color(0xff570101), // Dark red background for profile section
-              padding: EdgeInsets.only(top: 40, bottom: 20),
+              color: Color(0xff570101),
+              padding: EdgeInsets.only(
+                  top: screenHeight * 0.05, bottom: screenHeight * 0.03),
               width: double.infinity,
               child: Column(
                 children: [
                   CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/gentle.webp'),
+                    radius: screenWidth * 0.1,
+                    backgroundImage: AssetImage('assets/gentle.png'),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.01),
                   Text(
                     'Ali Hassan',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -69,56 +81,26 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               child: Container(
-                color: Colors.white, // White background for menu items
+                color: Colors.white,
                 child: ListView(
                   children: [
-                    ListTile(
-                      leading: Icon(Icons.local_offer, color: Colors.black),
-                      title: Text('Deals'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.list_alt, color: Colors.black),
-                      title: Text('Orders'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.location_on, color: Colors.black),
-                      title: Text('Address'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.favorite, color: Colors.black),
-                      title: Text('Favorite'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.shopping_cart, color: Colors.black),
-                      title: Text('Cart'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.article, color: Colors.black),
-                      title: Text('Terms or Conditions'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.chat, color: Colors.black),
-                      title: Text('Chat with us'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.logout, color: Colors.black),
-                      title: Text('Log out'),
-                      onTap: () {
-                         FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
-      (route) => false,
-    );
-                      },
-                    ),
+                    _buildDrawerItem(Icons.local_offer, 'Deals', () {}),
+                    _buildDrawerItem(Icons.list_alt, 'Orders', () {}),
+                    _buildDrawerItem(Icons.location_on, 'Address', () {}),
+                    _buildDrawerItem(Icons.favorite, 'Favorite', () {}),
+                    _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
+                    _buildDrawerItem(
+                        Icons.article, 'Terms or Conditions', () {}),
+                    _buildDrawerItem(Icons.chat, 'Chat with us', () {}),
+                    _buildDrawerItem(Icons.logout, 'Log out', () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginSignUpScreen()),
+                        (route) => false,
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -129,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 150, // ✅ Increased height by 20px
+            expandedHeight: screenHeight * 0.2,
             floating: false,
             pinned: false,
             backgroundColor: Color(0xff570101),
@@ -140,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
             leading: Builder(
               builder: (context) => IconButton(
                 icon: Icon(Icons.menu,
-                    color: Colors.white, size: 27), // ✅ Increased size
+                    color: Colors.white, size: screenWidth * 0.07),
                 onPressed: () {
                   Scaffold.of(context).openDrawer();
                 },
@@ -149,12 +131,11 @@ class _HomeScreenState extends State<HomeScreen> {
             flexibleSpace: Stack(
               children: [
                 Positioned(
-                  top: 110, // ✅ Added 10px extra margin (originally 70, now 80)
-                  left: MediaQuery.of(context).size.width * 0.5 -
-                      168, // Centers the search bar
+                  top: screenHeight * 0.14,
+                  left: screenWidth * 0.5 - (screenWidth * 0.45),
                   child: Container(
-                    width: 336,
-                    height: 53,
+                    width: screenWidth * 0.9,
+                    height: screenHeight * 0.07,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(25),
@@ -164,7 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: 'Search',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 15),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       ),
                     ),
                   ),
@@ -174,22 +156,19 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: Icon(Icons.shopping_cart,
-                    color: Colors.white, size: 27), // ✅ Increased size
+                    color: Colors.white, size: screenWidth * 0.07),
                 onPressed: () {},
               ),
             ],
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(screenWidth * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Categories',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
+                  _buildSectionTitle('Categories', screenWidth),
+                  SizedBox(height: screenHeight * 0.015),
                   CategorySection(
                     categories: categories,
                     selectedIndex: selectedCategoryIndex,
@@ -199,19 +178,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Promotion',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  PromotionSection(),
-                  SizedBox(height: 20),
-                  Text(
-                    'Popular',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.03),
+                  _buildSectionTitle('Deals and Discounts', screenWidth),
+                  SizedBox(height: screenHeight * 0.015),
+                  SliderSection(),
+                  SizedBox(height: screenHeight * 0.03),
+                  _buildSectionTitle('Popular', screenWidth),
+                  SizedBox(height: screenHeight * 0.015),
                   PopularSection(),
                 ],
               ),
@@ -220,6 +193,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavBar(selectedIndex: 0),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.black),
+      title: Text(title),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildSectionTitle(String title, double screenWidth) {
+    return Text(
+      title,
+      style:
+          TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold),
     );
   }
 }
@@ -252,9 +241,13 @@ class CategorySection extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 onCategorySelected(index);
-
                 // Navigate using Navigator
-                if (category['title'] == "Burger") {
+                if (category['title'] == "All") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BurgerScreen()),
+                  );
+                } else if (category['title'] == "Burger") {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => BurgerScreen()),
@@ -272,7 +265,7 @@ class CategorySection extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: selectedIndex == index
                       ? Color(0xff570101)
-                      : Colors.grey[300],
+                      : Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -296,67 +289,153 @@ class CategorySection extends StatelessWidget {
   }
 }
 
-class PromotionSection extends StatelessWidget {
-  const PromotionSection({super.key});
+// class PromotionSection extends StatelessWidget {
+//   const PromotionSection({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: double.infinity,
+//       padding: EdgeInsets.fromLTRB(
+//         12,
+//         15,
+//         12,
+//         15,
+//       ),
+//       decoration: BoxDecoration(
+//         color: primaryColor, // Adjusted red shade
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//       child: Stack(
+//         clipBehavior: Clip.none,
+//         children: [
+//           Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               SizedBox(height: 6),
+//               Text(
+//                 "Today's Offer",
+//                 style: TextStyle(
+//                   color: secondaryColor,
+//                   fontSize: 12,
+//                   fontWeight: FontWeight.w500,
+//                 ),
+//               ),
+//               SizedBox(height: 4),
+//               Text(
+//                 "Free Box of Fries",
+//                 style: TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               SizedBox(height: 6),
+//               Text(
+//                 "and Free Home Delivery\non all Orders above 150\$.",
+//                 style: TextStyle(
+//                   color: Colors.white.withOpacity(0.8),
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w400,
+//                 ),
+//               ),
+//               SizedBox(height: 6),
+//             ],
+//           ),
+//           Positioned(
+//             top: -55,
+//             left: 170,
+//             child: Image.asset('assets/fries.png', height: 100),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+class SliderSection extends StatefulWidget {
+  const SliderSection({super.key});
+
+  @override
+  State<SliderSection> createState() => _SliderSectionState();
+}
+
+class _SliderSectionState extends State<SliderSection> {
+  List<Map<String, dynamic>> imageList = [
+    {"id": 1, "image_path": 'assets/banner4.png', "route": OnePersonDeal()},
+    {"id": 2, "image_path": 'assets/banner1.png', "route": TwoPersonDeal()},
+    {"id": 3, "image_path": 'assets/banner3.png', "route": ThreePersonDeal()},
+    {"id": 4, "image_path": 'assets/banner2.png', "route": FourPersonDeal()},
+  ];
+
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(
-        12,
-        15,
-        12,
-        15,
-      ), // Added 15 padding from top and bottom
-      decoration: BoxDecoration(
-        color: primaryColor, // Adjusted red shade
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
+    return Column(children: [
+      Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 6),
-              Text(
-                "Today's Offer",
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => imageList[currentIndex]['route']));
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CarouselSlider.builder(
+                itemCount: imageList.length,
+                itemBuilder: (context, index, realIndex) {
+                  return Image.asset(
+                    imageList[index]['image_path'],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  );
+                },
+                carouselController: carouselController,
+                options: CarouselOptions(
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  autoPlay: true,
+                  aspectRatio: 2,
+                  viewportFraction: 1,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
                 ),
               ),
-              SizedBox(height: 4),
-              Text(
-                "Free Box of Fries",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 6),
-              Text(
-                "and Free Home Delivery\non all Orders above 150\$.",
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(height: 6),
-            ],
+            ),
           ),
           Positioned(
-            top: -55,
-            left: 215,
-            child: Image.asset('assets/fries.png', height: 100),
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: imageList.asMap().entries.map((entry) {
+                return GestureDetector(
+                  onTap: () => carouselController.jumpToPage(entry.key),
+                  child: Container(
+                    width: currentIndex == entry.key ? 17 : 7,
+                    height: 7.0,
+                    margin: const EdgeInsets.symmetric(horizontal: 3.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color:
+                          currentIndex == entry.key ? Colors.red : Colors.teal,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
-    );
+    ]);
   }
 }
 
@@ -365,6 +444,8 @@ class PopularSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Column(
       children: [
         Row(
@@ -374,26 +455,41 @@ class PopularSection extends StatelessWidget {
               child: PopularItem(
                 'Beef Burger',
                 20,
-                'assets/burger.png',
-                imageHeight: 300,
+                'assets/beefburger.png',
+                imageHeight: screenWidth * 0.5,
               ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: screenWidth * 0.02),
             Expanded(
-              child: PopularItem('Special Pizza', 32, 'assets/largepizza.png'),
+              child: PopularItem(
+                'Special Pizza',
+                32,
+                'assets/largepizza.png',
+                imageHeight: screenWidth * 0.3,
+              ),
             ),
           ],
         ),
-        SizedBox(height: 15),
+        SizedBox(height: screenWidth * 0.04),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: PopularItem('Beef Burger', 20, 'assets/burger.png'),
+              child: PopularItem(
+                'Beef Burger',
+                20,
+                'assets/beefburger.png',
+                imageHeight: screenWidth * 0.3,
+              ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: screenWidth * 0.02),
             Expanded(
-              child: PopularItem('Special Pizza', 32, 'assets/largepizza.png'),
+              child: PopularItem(
+                'Special Pizza',
+                32,
+                'assets/largepizza.png',
+                imageHeight: screenWidth * 0.3,
+              ),
             ),
           ],
         ),
@@ -406,41 +502,38 @@ class PopularItem extends StatelessWidget {
   final String name;
   final int price;
   final String imagePath;
-  final double? imageHeight; // Optional image height parameter
+  final double? imageHeight;
 
   const PopularItem(this.name, this.price, this.imagePath,
       {super.key, this.imageHeight});
 
   @override
   Widget build(BuildContext context) {
-    double defaultHeight = 110; // Default height
-
-    // Set default size based on food type
-    if (name.toLowerCase().contains('burger')) {
-      defaultHeight = 150;
-    } else if (name.toLowerCase().contains('pizza')) {
-      defaultHeight = 110;
-    }
+    double screenWidth = MediaQuery.of(context).size.width;
+    double defaultHeight = screenWidth * 0.3;
 
     return GestureDetector(
       onTap: () {
-        // Navigate based on item name
         if (name.toLowerCase().contains('burger')) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SingleBurgerScreen()),
+            MaterialPageRoute(
+              builder: (context) => SingleBurgerScreen(),
+            ),
           );
         } else if (name.toLowerCase().contains('pizza')) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SinglePizzaScreen()),
+            MaterialPageRoute(
+              builder: (context) => SinglePizzaScreen(),
+            ),
           );
         }
       },
       child: Container(
         width: double.infinity,
-        height: 200,
-        padding: EdgeInsets.all(10),
+        height: screenWidth * 0.55,
+        padding: EdgeInsets.all(screenWidth * 0.02),
         decoration: BoxDecoration(
           color: Color(0xff570101),
           borderRadius: BorderRadius.circular(15),
@@ -449,31 +542,33 @@ class PopularItem extends StatelessWidget {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to left
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 5),
+                SizedBox(height: screenWidth * 0.01),
                 SizedBox(
-                  height: 110,
+                  height: screenWidth * 0.36,
                   child: Center(
                     child: Image.asset(
                       imagePath,
-                      height: imageHeight ??
-                          defaultHeight, // Use provided height or default
+                      height: imageHeight ?? defaultHeight,
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
-                Text(name, style: TextStyle(color: Colors.white, fontSize: 16)),
+                Text(
+                  name,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.04),
+                ),
                 Text(
                   '\$$price',
-                  style: TextStyle(color: Colors.white, fontSize: 15),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.035),
                 ),
               ],
             ),
             Positioned(
-              top: -10,
-              right: -5,
+              top: screenWidth * -0.02,
+              right: screenWidth * -0.02,
               child: IconButton(
                 icon: Icon(Icons.favorite_border, color: Colors.white),
                 onPressed: () {
@@ -483,8 +578,8 @@ class PopularItem extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: -5,
-              right: -5,
+              bottom: screenWidth * 0.01,
+              right: screenWidth * -0.02,
               child: IconButton(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
@@ -533,7 +628,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 1:
-      Navigator.pushReplacement(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => FavouritePage()),
         );
