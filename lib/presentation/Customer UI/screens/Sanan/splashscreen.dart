@@ -102,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen>
                   opacity: _fadeInAnimation,
                   child: SizedBox(
                     width: screenWidth * 0.5,
-                    height: screenHeight * 0.3,
+                    height: screenHeight * 0.4,
                     child: const Image(
                       image: AssetImage("assets/splash-screen.png"),
                       fit: BoxFit.cover,
