@@ -71,3 +71,25 @@ class AuthService {
     }
   }
 }
+
+
+
+//  // Convert image to binary (base64 encoding)
+//         String photoBase64 = '';
+
+//         if (_selectedImage != null) {
+//           // Convert selected image to base64
+//           final bytes = await _selectedImage!.readAsBytes();
+//           photoBase64 = base64Encode(bytes);
+//         } else {
+//           // Load default image from assets and convert it to base64
+//           final ByteData assetImageData = await rootBundle.load('assets/user_profile.jpg');
+//           final bytes = assetImageData.buffer.asUint8List();
+//           photoBase64 = base64Encode(bytes);
+          
+//         }
+
+
+// For decofing
+
+// backgroundImage: MemoryImage(base64Decode(image get from firestore)),
