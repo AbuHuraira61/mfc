@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/FourPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/OnePersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/FavouritePage.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/ThreePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/TwoPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/singleburger_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/singlepizza_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
-import 'orderstatus_screen.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
   runApp(MyApp());
@@ -177,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: screenHeight * 0.03),
                   _buildSectionTitle('Deals and Discounts', screenWidth),
                   SizedBox(height: screenHeight * 0.015),
-                  PromotionSection(),
+                  SliderSection(),
                   SizedBox(height: screenHeight * 0.03),
                   _buildSectionTitle('Popular', screenWidth),
                   SizedBox(height: screenHeight * 0.015),
@@ -237,9 +241,13 @@ class CategorySection extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 onCategorySelected(index);
-
                 // Navigate using Navigator
-                if (category['title'] == "Burger") {
+                if (category['title'] == "All") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BurgerScreen()),
+                  );
+                } else if (category['title'] == "Burger") {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => BurgerScreen()),
@@ -281,67 +289,153 @@ class CategorySection extends StatelessWidget {
   }
 }
 
-class PromotionSection extends StatelessWidget {
-  const PromotionSection({super.key});
+// class PromotionSection extends StatelessWidget {
+//   const PromotionSection({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: double.infinity,
+//       padding: EdgeInsets.fromLTRB(
+//         12,
+//         15,
+//         12,
+//         15,
+//       ),
+//       decoration: BoxDecoration(
+//         color: primaryColor, // Adjusted red shade
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//       child: Stack(
+//         clipBehavior: Clip.none,
+//         children: [
+//           Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               SizedBox(height: 6),
+//               Text(
+//                 "Today's Offer",
+//                 style: TextStyle(
+//                   color: secondaryColor,
+//                   fontSize: 12,
+//                   fontWeight: FontWeight.w500,
+//                 ),
+//               ),
+//               SizedBox(height: 4),
+//               Text(
+//                 "Free Box of Fries",
+//                 style: TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               SizedBox(height: 6),
+//               Text(
+//                 "and Free Home Delivery\non all Orders above 150\$.",
+//                 style: TextStyle(
+//                   color: Colors.white.withOpacity(0.8),
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w400,
+//                 ),
+//               ),
+//               SizedBox(height: 6),
+//             ],
+//           ),
+//           Positioned(
+//             top: -55,
+//             left: 170,
+//             child: Image.asset('assets/fries.png', height: 100),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+class SliderSection extends StatefulWidget {
+  const SliderSection({super.key});
+
+  @override
+  State<SliderSection> createState() => _SliderSectionState();
+}
+
+class _SliderSectionState extends State<SliderSection> {
+  List<Map<String, dynamic>> imageList = [
+    {"id": 1, "image_path": 'assets/banner4.png', "route": OnePersonDeal()},
+    {"id": 2, "image_path": 'assets/banner1.png', "route": TwoPersonDeal()},
+    {"id": 3, "image_path": 'assets/banner3.png', "route": ThreePersonDeal()},
+    {"id": 4, "image_path": 'assets/banner2.png', "route": FourPersonDeal()},
+  ];
+
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(
-        12,
-        15,
-        12,
-        15,
-      ),
-      decoration: BoxDecoration(
-        color: primaryColor, // Adjusted red shade
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
+    return Column(children: [
+      Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 6),
-              Text(
-                "Today's Offer",
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => imageList[currentIndex]['route']));
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CarouselSlider.builder(
+                itemCount: imageList.length,
+                itemBuilder: (context, index, realIndex) {
+                  return Image.asset(
+                    imageList[index]['image_path'],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  );
+                },
+                carouselController: carouselController,
+                options: CarouselOptions(
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  autoPlay: true,
+                  aspectRatio: 2,
+                  viewportFraction: 1,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
                 ),
               ),
-              SizedBox(height: 4),
-              Text(
-                "Free Box of Fries",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 6),
-              Text(
-                "and Free Home Delivery\non all Orders above 150\$.",
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(height: 6),
-            ],
+            ),
           ),
           Positioned(
-            top: -55,
-            left: 170,
-            child: Image.asset('assets/fries.png', height: 100),
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: imageList.asMap().entries.map((entry) {
+                return GestureDetector(
+                  onTap: () => carouselController.jumpToPage(entry.key),
+                  child: Container(
+                    width: currentIndex == entry.key ? 17 : 7,
+                    height: 7.0,
+                    margin: const EdgeInsets.symmetric(horizontal: 3.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color:
+                          currentIndex == entry.key ? Colors.red : Colors.teal,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
-    );
+    ]);
   }
 }
 
@@ -438,7 +532,7 @@ class PopularItem extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        height: screenWidth * 0.5,
+        height: screenWidth * 0.55,
         padding: EdgeInsets.all(screenWidth * 0.02),
         decoration: BoxDecoration(
           color: Color(0xff570101),
@@ -452,7 +546,7 @@ class PopularItem extends StatelessWidget {
               children: [
                 SizedBox(height: screenWidth * 0.01),
                 SizedBox(
-                  height: screenWidth * 0.3,
+                  height: screenWidth * 0.36,
                   child: Center(
                     child: Image.asset(
                       imagePath,
@@ -460,7 +554,6 @@ class PopularItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: screenWidth * 0.01),
                 Text(
                   name,
                   style: TextStyle(
@@ -485,7 +578,7 @@ class PopularItem extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: screenWidth * -0.02,
+              bottom: screenWidth * 0.01,
               right: screenWidth * -0.02,
               child: IconButton(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),

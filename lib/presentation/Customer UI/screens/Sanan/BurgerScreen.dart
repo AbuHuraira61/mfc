@@ -46,6 +46,8 @@ class BurgerScreen extends StatelessWidget {
               name: burgers[index]["name"]!,
               price: burgers[index]["price"]!,
               image: burgers[index]["image"]!,
+              imageHeight: 80,
+              imageWidth: 80,
             );
           },
         ),
