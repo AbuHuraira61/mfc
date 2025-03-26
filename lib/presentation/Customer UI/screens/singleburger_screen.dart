@@ -4,10 +4,10 @@ class SingleBurgerScreen extends StatefulWidget {
   const SingleBurgerScreen({super.key});
 
   @override
-  _SinglePizzaScreenState createState() => _SinglePizzaScreenState();
+  _SingleBurgerScreenState createState() => _SingleBurgerScreenState();
 }
 
-class _SinglePizzaScreenState extends State<SingleBurgerScreen> {
+class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
   String selectedVariation = "Small";
   int quantity = 1;
   Map<String, double> variationPrices = {
