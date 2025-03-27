@@ -2,10 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mfc/presentation/Manager%20UI/ManagerBurgerScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/AllAddedItemScreen.dart';
 import 'dart:convert';
 
-import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -18,9 +17,15 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _smallPriceController = TextEditingController();
+  final TextEditingController _mediumPriceController = TextEditingController();
+  final TextEditingController _largePriceController = TextEditingController();
+  final TextEditingController _familyPriceController = TextEditingController();
 
   String _selectedCategory = 'Pizza';
   File? _selectedImage;
+  String _selectedPizzaType = 'Standard';
+  String _selectedPizzaSize = 'Small';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
@@ -39,14 +44,32 @@ class _AddItemScreenState extends State<AddItemScreen> {
   }
 
   Future<void> _addItemToFirestore() async {
-    if (_itemNameController.text.isEmpty ||
-        _itemPriceController.text.isEmpty ||
-        _descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill all fields")),
-      );
-      return;
-    }
+    if (_itemNameController.text.isEmpty || _descriptionController.text.isEmpty) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Please fill all fields")),
+  );
+  return;
+}
+
+// If the selected category is Pizza, check for empty size-based prices
+if (_selectedCategory == 'Pizza' &&
+    (_smallPriceController.text.isEmpty ||
+     _mediumPriceController.text.isEmpty ||
+     _largePriceController.text.isEmpty ||
+     _familyPriceController.text.isEmpty)) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Please fill all pizza size prices")),
+  );
+  return;
+}
+
+// If it's NOT pizza, ensure the general price is filled
+if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Please enter the item price")),
+  );
+  return;
+}
 
     String? imageBase64 = await _encodeImageToBase64();
 
@@ -57,6 +80,19 @@ class _AddItemScreenState extends State<AddItemScreen> {
       "image": imageBase64 ?? "",
       "timestamp": FieldValue.serverTimestamp(),
     };
+
+    if (_selectedCategory == 'Pizza'){
+      itemData.addAll({
+        "pizzaType": _selectedPizzaType,
+        "prices":{
+          "small": _smallPriceController.text,
+          "medium": _mediumPriceController.text,
+          "large": _largePriceController.text,
+          "family": _familyPriceController.text,
+        }
+        
+      });
+    }
 
     await FirebaseFirestore.instance
         .collection("food_items")
@@ -70,7 +106,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ManagerPizzaScreen()),
+      MaterialPageRoute(builder: (context) => AllAddedItemScreen()),
     );
   }
 
@@ -98,21 +134,33 @@ class _AddItemScreenState extends State<AddItemScreen> {
               SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
-                items: ['Pizza', 'Burger', 'Dessert', 'Fries']
-                    .map((type) =>
-                        DropdownMenuItem(value: type, child: Text(type)))
+                items: ['Pizza', 'Burger','Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken']
+                    .map((type) => DropdownMenuItem(value: type, child: Text(type)))
                     .toList(),
                 onChanged: (value) {
                   setState(() {
                     _selectedCategory = value!;
                   });
                 },
-                decoration: InputDecoration(
-                  labelText: "Select Item Type",
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                ),
+                decoration: InputDecoration(labelText: "Select Item Type", border: OutlineInputBorder()),
               ),
+              if (_selectedCategory == "Pizza") ... [
+                SizedBox(height: 10,),
+                DropdownButtonFormField<String>(
+                  value: _selectedPizzaType,
+                  items: ['Standard', 'Premium', 'New Addition', 'Matka Pizza']
+                      .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedPizzaType = value!;
+                    });
+                  },
+                  decoration: InputDecoration(labelText: "Select Pizza Type", border: OutlineInputBorder()),
+                ),
+                  SizedBox(height: 10,),
+                
+              ],
               SizedBox(height: 12),
               TextField(
                 controller: _itemNameController,
@@ -123,7 +171,30 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 ),
               ),
               SizedBox(height: 12),
+              if(_selectedCategory == 'Pizza')...[
+               TextField(
+                controller: _smallPriceController,
+               
+                decoration: InputDecoration(labelText: "Price for Small"),
+              ),
               TextField(
+                controller: _mediumPriceController,
+                
+                decoration: InputDecoration(labelText: "Price for Medium"),
+              ),
+              TextField(
+                controller: _largePriceController,
+             
+                decoration: InputDecoration(labelText: "Price for Large"),
+              ),
+              TextField(
+                controller: _familyPriceController,
+               
+                decoration: InputDecoration(labelText: "Price for Family"),
+              ), 
+
+               ] else ...[
+                TextField(
                 controller: _itemPriceController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -132,6 +203,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 12),
                 ),
               ),
+               ],
+              
               SizedBox(height: 12),
               Text("Item Image", style: TextStyle(fontSize: 16)),
               GestureDetector(
@@ -174,6 +247,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 ),
               ),
               SizedBox(height: 12),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -195,3 +269,5 @@ class _AddItemScreenState extends State<AddItemScreen> {
     );
   }
 }
+
+
