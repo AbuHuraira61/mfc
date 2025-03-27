@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-//import 'package:cloud_firestore/cloud_firestore.dart';
-
 class FavouritePage extends StatelessWidget {
   final List<Map<String, dynamic>> favoriteItems = List.generate(
     10,
@@ -20,12 +18,18 @@ class FavouritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorite Page",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text(
+          "Favorite Page",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: Color(0xFF6A0202),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
         ),
       ),
       body: Padding(
@@ -47,7 +51,6 @@ class FavouritePage extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 10),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      //color: Color(0xFF570101),
                       gradient: LinearGradient(
                         colors: [
                           Color(0xFF570101), // Dark Red
@@ -56,7 +59,6 @@ class FavouritePage extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
-
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -104,21 +106,21 @@ class FavouritePage extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            SizedBox(
-                              width: 5,
-                            ),
+                            SizedBox(width: 5),
                             GestureDetector(
-                                onTap: () {},
-                                child: Icon(Icons.delete_outline,
-                                    color: Colors.white)),
+                              onTap: () {},
+                              child: Icon(Icons.delete_outline,
+                                  color: Colors.white),
+                            ),
                             SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 GestureDetector(
-                                    onTap: () {},
-                                    child: Icon(Icons.add_circle,
-                                        color: Colors.white)),
+                                  onTap: () {},
+                                  child: Icon(Icons.add_circle,
+                                      color: Colors.white),
+                                ),
                                 SizedBox(width: 5),
                                 Text(
                                   item["quantity"].toString(),
@@ -128,9 +130,10 @@ class FavouritePage extends StatelessWidget {
                                 ),
                                 SizedBox(width: 5),
                                 GestureDetector(
-                                    onTap: () {},
-                                    child: Icon(Icons.remove_circle,
-                                        color: Colors.white)),
+                                  onTap: () {},
+                                  child: Icon(Icons.remove_circle,
+                                      color: Colors.white),
+                                ),
                               ],
                             ),
                           ],

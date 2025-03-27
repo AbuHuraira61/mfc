@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Home_screen,.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   const OrderStatusScreen({super.key});
@@ -13,35 +13,18 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-              (Route<dynamic> route) => false,
-            );
-          },
-        ),
-        elevation: 0,
+        backgroundColor: Color(0xff570101),
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 15),
-          child: Column(
-            children: [
-              Text(
-                "Order Status",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              Text(
-                "Order No: 1234",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-              ),
-            ],
-          ),
+        elevation: 0,
+        title: Text(
+          'OrderStatus Screen',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Padding(
@@ -53,12 +36,16 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: Image.asset(
-                'assets/platter.png', // Replace with your actual image
+                'assets/platter.png',
                 height: 230,
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 40),
+            Text(
+              "Order No: 1234",
+              style: TextStyle(color: Colors.grey[700], fontSize: 16),
+            ),
+            SizedBox(height: 20),
             OrderStatusStep(
               icon: Icons.check_circle,
               title: "Order Received",

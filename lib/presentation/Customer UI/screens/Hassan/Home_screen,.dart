@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/FourPersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/OnePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Cart_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/FourPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/OnePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Pizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Sanan/FavouritePage.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/ThreePersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/TwoPersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/orderstatus_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/singleburger_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/singlepizza_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/ThreePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/TwoPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Orderstatus_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Singlepizza_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -157,7 +159,10 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: Icon(Icons.shopping_cart,
                     color: Colors.white, size: screenWidth * 0.07),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartScreen()));
+                },
               ),
             ],
           ),
@@ -247,12 +252,12 @@ class CategorySection extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => BurgerScreen()),
                   );
-                } else if (category['title'] == "Burger") {
+                } else if (category['title'] == "Pizza") {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BurgerScreen()),
+                    MaterialPageRoute(builder: (context) => PizzaScreen()),
                   );
-                } else if (category['title'] == "Pizza") {
+                } else if (category['title'] == "Burger") {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => BurgerScreen()),
@@ -288,70 +293,6 @@ class CategorySection extends StatelessWidget {
     );
   }
 }
-
-// class PromotionSection extends StatelessWidget {
-//   const PromotionSection({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: double.infinity,
-//       padding: EdgeInsets.fromLTRB(
-//         12,
-//         15,
-//         12,
-//         15,
-//       ),
-//       decoration: BoxDecoration(
-//         color: primaryColor, // Adjusted red shade
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Stack(
-//         clipBehavior: Clip.none,
-//         children: [
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               SizedBox(height: 6),
-//               Text(
-//                 "Today's Offer",
-//                 style: TextStyle(
-//                   color: secondaryColor,
-//                   fontSize: 12,
-//                   fontWeight: FontWeight.w500,
-//                 ),
-//               ),
-//               SizedBox(height: 4),
-//               Text(
-//                 "Free Box of Fries",
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               SizedBox(height: 6),
-//               Text(
-//                 "and Free Home Delivery\non all Orders above 150\$.",
-//                 style: TextStyle(
-//                   color: Colors.white.withOpacity(0.8),
-//                   fontSize: 14,
-//                   fontWeight: FontWeight.w400,
-//                 ),
-//               ),
-//               SizedBox(height: 6),
-//             ],
-//           ),
-//           Positioned(
-//             top: -55,
-//             left: 170,
-//             child: Image.asset('assets/fries.png', height: 100),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class SliderSection extends StatefulWidget {
   const SliderSection({super.key});
@@ -610,7 +551,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.selectedIndex; // Initialize with passed value
+    _currentIndex = widget.selectedIndex;
   }
 
   void _onItemTapped(int index) {
@@ -659,7 +600,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       items: [
         _buildNavItem(Icons.home, 0),
         _buildNavItem(Icons.favorite, 1),
-        _buildNavItem(Icons.shopping_basket, 2),
+        _buildNavItem(Icons.shopping_bag_outlined, 2),
         _buildNavItem(Icons.person, 3),
       ],
     );
@@ -673,7 +614,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         transform: Matrix4.translationValues(0, isSelected ? -4 : 0, 0),
         child: Icon(
           icon,
-          size: isSelected ? 32 : 24, // Increase size by 4 when selected
+          size: isSelected ? 32 : 24,
         ),
       ),
       label: '',
