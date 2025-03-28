@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Home/Common/Singlepizza_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 
 class PizzaScreen extends StatefulWidget {
   @override

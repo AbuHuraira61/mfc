@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Home/Home_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 
 class AuthService {

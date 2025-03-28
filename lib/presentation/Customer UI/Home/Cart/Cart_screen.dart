@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/ChekoutScreens/checkoutScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/checkoutScreen.dart';
 
 class CartScreen extends StatelessWidget {
   final CartController cartController = Get.put(CartController());
