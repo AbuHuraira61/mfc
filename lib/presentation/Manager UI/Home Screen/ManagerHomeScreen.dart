@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/AddItem_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/AddNewRider_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AllAddedItemScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/PendingOrder_screen.dart';
@@ -88,7 +89,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ManagerPizzaScreen()),
+                            builder: (context) => AllAddedItemScreen()),
                       );
                     },
                     splashColor: Colors.white.withOpacity(0.3),

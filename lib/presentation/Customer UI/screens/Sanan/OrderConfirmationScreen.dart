@@ -9,14 +9,15 @@ class OrderConfirmationScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF570101), // Dark Red
-              Color(0xFF750202), // Slightly lighter red
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: Color(0xFF570101),
+          // gradient: LinearGradient(
+          //   colors: [
+          //     Color(0xFF570101), // Dark Red
+          //     Color(0xFF750202), // Slightly lighter red
+          //   ],
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          // ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

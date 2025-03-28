@@ -44,14 +44,6 @@ class ManagerBurgerScreen extends StatelessWidget {
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Color(0xFFF0F0F0),
-                      // gradient: LinearGradient(
-                      //   colors: [
-                      //     Color(0xFF570101), // Dark Red
-                      //     Color(0xFF750202), // Slightly lighter red
-                      //   ],
-                      //   begin: Alignment.topCenter,
-                      //   end: Alignment.bottomCenter,
-                      // ),
 
                       borderRadius: BorderRadius.circular(12),
                     ),

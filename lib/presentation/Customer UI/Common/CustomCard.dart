@@ -27,6 +27,7 @@ class _CustomCardState extends State<CustomCard> {
         children: [
           Container(
             decoration: BoxDecoration(
+              color: Color(0xFF570101),
               gradient: LinearGradient(
                 colors: [
                   Color(0xFF570101), // Dark Red
@@ -69,7 +70,7 @@ class _CustomCardState extends State<CustomCard> {
                     children: [
                       Text(
                         widget.price,
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       GestureDetector(
                         onTap: () {
