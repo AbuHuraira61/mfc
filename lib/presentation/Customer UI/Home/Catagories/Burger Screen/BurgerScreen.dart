@@ -55,8 +55,8 @@ class _BurgerScreenState extends State<BurgerScreen> {
           if(snapshot.connectionState == ConnectionState.waiting){
             return Center(child: CircularProgressIndicator(),);
           }
-          if(snapshot.hasData || snapshot.data!.isEmpty){
-            return Center(child: Text('Burgers aare not avialable'),);
+          if(!snapshot.hasData || snapshot.data!.isEmpty){
+            return Center(child: Text('Burgers are not avialable'),);
           }
           var burgers = snapshot.data;
 
@@ -70,7 +70,7 @@ class _BurgerScreenState extends State<BurgerScreen> {
       ),
       itemCount: burgers!.length,
       itemBuilder: (context, index) {
-        return FoodItemsCard(foodItems: burgers![index]);
+        return FoodItemsCard(foodItems: burgers[index]);
       },
     );
         }, )
