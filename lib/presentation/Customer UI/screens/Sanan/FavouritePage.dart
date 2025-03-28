@@ -18,11 +18,13 @@ class FavouritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: Text(
           "Favorite Page",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Color(0xFF6A0202),
+
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -51,6 +53,7 @@ class FavouritePage extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 10),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
+
                       gradient: LinearGradient(
                         colors: [
                           Color(0xFF570101), // Dark Red
@@ -59,6 +62,9 @@ class FavouritePage extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
+
+                      color: Color(0xFF570101),
+
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
