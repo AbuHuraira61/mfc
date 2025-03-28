@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Home_screen,.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 
 class AuthService {
@@ -29,9 +29,10 @@ class AuthService {
       });
 
       // Navigate to the correct screen
-      if (context.mounted) {  // ✅ Safe check before using context
-      _navigateUser(role, context);
-    }
+      if (context.mounted) {
+        // ✅ Safe check before using context
+        _navigateUser(role, context);
+      }
     } catch (e) {
       print("Error: $e");
     }
@@ -52,9 +53,10 @@ class AuthService {
 
       if (userDoc.exists) {
         String role = userDoc["role"];
-       if (context.mounted) {  // ✅ Safe check before using context
-      _navigateUser(role, context);
-    }
+        if (context.mounted) {
+          // ✅ Safe check before using context
+          _navigateUser(role, context);
+        }
       }
     } catch (e) {
       print("Error: $e");
