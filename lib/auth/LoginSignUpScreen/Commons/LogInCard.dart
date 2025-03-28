@@ -3,7 +3,6 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 
-import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpCard.dart';
 import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Home_screen,.dart';
 
 
