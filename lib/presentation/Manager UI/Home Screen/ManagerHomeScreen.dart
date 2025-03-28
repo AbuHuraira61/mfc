@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/presentation/Manager%20UI/AddItem_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/AddNewRider_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/AllAddedItemScreen.dart';
-import 'package:mfc/presentation/Manager%20UI/Feedback_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
-import 'package:mfc/presentation/Manager%20UI/PendingOrder_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AddItemsScreen/AddItem_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AddNewRider/AddNewRider_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/Extra/ManagerPizzaScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/Orders/PendingOrder_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
 class ManagerHomeScreen extends StatefulWidget {

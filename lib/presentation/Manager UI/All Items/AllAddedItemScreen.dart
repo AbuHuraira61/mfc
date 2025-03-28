@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mfc/presentation/Manager%20UI/EditOtherFoodscreen.dart';
+import 'package:mfc/presentation/Manager%20UI/All%20Items/Edit%20Screens/EditOtherFoodscreen.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:mfc/presentation/Manager%20UI/EditPizzaScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/All%20Items/Edit%20Screens/EditPizzaScreen.dart';
 
 class AllAddedItemScreen extends StatefulWidget {
   const AllAddedItemScreen({super.key});

@@ -29,7 +29,7 @@ class BurgerScreen extends StatelessWidget {
           "Burger Screen",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xff570101),
+       
       ),
       body: GridView.builder(
         padding: EdgeInsets.all(10),
