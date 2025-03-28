@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Common/Singleburger_screen.dart';
 
 class BurgerScreen extends StatelessWidget {
   final List<Map<String, dynamic>> burgers = List.generate(

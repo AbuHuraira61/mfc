@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-import 'package:mfc/presentation/Customer%20UI/screens/Sanan/splashscreen.dart';
+import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 
 
 void main() async {

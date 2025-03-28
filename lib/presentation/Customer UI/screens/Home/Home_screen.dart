@@ -1,16 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Cart_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/FourPersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/OnePersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Pizza_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Sanan/BurgerScreen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Sanan/FavouritePage.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/ThreePersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/TwoPersonDeal.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Orderstatus_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Singleburger_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Hassan/Singlepizza_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Cart/Cart_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Deals%20Screen/FourPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Deals%20Screen/OnePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Favorite/FavouritePage.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Deals%20Screen/ThreePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Deals%20Screen/TwoPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Orders/Order%20Status/Orderstatus_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Common/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/screens/Home/Common/Singlepizza_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
