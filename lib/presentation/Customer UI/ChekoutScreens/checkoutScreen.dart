@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/ChekoutScreens/common/checkoutCustomTextField.dart';
+import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/common/checkoutCustomTextField.dart';
 
 class checkoutScreen extends StatefulWidget {
   const checkoutScreen({super.key});
