@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FamilyDeals.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/LunchNightDeals.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaDeals.dart';
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {'title': 'All', 'image': 'assets/platter.png'},
     {'title': 'Pizza', 'image': 'assets/largepizza.png'},
     {'title': 'Burger', 'image': 'assets/beefburger.png'},
-    {'title': 'Deserts', 'image': 'assets/desert.png'},
+    {'title': 'Others', 'image': 'assets/platter.png'},
   ];
 
   @override
@@ -264,6 +265,11 @@ class CategorySection extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => BurgerScreen()),
                   );
+                } else if (category['title'] == "Others") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OtherItemsScreen()),
+                  );
                 }
               },
               child: Container(
@@ -466,9 +472,7 @@ class PopularItem extends StatelessWidget {
               builder: (context) => SingleBurgerScreen(),
             ),
           );
-        } else if (name.toLowerCase().contains('pizza')) {
-         
-        }
+        } else if (name.toLowerCase().contains('pizza')) {}
       },
       child: Container(
         width: double.infinity,
