@@ -467,12 +467,7 @@ class PopularItem extends StatelessWidget {
             ),
           );
         } else if (name.toLowerCase().contains('pizza')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SinglePizzaScreen(),
-            ),
-          );
+         
         }
       },
       child: Container(

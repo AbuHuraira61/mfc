@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/Utilities/ImageDecoder.dart';
 
 class SinglePizzaScreen extends StatefulWidget {
-  const SinglePizzaScreen({super.key});
+  final Map singlePizza;
+  const SinglePizzaScreen({super.key, required this.singlePizza});
 
   @override
   _SinglePizzaScreenState createState() => _SinglePizzaScreenState();
@@ -53,7 +55,15 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                 width: double.infinity,
                 decoration: const BoxDecoration(color: Color(0xff570101)),
                 child: Center(
-                  child: Image.asset('assets/largepizza.png', height: 200),
+                  child: 
+                  widget.singlePizza['image']!=null && widget.singlePizza['image'].isNotEmpty?
+                   Image.memory(decodeImage(widget.singlePizza['image']), height: 200):
+                    Image.asset(
+                    "assets/default-food.png",
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               Positioned(
@@ -125,18 +135,16 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                           ],
                         ),
                       ),
-                      const Text("\$32",
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold)),
+                     
                     ],
                   ),
                   const SizedBox(height: 10),
-                  const Text("Hot Pizza",
+                   Text(widget.singlePizza['name'],
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
-                  const Text(
-                    "This spicy pizza diavola is a fan favorite starring Kalamata olives, spicy peppers, and gooey mozzarella cheese.",
+                   Text(
+                    widget.singlePizza['description'],
                     style: TextStyle(color: Colors.black54),
                   ),
                   const SizedBox(height: 12),
@@ -234,9 +242,4 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
   }
 }
 
-void main() {
-  runApp(const MaterialApp(
-    home: SinglePizzaScreen(),
-    debugShowCheckedModeBanner: false,
-  ));
-}
+
