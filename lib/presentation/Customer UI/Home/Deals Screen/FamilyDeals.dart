@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class ThreePersonDeal extends StatefulWidget {
-  ThreePersonDeal({super.key});
+class FamilyDeals extends StatefulWidget {
+  FamilyDeals({super.key});
 
   @override
-  _ThreePersonDealState createState() => _ThreePersonDealState();
+  _FamilyDealsState createState() => _FamilyDealsState();
 }
 
-class _ThreePersonDealState extends State<ThreePersonDeal> {
+class _FamilyDealsState extends State<FamilyDeals> {
   List<Map<String, dynamic>> items = List.generate(
     10,
     (index) => {
-      "name": "Pizza Deal",
+      "name": "Deal 1",
       "description":
-          "A delicious pizza with cheesy goodness, fries, and drinks.",
-      "price": "RS 2450.00",
-      "image": "assets/Deal3.png",
+          "It's includes a juicy burger, salty fries, and a refreshing drink.",
+      "price": "RS 1050.00",
+      "image": "assets/Deal1.png",
       "quantity": 1,
     },
   );
@@ -38,7 +38,7 @@ class _ThreePersonDealState extends State<ThreePersonDeal> {
         slivers: [
           SliverAppBar(
             title: Text(
-              "Three Person Deals",
+              "Family Deals",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: screenWidth * 0.05,

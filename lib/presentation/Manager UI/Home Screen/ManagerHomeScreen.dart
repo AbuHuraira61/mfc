@@ -18,16 +18,17 @@ class ManagerHomeScreen extends StatefulWidget {
 
 class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
   void _logout(BuildContext context) async {
-  await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
 
-  if (context.mounted) {  // ✅ Ensure context is still valid
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
-      (route) => false,
-    );
+    if (context.mounted) {
+      // ✅ Ensure context is still valid
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
+        (route) => false,
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +96,19 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
-                    child: _buildButton(Icons.remove_red_eye, "All Item Menu")),
+                    child: _buildButton(Icons.menu_book, "All Item Menu")),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AllAddedItemScreen()),
+                      );
+                    },
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    child: _buildButton(Icons.discount_sharp, "Manage Deals")),
                 InkWell(
                     onTap: () {
                       Navigator.push(

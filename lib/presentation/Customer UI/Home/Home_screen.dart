@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FourPersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FamilyDeals.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/LunchNightDeals.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaDeals.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/OnePersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/ThreePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/StudentsDeals.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/TwoPersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
@@ -305,8 +307,10 @@ class _SliderSectionState extends State<SliderSection> {
   List<Map<String, dynamic>> imageList = [
     {"id": 1, "image_path": 'assets/banner4.png', "route": OnePersonDeal()},
     {"id": 2, "image_path": 'assets/banner1.png', "route": TwoPersonDeal()},
-    {"id": 3, "image_path": 'assets/banner3.png', "route": ThreePersonDeal()},
-    {"id": 4, "image_path": 'assets/banner2.png', "route": FourPersonDeal()},
+    {"id": 3, "image_path": 'assets/banner3.png', "route": StudentDeals()},
+    {"id": 4, "image_path": 'assets/banner2.png', "route": SpecialPizzaDeals()},
+    {"id": 5, "image_path": 'assets/banner5.jpg', "route": FamilyDeals()},
+    {"id": 6, "image_path": 'assets/banner6.jpg', "route": LunchNightDeals()},
   ];
 
   final CarouselSliderController carouselController =
