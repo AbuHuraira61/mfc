@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mfc/Helper/cart_provider.dart';
+import 'package:mfc/Helper/db_helper.dart';
+import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
+import 'package:provider/provider.dart';
 
 class SinglePizzaScreen extends StatefulWidget {
   final Map singlePizza;
@@ -10,13 +16,25 @@ class SinglePizzaScreen extends StatefulWidget {
 }
 
 class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
+  DBHelper dbHelper = DBHelper();
+
+
   String selectedVariation = "Small";
   int quantity = 1;
-  Map<String, double> variationPrices = {
-    "Small": 650.0,
-    "Medium": 1550.0,
-    "Large": 1950.0
-  };
+  late Map<String, double> variationPrices;
+
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> prices = widget.singlePizza['prices'] ?? {};
+
+    variationPrices = {
+       "Small": double.tryParse(prices["small"].toString()) ?? 0.0,
+    "Medium": double.tryParse(prices["medium"].toString()) ?? 0.0,
+    "Large": double.tryParse(prices["large"].toString()) ?? 0.0,
+    "Family": double.tryParse(prices["family"].toString()) ?? 0.0,
+    };
+  }
 
   void increaseQuantity() {
     setState(() {
@@ -40,6 +58,7 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -55,25 +74,27 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                 width: double.infinity,
                 decoration: const BoxDecoration(color: Color(0xff570101)),
                 child: Center(
-                  child: 
-                  widget.singlePizza['image']!=null && widget.singlePizza['image'].isNotEmpty?
-                   Image.memory(decodeImage(widget.singlePizza['image']), height: 200):
-                    Image.asset(
-                    "assets/default-food.png",
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  ),
+                  child: widget.singlePizza['image'] != null &&
+                          widget.singlePizza['image'].isNotEmpty
+                      ? Image.memory(
+                          decodeImage(widget.singlePizza['image']),
+                          height: 200)
+                      : Image.asset(
+                          "assets/default-food.png",
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               Positioned(
                 top: 50,
-                left: 20, // Added back button on the left
+                left: 20,
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back,
                       color: Colors.white, size: 28),
                   onPressed: () {
-                    Navigator.pop(context); // Go back to the previous screen
+                    Navigator.pop(context);
                   },
                 ),
               ),
@@ -135,15 +156,14 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                           ],
                         ),
                       ),
-                     
                     ],
                   ),
                   const SizedBox(height: 10),
-                   Text(widget.singlePizza['name'],
+                  Text(widget.singlePizza['name'],
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
-                   Text(
+                  Text(
                     widget.singlePizza['description'],
                     style: TextStyle(color: Colors.black54),
                   ),
@@ -216,7 +236,34 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                         ],
                       ),
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                           
+                          String uniqueCartId = "${widget.singlePizza['id']}_${selectedVariation}";
+                          print(uniqueCartId);
+                          dbHelper.insert(Cart(
+                          id: uniqueCartId, 
+                          image: widget.singlePizza['image'],
+                          initialPrice: variationPrices[selectedVariation], 
+                          productName: widget.singlePizza['name'], 
+                          productPrice: variationPrices[selectedVariation], 
+                          quantity: quantity))
+                          .then(
+                            (value) {
+                              print("✅ Item added to database"); 
+                              cart.addTotalPrice(variationPrices[selectedVariation]!,);
+                                print("🛍️ addTotalPrice() Called with: ${variationPrices[selectedVariation]!}"); // Step 3
+                              cart.addCounter;
+                                 print("🛒 Cart Counter Updated"); // Step 4
+                              Get.snackbar( 'Success!', 'Product is added to cart');
+                            Get.off(
+                              CartScreen()
+                            );
+                            },
+                          )
+                          .onError((error, stackTrace) {
+                            Get.snackbar( 'Error!', error.toString());
+                          },);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff570101),
                           shape: RoundedRectangleBorder(
@@ -241,5 +288,3 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
     );
   }
 }
-
-

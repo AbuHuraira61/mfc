@@ -10,7 +10,6 @@ import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/ThreePersonDe
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/TwoPersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -576,7 +575,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 3:
-        // Future: Add navigation for Favorite, Cart, Profile
+        
         break;
     }
   }
