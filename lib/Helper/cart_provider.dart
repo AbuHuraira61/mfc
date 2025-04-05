@@ -14,7 +14,7 @@ class CartProvider with ChangeNotifier {
 
   Future<List<Cart>> getData() async {
    
-      _cart = _db.getCartList();
+      _cart =  _db.getCartList();
     
     return _cart;
   }
@@ -68,8 +68,10 @@ class CartProvider with ChangeNotifier {
     }
 
     double getTotalPrice() {
-         _getPrefItems();  // Wait for updated value
+         _getPrefItems();
+         // Wait for updated value
         return _totalPrice;
+        
     }
 
     

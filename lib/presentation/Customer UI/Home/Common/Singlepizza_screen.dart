@@ -5,6 +5,7 @@ import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 import 'package:provider/provider.dart';
 
 class SinglePizzaScreen extends StatefulWidget {
@@ -256,7 +257,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                                  print("🛒 Cart Counter Updated"); // Step 4
                               Get.snackbar( 'Success!', 'Product is added to cart');
                             Get.off(
-                              CartScreen()
+                              // CartScreen()
+                              CartScreen(),
                             );
                             },
                           )

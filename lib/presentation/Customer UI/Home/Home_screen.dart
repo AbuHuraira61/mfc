@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FourPersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/OnePersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';

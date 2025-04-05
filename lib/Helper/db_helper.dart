@@ -44,7 +44,7 @@ return cart;
 Future<List<Cart>> getCartList()async{
 var dbClient = await db;
 final List<Map<String, Object?>> queryResult = await dbClient!.query('cart');
-print("Databse query result ${queryResult}");
+  print("🔎 All Cart Items in DB: $queryResult");
 return queryResult.map((e) => Cart.fromMap(e),).toList();
 
 }
