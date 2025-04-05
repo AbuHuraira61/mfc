@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class FourPersonDeal extends StatefulWidget {
-  FourPersonDeal({super.key});
+class SpecialPizzaDeals extends StatefulWidget {
+  SpecialPizzaDeals({super.key});
 
   @override
-  _FourPersonDealState createState() => _FourPersonDealState();
+  _SpecialPizzaDealsState createState() => _SpecialPizzaDealsState();
 }
 
-class _FourPersonDealState extends State<FourPersonDeal> {
+class _SpecialPizzaDealsState extends State<SpecialPizzaDeals> {
   List<Map<String, dynamic>> items = List.generate(
     10,
     (index) => {
@@ -37,7 +37,7 @@ class _FourPersonDealState extends State<FourPersonDeal> {
         slivers: [
           SliverAppBar(
             title: Text(
-              "Four Person Deals",
+              "Special Pizza Deals",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: screenWidth * 0.05,

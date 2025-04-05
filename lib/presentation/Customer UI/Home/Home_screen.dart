@@ -1,13 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
+
+import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FamilyDeals.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/LunchNightDeals.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaDeals.dart';
+
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FourPersonDeal.dart';
+
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/OnePersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/ThreePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/StudentsDeals.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/TwoPersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
@@ -46,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {'title': 'All', 'image': 'assets/platter.png'},
     {'title': 'Pizza', 'image': 'assets/largepizza.png'},
     {'title': 'Burger', 'image': 'assets/beefburger.png'},
-    {'title': 'Deserts', 'image': 'assets/desert.png'},
+    {'title': 'Others', 'image': 'assets/platter.png'},
   ];
 
   @override
@@ -262,6 +269,11 @@ class CategorySection extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => BurgerScreen()),
                   );
+                } else if (category['title'] == "Others") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OtherItemsScreen()),
+                  );
                 }
               },
               child: Container(
@@ -305,8 +317,10 @@ class _SliderSectionState extends State<SliderSection> {
   List<Map<String, dynamic>> imageList = [
     {"id": 1, "image_path": 'assets/banner4.png', "route": OnePersonDeal()},
     {"id": 2, "image_path": 'assets/banner1.png', "route": TwoPersonDeal()},
-    {"id": 3, "image_path": 'assets/banner3.png', "route": ThreePersonDeal()},
-    {"id": 4, "image_path": 'assets/banner2.png', "route": FourPersonDeal()},
+    {"id": 3, "image_path": 'assets/banner3.png', "route": StudentDeals()},
+    {"id": 4, "image_path": 'assets/banner2.png', "route": SpecialPizzaDeals()},
+    {"id": 5, "image_path": 'assets/banner5.jpg', "route": FamilyDeals()},
+    {"id": 6, "image_path": 'assets/banner6.jpg', "route": LunchNightDeals()},
   ];
 
   final CarouselSliderController carouselController =
@@ -462,9 +476,7 @@ class PopularItem extends StatelessWidget {
               builder: (context) => SingleBurgerScreen(),
             ),
           );
-        } else if (name.toLowerCase().contains('pizza')) {
-         
-        }
+        } else if (name.toLowerCase().contains('pizza')) {}
       },
       child: Container(
         width: double.infinity,
