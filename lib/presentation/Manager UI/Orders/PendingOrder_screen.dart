@@ -21,9 +21,14 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class PendingOrderScreen extends StatelessWidget {
+class PendingOrderScreen extends StatefulWidget {
   const PendingOrderScreen({super.key});
 
+  @override
+  State<PendingOrderScreen> createState() => _PendingOrderScreenState();
+}
+
+class _PendingOrderScreenState extends State<PendingOrderScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

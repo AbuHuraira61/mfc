@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
@@ -93,7 +95,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView(
                   children: [
                     _buildDrawerItem(Icons.local_offer, 'Deals', () {}),
-                    _buildDrawerItem(Icons.list_alt, 'Orders', () {}),
+                    _buildDrawerItem(Icons.list_alt, 'Orders', () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return OrderStatusScreen();
+                      },));
+                    }),
                     _buildDrawerItem(Icons.location_on, 'Address', () {}),
                     _buildDrawerItem(Icons.favorite, 'Favorite', () {}),
                     _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),

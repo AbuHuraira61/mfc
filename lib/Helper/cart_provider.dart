@@ -74,5 +74,14 @@ class CartProvider with ChangeNotifier {
         
     }
 
+    void clearCartData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  _counter = 0;
+  _totalPrice = 0.0;
+  await prefs.setInt('cart_item', _counter);
+  await prefs.setDouble('total_price', _totalPrice);
+  notifyListeners();
+}
+
     
 }

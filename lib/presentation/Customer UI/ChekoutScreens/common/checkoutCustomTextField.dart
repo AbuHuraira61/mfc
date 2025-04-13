@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 
-TextField checkoutCustomTextField({required String labletext}) {
-  return TextField(
+final TextEditingController TextController = TextEditingController();
+
+TextFormField checkoutCustomTextField({required String labletext,  required TextEditingController TextController, }) {
+  return TextFormField(
+    controller: TextController,
     cursorColor: primaryColor,
     decoration: InputDecoration(
         hintText: labletext,

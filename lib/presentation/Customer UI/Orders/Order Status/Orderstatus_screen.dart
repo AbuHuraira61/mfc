@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mfc/Constants/colors.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   const OrderStatusScreen({super.key});
@@ -8,138 +11,155 @@ class OrderStatusScreen extends StatefulWidget {
 }
 
 class _OrderStatusScreenState extends State<OrderStatusScreen> {
+  List<Map<String, dynamic>> ordersList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchOrders();
+  }
+
+  Future<void> _deleteOrder(String orderId) async {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) return;
+
+  // // Remove order from "orders" collection
+  // await FirebaseFirestore.instance.collection("orders").doc(orderId).delete();
+
+  // Remove orderId from user's document
+  await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).update({
+    "orderId": FieldValue.arrayRemove([orderId]),
+  });
+
+  // Refresh list
+  _fetchOrders();
+}
+
+
+  Future<void> _fetchOrders() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
+    final userDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUser.uid)
+        .get();
+
+    if (userDoc.exists) {
+      final orderIds = List<String>.from(userDoc.data()?['orderId'] ?? []);
+
+      List<Map<String, dynamic>> fetchedOrders = [];
+      for (String orderId in orderIds) {
+        final orderDoc = await FirebaseFirestore.instance
+            .collection("orders")
+            .doc(orderId)
+            .get();
+
+        if (orderDoc.exists) {
+          final orderData = orderDoc.data()!;
+          orderData['orderId'] = orderId; // Attach orderId for display
+          fetchedOrders.add(orderData);
+        }
+      }
+
+      setState(() {
+        ordersList = fetchedOrders;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: secondaryColor,
       appBar: AppBar(
-        backgroundColor: Color(0xff570101),
-        centerTitle: true,
+        backgroundColor: primaryColor,
         elevation: 0,
+        centerTitle: true,
         title: Text(
-          'OrderStatus Screen',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          "Order Status",
+          style: TextStyle(
+            color: secondaryColor,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
-                'assets/platter.png',
-                height: 230,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Text(
-              "Order No: 1234",
-              style: TextStyle(color: Colors.grey[700], fontSize: 16),
-            ),
-            SizedBox(height: 20),
-            OrderStatusStep(
-              icon: Icons.check_circle,
-              title: "Order Received",
-              time: "9:10 am, 10 November 2025",
-              isCompleted: true,
-            ),
-            OrderStatusStep(
-              icon: Icons.restaurant_menu,
-              title: "Preparing Order",
-              time: "9:10 am, 10 November 2025",
-              isCompleted: true,
-            ),
-            OrderStatusStep(
-              icon: Icons.delivery_dining,
-              title: "On the way",
-              time: "9:10 am, 10 November 2025",
-              isCompleted: false,
-              showTracking: true,
-            ),
-            Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                // Future Delivery Confirmation Screen
+      body: ordersList.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: ordersList.length,
+              itemBuilder: (context, index) {
+                final order = ordersList[index];
+                final timestamp = order['timestamp'] as Timestamp?;
+                // final date = timestamp?.toDate().toString() ?? 'N/A';
+                final dateTime = timestamp?.toDate();
+                final formattedDate = dateTime != null
+                    ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} - ${dateTime.day}/${dateTime.month}"
+                    : 'N/A';
+                return GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: primaryColor, width: 2),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Order: #${index + 1 ?? 'N/A'}",
+                                style: TextStyle(
+                                    color: primaryColor, fontSize: 14)),
+                            RichText(
+                              text: TextSpan(
+                                text: "Status: ",
+                                style: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 14,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: order['status'] ?? 'N/A',
+                                    style: TextStyle(
+                                      color: (order['status']?.toLowerCase() ==
+                                              'pending')
+                                          ? primaryColor
+                                          : Colors.green,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(formattedDate,
+                                style: TextStyle(
+                                    color: primaryColor, fontSize: 12)),
+                                    if (order['status']?.toLowerCase() == 'completed' ||
+        order['status']?.toLowerCase() == 'cancelled')
+      IconButton(
+        icon: Icon(Icons.delete, color: Colors.red),
+        onPressed: () async {
+           await _deleteOrder(order['orderId']);
+          setState(() {
+           
+          });
+          
+        },
+      ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xff570101),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                "Confirm Delivery",
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class OrderStatusStep extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String time;
-  final bool isCompleted;
-  final bool showTracking;
-
-  const OrderStatusStep({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.time,
-    required this.isCompleted,
-    this.showTracking = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: Icon(
-            icon,
-            color: Color(0xff570101),
-            size: 30,
-          ),
-          title: Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(
-            time,
-            style: TextStyle(color: Colors.grey),
-          ),
-        ),
-        if (showTracking)
-          Padding(
-            padding: const EdgeInsets.only(left: 72.0),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Color(0xff570101),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                "Tracking",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
-          ),
-      ],
     );
   }
 }

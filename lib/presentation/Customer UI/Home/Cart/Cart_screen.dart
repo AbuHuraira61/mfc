@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
+import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/checkoutScreen.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -238,6 +241,7 @@ class _CartScreenState extends State<CartScreen> {
                     ReusableWidget(title: 'Sub Total', value: r'$' + value.getTotalPrice().toStringAsFixed(2)),
                     ReusableWidget(title: 'Discount 5%', value: r'$' + '20'),
                     ReusableWidget(title: 'Total', value: r'$' + value.getTotalPrice().toStringAsFixed(2)),
+                    ProceedButton(total: value.getTotalPrice(),)
                   ],
                 ),
               );
@@ -251,7 +255,7 @@ class _CartScreenState extends State<CartScreen> {
 
 class ReusableWidget extends StatelessWidget {
   final String title, value;
-  const ReusableWidget({required this.title, required this.value});
+  const ReusableWidget({required this.title, required this.value,});
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +271,22 @@ class ReusableWidget extends StatelessWidget {
     );
   }
 }
+
+
+class ProceedButton extends StatelessWidget {
+  final double total;
+  const ProceedButton({required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(onPressed: (){
+      Get.off(checkoutScreen(totalPrice: total,));
+    }, child: Text('Proceed to Checkout'));
+  }
+}
+
+
+
 
 
 
