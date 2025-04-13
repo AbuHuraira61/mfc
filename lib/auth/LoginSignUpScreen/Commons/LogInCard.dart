@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Home_screen,.dart';
+
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
+
+
+
 
 
 class LogInCard extends StatefulWidget {

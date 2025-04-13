@@ -1,8 +1,11 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
 class SignUpCard extends StatefulWidget {
   const SignUpCard({super.key});
@@ -16,8 +19,7 @@ final TextEditingController passwordController = TextEditingController();
 final AuthService authService = AuthService();
 final _signUpformkey = GlobalKey<FormState>();
 
-String email = emailController.text;
-String password = passwordController.text;
+
 
 class _SignUpCardState extends State<SignUpCard> {
   @override
@@ -39,7 +41,7 @@ class _SignUpCardState extends State<SignUpCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: customTextFormField(
                       labletext: 'Enter your email!',
-                      TextController: emailController, validatorText: 'Password'),
+                      TextController: emailController, validatorText: 'Email'),
                 ),
                 SizedBox(
                   height: 40,
@@ -62,7 +64,19 @@ class _SignUpCardState extends State<SignUpCard> {
                           borderRadius: BorderRadius.circular(20))),
                   onPressed: () {
                     if(_signUpformkey.currentState!.validate()){
-                       authService.signUpUser(emailController.text, passwordController.text, context);
+                       authService.signUpUser(emailController.text, passwordController.text, context).then(
+                         (value) {
+                          Get.snackbar('Success!', 'Email added sccuessfully!');
+                            Get.off(HomeScreen());
+
+                         },
+                       ).onError(
+                        (error, stackTrace) {
+                          Get.snackbar('Error', error.toString());
+                          return;
+                        },
+                        );
+                      
                     }
                              
                   },

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/presentation/Manager%20UI/AddItem_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/AddNewRider_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/Feedback_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/ManagerPizzaScreen.dart';
-import 'package:mfc/presentation/Manager%20UI/PendingOrder_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AddItemsScreen/AddItem_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/AddNewRider/AddNewRider_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/Extra/ManagerPizzaScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/Orders/PendingOrder_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
 class ManagerHomeScreen extends StatefulWidget {
@@ -17,16 +18,17 @@ class ManagerHomeScreen extends StatefulWidget {
 
 class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
   void _logout(BuildContext context) async {
-  await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
 
-  if (context.mounted) {  // ✅ Ensure context is still valid
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
-      (route) => false,
-    );
+    if (context.mounted) {
+      // ✅ Ensure context is still valid
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
+        (route) => false,
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +90,25 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ManagerPizzaScreen()),
+                            builder: (context) => AllAddedItemScreen()),
                       );
                     },
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
-                    child: _buildButton(Icons.remove_red_eye, "All Item Menu")),
+                    child: _buildButton(Icons.menu_book, "All Item Menu")),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AllAddedItemScreen()),
+                      );
+                    },
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    child: _buildButton(Icons.discount_sharp, "Manage Deals")),
                 InkWell(
                     onTap: () {
                       Navigator.push(

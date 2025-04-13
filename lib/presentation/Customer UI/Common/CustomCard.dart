@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/presentation/Customer%20UI/screens/Sanan/OrderConfirmationScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/Orders/OrderConfirmationScreen.dart';
 
 class CustomCard extends StatefulWidget {
   final String name;
@@ -31,7 +31,7 @@ class _CustomCardState extends State<CustomCard> {
               gradient: LinearGradient(
                 colors: [
                   Color(0xFF570101), // Dark Red
-                  Color(0xFF750202), // Slightly lighter red
+                  Color(0xFF750202), // Slightly lighter redzz
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
