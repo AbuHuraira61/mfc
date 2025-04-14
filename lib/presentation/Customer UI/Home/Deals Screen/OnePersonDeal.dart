@@ -22,6 +22,22 @@ class _OnePersonDealState extends State<OnePersonDeal> {
     );
   }
 
+  int quantity = 1;
+
+  void increaseQuantity() {
+    setState(() {
+      quantity++;
+    });
+  }
+
+  void decreaseQuantity() {
+    if (quantity > 1) {
+      setState(() {
+        quantity--;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -167,11 +183,7 @@ class _OnePersonDealState extends State<OnePersonDeal> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        setState(() {
-                                          if (item["quantity"] > 1) {
-                                            item["quantity"]--;
-                                          }
-                                        });
+                                        decreaseQuantity();
                                       },
                                       child: Icon(Icons.remove_circle,
                                           color: Colors.white,
@@ -179,7 +191,7 @@ class _OnePersonDealState extends State<OnePersonDeal> {
                                     ),
                                     SizedBox(width: screenWidth * 0.02),
                                     Text(
-                                      item["quantity"].toString(),
+                                      "$quantity",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -188,9 +200,7 @@ class _OnePersonDealState extends State<OnePersonDeal> {
                                     SizedBox(width: screenWidth * 0.02),
                                     GestureDetector(
                                       onTap: () {
-                                        setState(() {
-                                          item["quantity"]++;
-                                        });
+                                        increaseQuantity();
                                       },
                                       child: Icon(Icons.add_circle,
                                           color: Colors.white,
