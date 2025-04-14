@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/order_status_detail.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   const OrderStatusScreen({super.key});
@@ -86,11 +87,12 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
         ),
       ),
       body: ordersList.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Center(child: Text('No order in this list!'),))
           : ListView.builder(
               itemCount: ordersList.length,
               itemBuilder: (context, index) {
                 final order = ordersList[index];
+                final id = order['orderId'];
                 final timestamp = order['timestamp'] as Timestamp?;
                 // final date = timestamp?.toDate().toString() ?? 'N/A';
                 final dateTime = timestamp?.toDate();
@@ -98,7 +100,11 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                     ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} - ${dateTime.day}/${dateTime.month}"
                     : 'N/A';
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                     return OrderStatusDetail(id: id,);
+                    },));
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Container(
@@ -141,7 +147,7 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                                 style: TextStyle(
                                     color: primaryColor, fontSize: 12)),
                                     if (order['status']?.toLowerCase() == 'completed' ||
-        order['status']?.toLowerCase() == 'cancelled')
+        order['status']?.toLowerCase() == 'canceled')
       IconButton(
         icon: Icon(Icons.delete, color: Colors.red),
         onPressed: () async {

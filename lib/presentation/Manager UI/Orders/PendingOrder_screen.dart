@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mfc/presentation/Manager%20UI/Orders/Order%20Details/admin_Order_details.dart';
 
 void main() {
   runApp(MyApp());
@@ -56,9 +58,9 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
         ),
         body: TabBarView(
           children: [
-            OrdersList(orderStatus: 'Pending'),
+            OrdersList(orderStatus: 'pending'),
             OrdersList(orderStatus: 'Preparing'),
-            OrdersList(orderStatus: 'On The Way'),
+            OrdersList(orderStatus: 'Dispatched'),
           ],
         ),
       ),
@@ -72,22 +74,105 @@ class OrdersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.all(16),
-      itemCount: 5, // Sample data
-      itemBuilder: (context, index) {
-        return OrderCard(orderStatus: orderStatus);
-      },
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+      .collection('orders')
+      .where('status', isEqualTo: orderStatus )
+      .snapshots(),
+      builder: (context, snapshot) {
+       
+       if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(child: CircularProgressIndicator());
+       }
+
+         final docs = snapshot.data?.docs ?? [];
+
+         if(docs.isEmpty){
+           return Center(child: Text("No $orderStatus orders."));
+         }
+
+
+        return ListView.builder(
+          padding: EdgeInsets.all(16),
+          itemCount: docs.length, // Sample data
+          itemBuilder: (context, index) {
+            final data = docs[index].data() as Map<String, dynamic>;
+            final id = docs[index].id;
+            final List<Map<String, dynamic>> orderDetailsList = List<Map<String, dynamic>>.from(data['items']);
+            return OrderCard(
+               id: id,
+              orderDetailsList: orderDetailsList,
+              ammount: data['totalPrice'],
+              customerName:  data['name'] ?? 'Unknown',
+              orderStatus: orderStatus);
+          },
+        );
+      }
     );
   }
 }
 
 class OrderCard extends StatelessWidget {
+  final String customerName;
   final String orderStatus;
-  const OrderCard({super.key, required this.orderStatus});
+  final String ammount;
+  final String id;
+    final List<Map<String,dynamic>> orderDetailsList;
+
+  const OrderCard({super.key, required this.id,required this.orderStatus, required this.ammount, required this.customerName, required this.orderDetailsList});
 
   @override
   Widget build(BuildContext context) {
+    if(orderStatus == 'pending'){
+       return InkWell(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AdminOrderDetails(
+              id: id,
+              totalAmount: ammount, customerName: customerName,orderDetailsList: orderDetailsList,);
+          },));
+        },
+         child: Card(
+               margin: EdgeInsets.symmetric(vertical: 8),
+               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+               child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage('assets/largepizza.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Text("Order ID: #12345",
+                    //     style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("Customer: $customerName" ),
+                    Text("Amount: $ammount",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black)),
+                    Text("Status: $orderStatus",
+                        style: TextStyle(color: Colors.blue)),
+                  ],
+                ),
+              ),
+              
+            ],
+          ),
+               ),
+             ),
+       );
+    }
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -111,10 +196,10 @@ class OrderCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Order ID: #12345",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("Customer: John Doe"),
-                  Text("Amount: RS 500",
+                  // Text("Order ID: #12345",
+                  //     style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Customer: $customerName" ),
+                  Text("Amount: $ammount",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.black)),
                   Text("Status: $orderStatus",
@@ -124,7 +209,26 @@ class OrderCard extends StatelessWidget {
             ),
             if (orderStatus != "On The Way")
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                
+ try {
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(id) // Use the order's document ID
+        .update({'status': 'Dispatched'}); // Update the status field
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Order status updated to Preparing')),
+    );
+
+   // Optional: go back after updating
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to update order: $e')),
+    );
+  }
+
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xff570101),
                 ),

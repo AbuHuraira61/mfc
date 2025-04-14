@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/state_manager.dart';
 
 class OrderStatusDetail extends StatefulWidget {
-  const OrderStatusDetail({super.key});
+  final String id;
+  const OrderStatusDetail({super.key, required this.id});
 
   @override
   State<OrderStatusDetail> createState() => _OrderStatusDetailState();
@@ -41,7 +45,7 @@ class _OrderStatusDetailState extends State<OrderStatusDetail> {
               ),
             ),
             Text(
-              "Order No: 1234",
+              "Order Id: ${widget.id}",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),
@@ -66,8 +70,34 @@ class _OrderStatusDetailState extends State<OrderStatusDetail> {
             ),
             Spacer(),
             ElevatedButton(
-              onPressed: () {
-                // Future Delivery Confirmation Screen
+              onPressed: () async {final orderDoc = await FirebaseFirestore.instance
+      .collection('orders')
+      .doc(widget.id)
+      .get();
+
+  if (orderDoc.exists) {
+    final data = orderDoc.data();
+    final Timestamp? timestamp = data?['timestamp'];
+
+    if (timestamp != null) {
+      final orderTime = timestamp.toDate();
+      final currentTime = DateTime.now();
+      final difference = currentTime.difference(orderTime).inMinutes;
+
+      if (difference <= 25) {
+        await FirebaseFirestore.instance
+            .collection('orders')
+            .doc(widget.id)
+            .update({'status': 'cancelled'});
+
+        Get.snackbar('', 'Order canceled successfully!');
+
+        Navigator.pop(context);
+      } else {
+        Get.snackbar('', 'Cancelation time expired! you cannot cancel this order!');
+      }
+    }
+  }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xff570101),
@@ -77,7 +107,7 @@ class _OrderStatusDetailState extends State<OrderStatusDetail> {
                 minimumSize: Size(double.infinity, 50),
               ),
               child: Text(
-                "Confirm Delivery",
+                "Cancel Order",
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
