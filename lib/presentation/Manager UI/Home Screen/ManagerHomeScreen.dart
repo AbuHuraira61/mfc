@@ -6,6 +6,7 @@ import 'package:mfc/presentation/Manager%20UI/AddNewRider/AddNewRider_screen.dar
 import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Extra/ManagerPizzaScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/Manage%20Deals/AddDeals_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/PendingOrder_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 
@@ -102,7 +103,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AllAddedItemScreen()),
+                            builder: (context) => AddDealsScreen()),
                       );
                     },
                     splashColor: Colors.white.withOpacity(0.3),

@@ -96,9 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     _buildDrawerItem(Icons.local_offer, 'Deals', () {}),
                     _buildDrawerItem(Icons.list_alt, 'Orders', () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return OrderStatusScreen();
-                      },));
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return OrderStatusScreen();
+                        },
+                      ));
                     }),
                     _buildDrawerItem(Icons.location_on, 'Address', () {}),
                     _buildDrawerItem(Icons.favorite, 'Favorite', () {}),
@@ -593,7 +595,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 3:
-        
         break;
     }
   }

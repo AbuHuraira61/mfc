@@ -15,7 +15,8 @@ class AllAddedItemScreen extends StatefulWidget {
 
 class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
   String _selectedPizzaType = 'Standard';
-    String _selectedOtherType = 'Fries';
+  String _selectedOtherType = 'Fries';
+  String _selectedDealType = 'One Person Deal';
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
             buildPizzaList(),
             buildFoodList("Burger"),
             buildOtherList(_selectedOtherType),
-            buildFoodList("Deals"),
+            buildDealsList(),
           ],
         ),
       ),
@@ -122,7 +123,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
   }
 
 // Build "Other" list
-Widget buildOtherList(String _category) {
+  Widget buildOtherList(String _category) {
     return Column(
       children: [
         // Pizza Type Selection Dropdown
@@ -130,7 +131,14 @@ Widget buildOtherList(String _category) {
           padding: const EdgeInsets.all(8.0),
           child: DropdownButtonFormField(
             value: _selectedOtherType,
-            items: ['Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken']
+            items: [
+              'Fries',
+              'Chicken Roll',
+              'Hot Wings',
+              'Pasta',
+              'Sandwich',
+              'Broast Chicken'
+            ]
                 .map(
                   (type) => DropdownMenuItem(
                     value: type,
@@ -180,6 +188,7 @@ Widget buildOtherList(String _category) {
       ],
     );
   }
+
   /// **Build  Food Categories (Burger, Deals)**
   Widget buildFoodList(String category) {
     return StreamBuilder<QuerySnapshot>(
@@ -209,6 +218,74 @@ Widget buildOtherList(String _category) {
           },
         );
       },
+    );
+  }
+
+  /// **Build Deals List**
+
+  Widget buildDealsList() {
+    return Column(
+      children: [
+        // Pizza Type Selection Dropdown
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: DropdownButtonFormField(
+            value: _selectedDealType,
+            items: [
+              'One Person Deal',
+              'Two Person Deal',
+              'Student Deal',
+              'Special Pizzas Deal',
+              'Family Deals',
+              'Lunch & Midnight Deals'
+            ]
+                .map(
+                  (type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(type),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedDealType = value!;
+              });
+            },
+          ),
+        ),
+        SizedBox(height: 10),
+
+        Expanded(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("deals")
+                .doc(_selectedDealType)
+                .collection("deal")
+                .orderBy("timestamp", descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(
+                  child: Text("No Pizza Items Available",
+                      style: TextStyle(fontSize: 16, color: Colors.green)),
+                );
+              }
+
+              var pizzaItems = snapshot.data!.docs;
+              return ListView.builder(
+                itemCount: pizzaItems.length,
+                itemBuilder: (context, index) {
+                  final item = pizzaItems[index];
+                  return buildFoodCard(item, "Deals");
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -312,7 +389,10 @@ Widget buildOtherList(String _category) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EditOtherFoodScreen(item: item, category: category,),
+          builder: (context) => EditOtherFoodScreen(
+            item: item,
+            category: category,
+          ),
         ),
       );
     }
@@ -333,7 +413,7 @@ Widget buildOtherList(String _category) {
     });
   }
 
-   void deleteOtherItem(QueryDocumentSnapshot item, String otherCategory) {
+  void deleteOtherItem(QueryDocumentSnapshot item, String otherCategory) {
     FirebaseFirestore.instance
         .collection("food_items")
         .doc(otherCategory)

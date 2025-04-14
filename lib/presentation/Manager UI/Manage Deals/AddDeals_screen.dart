@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
+import 'dart:convert';
 
 class AddDealsScreen extends StatefulWidget {
   @override
@@ -8,17 +10,62 @@ class AddDealsScreen extends StatefulWidget {
 }
 
 class _AddDealsScreenState extends State<AddDealsScreen> {
-  File? _image;
-  final picker = ImagePicker();
-  String? _selectedDealType;
+  final TextEditingController _dealNameController = TextEditingController();
+  final TextEditingController _dealPriceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  String? _selectedDealType = "One Person Deal";
+
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _selectedImage = File(pickedFile.path);
       });
     }
+  }
+
+  Future<String?> _encodeImageToBase64() async {
+    if (_selectedImage == null) return null;
+    List<int> imageBytes = await _selectedImage!.readAsBytes();
+    return base64Encode(imageBytes);
+  }
+
+  Future<void> _addDealToFirestore() async {
+    if (_dealNameController.text.isEmpty ||
+        _descriptionController.text.isEmpty ||
+        _dealPriceController.text.isEmpty ||
+        _selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    String? imageBase64 = await _encodeImageToBase64();
+
+    Map<String, dynamic> dealData = {
+      "name": _dealNameController.text,
+      "price": int.parse(_dealPriceController.text),
+      "description": _descriptionController.text,
+      "image": imageBase64 ?? "",
+      "timestamp": FieldValue.serverTimestamp(),
+    };
+
+    //String subCollection = _dealNameController.text.toString();
+
+    await FirebaseFirestore.instance
+        .collection("deals")
+        .doc(_selectedDealType)
+        .collection("deal")
+        .add(dealData);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Item added successfully!")),
+    );
   }
 
   @override
@@ -40,7 +87,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
             children: [
               Text("Select Deal Type", style: TextStyle(color: Colors.grey)),
               SizedBox(height: 5),
-              DropdownButtonFormField(
+              DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
@@ -55,29 +102,25 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                 ),
                 value: _selectedDealType,
                 items: [
-                  DropdownMenuItem(
-                      child: Text("One Person Deal"), value: "One Person Deal"),
-                  DropdownMenuItem(
-                      child: Text("Two Person Deal"), value: "Two Person Deal"),
-                  DropdownMenuItem(
-                      child: Text("Student Deal"), value: "Student Deal"),
-                  DropdownMenuItem(
-                      child: Text("Special Pizzas Deal"),
-                      value: "Special Pizzas Deal"),
-                  DropdownMenuItem(
-                      child: Text("Family Deals"), value: "Family Deals"),
-                  DropdownMenuItem(
-                      child: Text("Lunch & Midnight Deals"),
-                      value: "Lunch & Midnight Deals"),
-                ],
+                  'One Person Deal',
+                  'Two Person Deal',
+                  'Student Deal',
+                  'Special Pizzas Deal',
+                  'Family Deals',
+                  'Lunch & Midnight Deals'
+                ]
+                    .map((type) =>
+                        DropdownMenuItem(value: type, child: Text(type)))
+                    .toList(),
                 onChanged: (value) {
                   setState(() {
-                    _selectedDealType = value as String?;
+                    _selectedDealType = value!;
                   });
                 },
               ),
               SizedBox(height: 10),
               TextField(
+                controller: _dealNameController,
                 decoration: InputDecoration(
                   labelText: "Deal Name",
                   border: OutlineInputBorder(),
@@ -90,6 +133,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
               ),
               SizedBox(height: 10),
               TextField(
+                controller: _dealPriceController,
                 decoration: InputDecoration(
                   labelText: "Deal Price",
                   border: OutlineInputBorder(),
@@ -112,18 +156,19 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: _image == null
+                  child: _selectedImage == null
                       ? Center(
                           child: Icon(
                           Icons.add_a_photo,
                           color: Colors.grey,
                           size: 40,
                         ))
-                      : Image.file(_image!, fit: BoxFit.cover),
+                      : Image.file(_selectedImage!, fit: BoxFit.cover),
                 ),
               ),
               SizedBox(height: 10),
               TextField(
+                controller: _descriptionController,
                 decoration: InputDecoration(
                   labelText: "Short Description",
                   border: OutlineInputBorder(),
@@ -146,7 +191,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: _addDealToFirestore,
                   child:
                       Text("Add Deal", style: TextStyle(color: Colors.white)),
                 ),
