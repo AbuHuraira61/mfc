@@ -1,0 +1,2 @@
+C:/Users/Sanan Nawaz/Documents/GitHub/mfc/android/app/.cxx/Debug/695v5959/x86/CMakeFiles/edit_cache.dir
+C:/Users/Sanan Nawaz/Documents/GitHub/mfc/android/app/.cxx/Debug/695v5959/x86/CMakeFiles/rebuild_cache.dir
