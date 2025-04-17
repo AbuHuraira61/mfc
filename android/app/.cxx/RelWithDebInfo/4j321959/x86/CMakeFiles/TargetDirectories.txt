@@ -1,0 +1,2 @@
+C:/Users/Syed Ali Hassan/OneDrive/Desktop/mfc/android/app/.cxx/RelWithDebInfo/4j321959/x86/CMakeFiles/edit_cache.dir
+C:/Users/Syed Ali Hassan/OneDrive/Desktop/mfc/android/app/.cxx/RelWithDebInfo/4j321959/x86/CMakeFiles/rebuild_cache.dir
