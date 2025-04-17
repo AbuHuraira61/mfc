@@ -21,6 +21,7 @@ import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 
 void main() {
   runApp(MyApp());
@@ -480,7 +481,7 @@ class PopularItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SingleBurgerScreen(),
+              builder: (context) => SubmitFeedbackScreen(),
             ),
           );
         } else if (name.toLowerCase().contains('pizza')) {}
