@@ -19,8 +19,6 @@ final TextEditingController passwordController = TextEditingController();
 final AuthService authService = AuthService();
 final _signUpformkey = GlobalKey<FormState>();
 
-
-
 class _SignUpCardState extends State<SignUpCard> {
   @override
   Widget build(BuildContext context) {
@@ -41,7 +39,9 @@ class _SignUpCardState extends State<SignUpCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: customTextFormField(
                       labletext: 'Enter your email!',
-                      TextController: emailController, validatorText: 'Email'),
+                      icon: Icons.lock,
+                      TextController: emailController,
+                      validatorText: 'Email'),
                 ),
                 SizedBox(
                   height: 40,
@@ -51,8 +51,9 @@ class _SignUpCardState extends State<SignUpCard> {
                     horizontal: 20,
                   ),
                   child: customTextFormField(
-                    validatorText:'Password' ,
+                      validatorText: 'Password',
                       labletext: 'Enter your password',
+                      icon: Icons.lock,
                       TextController: passwordController),
                 ),
                 SizedBox(
@@ -63,22 +64,22 @@ class _SignUpCardState extends State<SignUpCard> {
                       shape: ContinuousRectangleBorder(
                           borderRadius: BorderRadius.circular(20))),
                   onPressed: () {
-                    if(_signUpformkey.currentState!.validate()){
-                       authService.signUpUser(emailController.text, passwordController.text, context).then(
-                         (value) {
+                    if (_signUpformkey.currentState!.validate()) {
+                      authService
+                          .signUpUser(emailController.text,
+                              passwordController.text, context)
+                          .then(
+                        (value) {
                           Get.snackbar('Success!', 'Email added sccuessfully!');
-                            Get.off(HomeScreen());
-
-                         },
-                       ).onError(
+                          Get.off(HomeScreen());
+                        },
+                      ).onError(
                         (error, stackTrace) {
                           Get.snackbar('Error', error.toString());
                           return;
                         },
-                        );
-                      
+                      );
                     }
-                             
                   },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 70),
