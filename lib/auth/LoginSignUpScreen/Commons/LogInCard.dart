@@ -5,10 +5,6 @@ import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.da
 
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
-
-
-
-
 class LogInCard extends StatefulWidget {
   const LogInCard({super.key});
 
@@ -42,7 +38,8 @@ class _LogInCardState extends State<LogInCard> {
                   child: customTextFormField(
                       labletext: 'Enter your email!',
                       TextController: EmailController,
-                      validatorText: 'Email'),
+                      validatorText: 'Email',
+                      icon: Icons.mail),
                 ),
                 SizedBox(
                   height: 40,
@@ -54,7 +51,8 @@ class _LogInCardState extends State<LogInCard> {
                   child: customTextFormField(
                       labletext: 'Enter your password',
                       TextController: PasswordController,
-                      validatorText: 'Email'),
+                      validatorText: 'Email',
+                      icon: Icons.lock),
                 ),
                 SizedBox(
                   height: 40,
