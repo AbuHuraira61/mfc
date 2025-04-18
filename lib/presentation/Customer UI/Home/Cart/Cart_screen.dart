@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
@@ -18,235 +17,200 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  DBHelper? dbHelper = DBHelper();
+  final DBHelper _dbHelper = DBHelper();
 
-
- 
+  @override
+  void initState() {
+    super.initState();
+    // Load cart data once when the screen opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CartProvider>(context, listen: false).getData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shopping Cart'),
+        title: const Text('Shopping Cart'),
         centerTitle: true,
-        actions: [
-          Center(child: Text('Shopping Cart')),
-          SizedBox(width: 20.0)
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            FutureBuilder(
-              future: cart.getData(),
-              builder: (context, AsyncSnapshot<List<Cart>> snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data!.isEmpty) {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 20),
-                          Text('Your cart is empty 😌'),
-                          SizedBox(height: 20),
-                          Text('Explore products and shop your\nfavourite items')
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          final cartItem = snapshot.data![index];
-                          Uint8List? imageBytes;
-                          try {
-                            imageBytes = base64Decode(cartItem.image!);
-                          } catch (e) {
-                            imageBytes = null;
-                          }
-
-                          return Card(
-                            color: primaryColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      imageBytes != null
-                                          ? Image.memory(
-                                          
-                                              imageBytes,
-                                              width: 80,
-                                              height: 80,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Icon(
-                                              Icons.image_not_supported,
-                                              size: 80,
-                                              color: Colors.white,
-                                            ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      cartItem.productName.toString(),
-                                                      style: TextStyle(
-                                                        color: secondaryColor,
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      cartItem.productPrice.toString(),
-                                                      style: TextStyle(
-                                                        color: secondaryColor,
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                InkWell(
-                                                  onTap: () {
-                                                    dbHelper!.delete(cartItem.id!);
-                                                    cart.removeCounter();
-                                                    cart.removeTotalPrice(double.parse(cartItem.productPrice.toString()));
-                                                  },
-                                                  child: Icon(Icons.delete, color: secondaryColor),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 5),
-                                            Align(
-                                              alignment: Alignment.centerRight,
-                                              child: InkWell(
-                                                onTap: () {},
-                                                child: Container(
-                                                  height: 35,
-                                                  width: 100,
-                                                  decoration: BoxDecoration(
-                                                    color: primaryColor,
-                                                    borderRadius: BorderRadius.circular(5),
-                                                  ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(4.0),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        InkWell(
-                                                          onTap: () {
-                                                            int quantity = cartItem.quantity!;
-                                                            double price = cartItem.initialPrice!;
-                                                            quantity--;
-                                                            double? newPrice = price * quantity;
-
-                                                            if (quantity > 0) {
-                                                              dbHelper!
-                                                                  .updateQuantity(
-                                                                    Cart(
-                                                                      id: cartItem.id!,
-                                                                      productName: cartItem.productName!,
-                                                                      initialPrice: cartItem.initialPrice!,
-                                                                      productPrice: newPrice,
-                                                                      quantity: quantity,
-                                                                      image: cartItem.image.toString(),
-                                                                    ),
-                                                                  )
-                                                                  .then((value) {
-                                                                newPrice = 0;
-                                                                quantity = 0;
-                                                                cart.removeTotalPrice(double.parse(cartItem.initialPrice!.toString()));
-                                                              }).onError((error, stackTrace) {
-                                                                print(error.toString());
-                                                              });
-                                                            }
-                                                          },
-                                                          child: Icon(Icons.remove, color: Colors.white),
-                                                        ),
-                                                        Text(
-                                                          cartItem.quantity.toString(),
-                                                          style: TextStyle(color: Colors.white),
-                                                        ),
-                                                        InkWell(
-                                                          onTap: () {
-                                                            int quantity = cartItem.quantity!;
-                                                            double price = cartItem.initialPrice!;
-                                                            quantity++;
-                                                            double? newPrice = price * quantity;
-
-                                                            dbHelper!
-                                                                .updateQuantity(
-                                                                  Cart(
-                                                                    id: cartItem.id!,
-                                                                    productName: cartItem.productName!,
-                                                                    initialPrice: cartItem.initialPrice!,
-                                                                    productPrice: newPrice,
-                                                                    quantity: quantity,
-                                                                    image: cartItem.image.toString(),
-                                                                  ),
-                                                                )
-                                                                .then((value) {
-                                                              newPrice = 0;
-                                                              quantity = 0;
-                                                              cart.addTotalPrice(double.parse(cartItem.initialPrice!.toString()));
-                                                            }).onError((error, stackTrace) {
-                                                              print(error.toString());
-                                                            });
-                                                          },
-                                                          child: Icon(Icons.add, color: Colors.white),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }
-                }
-                return Text('');
-              },
-            ),
-            Consumer<CartProvider>(builder: (context, value, child) {
-             
-              return Visibility(
-                visible: value.getTotalPrice().toStringAsFixed(2) != "0.00",
+        child: Consumer<CartProvider>(
+          builder: (context, cartProv, child) {
+            final items = cartProv.cart;
+            if (items.isEmpty) {
+              return Center(
                 child: Column(
-                  children: [
-                    ReusableWidget(title: 'Sub Total', value: r'$' + value.getTotalPrice().toStringAsFixed(2)),
-                    ReusableWidget(title: 'Discount 5%', value: r'$' + '20'),
-                    ReusableWidget(title: 'Total', value: r'$' + value.getTotalPrice().toStringAsFixed(2)),
-                    ProceedButton(total: value.getTotalPrice(),)
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    SizedBox(height: 20),
+                    Text('Your cart is empty 😌'),
+                    SizedBox(height: 20),
+                    Text('Explore products and shop your\nfavourite items', textAlign: TextAlign.center),
                   ],
                 ),
               );
-            }),
-          ],
+            }
+
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final cartItem = items[index];
+                      Uint8List? imageBytes;
+                      try {
+                        imageBytes = base64Decode(cartItem.image!);
+                      } catch (_) {
+                        imageBytes = null;
+                      }
+
+                      return Card(
+                        color: primaryColor,
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              if (imageBytes != null)
+                                Image.memory(
+                                  imageBytes,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                )
+                              else
+                                const Icon(
+                                  Icons.image_not_supported,
+                                  size: 80,
+                                  color: Colors.white,
+                                ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cartItem.productName!,
+                                      style: const TextStyle(
+                                        color: secondaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '\\${cartItem.productPrice!.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        color: secondaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Quantity Controls
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius: BorderRadius.circular(5),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              IconButton(
+                                                onPressed: () async {
+                                                  if (cartItem.quantity! > 1) {
+                                                    final newQty = cartItem.quantity! - 1;
+                                                    final newPrice = cartItem.initialPrice! * newQty;
+                                                    await _dbHelper.updateQuantity(
+                                                      Cart(
+                                                        id: cartItem.id!,
+                                                        productName: cartItem.productName!,
+                                                        initialPrice: cartItem.initialPrice!,
+                                                        productPrice: newPrice,
+                                                        quantity: newQty,
+                                                        image: cartItem.image!,
+                                                      ),
+                                                    );
+                                                    await cartProv.getData();
+                                                  }
+                                                },
+                                                icon: const Icon(Icons.remove, color: Colors.white),
+                                              ),
+                                              Text(
+                                                cartItem.quantity.toString(),
+                                                style: const TextStyle(color: Colors.white),
+                                              ),
+                                              IconButton(
+                                                onPressed: () async {
+                                                  final newQty = cartItem.quantity! + 1;
+                                                  final newPrice = cartItem.initialPrice! * newQty;
+                                                  await _dbHelper.updateQuantity(
+                                                    Cart(
+                                                      id: cartItem.id!,
+                                                      productName: cartItem.productName!,
+                                                      initialPrice: cartItem.initialPrice!,
+                                                      productPrice: newPrice,
+                                                      quantity: newQty,
+                                                      image: cartItem.image!,
+                                                    ),
+                                                  );
+                                                  await cartProv.getData();
+                                                },
+                                                icon: const Icon(Icons.add, color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // Delete Button
+                                        IconButton(
+                                          onPressed: () async {
+                                            await _dbHelper.delete(cartItem.id!);
+                                            await cartProv.getData();
+                                          },
+                                          icon: const Icon(Icons.delete, color: secondaryColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (cartProv.totalPrice > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Column(
+                      children: [
+                        ReusableWidget(
+                          title: 'Sub Total',
+                          value: '\\${cartProv.totalPrice.toStringAsFixed(2)}',
+                        ),
+                        ReusableWidget(
+                          title: 'Discount 5%',
+                          value: '\\${(cartProv.totalPrice * 0.05).toStringAsFixed(2)}',
+                        ),
+                        ReusableWidget(
+                          title: 'Total',
+                          value: '\\${(cartProv.totalPrice * 0.95).toStringAsFixed(2)}',
+                        ),
+                        ProceedButton(total: cartProv.totalPrice),
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -255,7 +219,7 @@ class _CartScreenState extends State<CartScreen> {
 
 class ReusableWidget extends StatelessWidget {
   final String title, value;
-  const ReusableWidget({required this.title, required this.value,});
+  const ReusableWidget({required this.title, required this.value, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -265,23 +229,25 @@ class ReusableWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          Text(value.toString()),
+          Text(value),
         ],
       ),
     );
   }
 }
 
-
 class ProceedButton extends StatelessWidget {
   final double total;
-  const ProceedButton({required this.total});
+  const ProceedButton({required this.total, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: (){
-      Get.off(checkoutScreen(totalPrice: total,));
-    }, child: Text('Proceed to Checkout'));
+    return ElevatedButton(
+      onPressed: () {
+        Get.off(checkoutScreen(totalPrice: total));
+      },
+      child: const Text('Proceed to Checkout'),
+    );
   }
 }
 

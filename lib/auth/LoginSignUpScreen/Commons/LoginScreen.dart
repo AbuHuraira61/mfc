@@ -107,9 +107,7 @@ bool _indicator = false;
                                        _indicator = true;
                                   if (_loginFormkey.currentState!.validate()) {
                       _authService.loginUser(_EmailController.text,
-                          _PasswordController.text, context).then((value) {
-                            _indicator = false;
-                          },);
+                          _PasswordController.text, context);
                     }
                               },
                               child: Container(
