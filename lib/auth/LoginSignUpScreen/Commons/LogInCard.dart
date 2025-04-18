@@ -91,10 +91,7 @@ class _LogInCardState extends State<LogInCard> {
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return HomeScreen();
-                      }));
+                      
                     },
                     child: Text(
                       'Login with Google',
