@@ -8,6 +8,7 @@ import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/common/checkoutCustomTextField.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 import 'package:provider/provider.dart';
 
 class checkoutScreen extends StatefulWidget {
@@ -206,6 +207,9 @@ void _confirmOrder() async {
         // Create a unique document ID (auto-generated)
     DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
 
+    // Get the Order ID here
+    String orderId = orderRef.id;
+
     await orderRef.set({
       "orderId" : orderRef.id,
       "userId": getCurrentUserId(),
@@ -237,6 +241,14 @@ void _confirmOrder() async {
     Provider.of<CartProvider>(context, listen: false).clearCartData();
 
     Get.snackbar('Success', 'Your order is placed!');
+
+     // Navigate to the feedback screen and pass the orderId
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SubmitFeedbackScreen(orderId: orderId),  // Pass the orderId
+    ),
+  );
     print("Name: ${nameController.text}");
 print("Phone: ${phoneController.text}");
 print("Address: ${addressController.text}");

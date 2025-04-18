@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mfc/presentation/Manager%20UI/All%20Items/Edit%20Screens/EditDealsScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/All%20Items/Edit%20Screens/EditOtherFoodscreen.dart';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -332,6 +333,15 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
                 ),
                 SizedBox(height: 4),
                 Text(
+                  item["ingredients"],
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
                   item["description"],
                   style: TextStyle(color: Colors.white, fontSize: 12),
                   overflow: TextOverflow.ellipsis,
@@ -384,6 +394,14 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
           builder: (context) => EditPizzaScreen(item),
         ),
       );
+    } else if (category == "Deals") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              EditDealsScreen(item: item, category: _selectedDealType),
+        ),
+      );
     } else {
       // Open edit screen for other categories with one price
       Navigator.push(
@@ -425,6 +443,22 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
     }).catchError((error) {
       print("Error deleting item: $error");
     });
+  }
+
+  void deleteDealsItem(QueryDocumentSnapshot item, String category) {
+    if (category == "Deals") {
+      FirebaseFirestore.instance
+          .collection("deals")
+          .doc(_selectedDealType)
+          .collection("deal")
+          .doc(item.id)
+          .delete()
+          .then((_) {
+        print("Deleted deal item: ${item.id}");
+      }).catchError((error) {
+        print("Error deleting deal: $error");
+      });
+    }
   }
 
   /// **Decode Base64 Image**

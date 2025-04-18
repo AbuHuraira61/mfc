@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:mfc/Chatbot/ChatbotScreeen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
@@ -481,7 +482,7 @@ class PopularItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SubmitFeedbackScreen(),
+              builder: (context) => SingleBurgerScreen(),
             ),
           );
         } else if (name.toLowerCase().contains('pizza')) {}
@@ -592,7 +593,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => OrderStatusScreen()),
+          MaterialPageRoute(builder: (context) => ChatBotScreen()),
         );
         break;
       case 3:

@@ -1,43 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+
 class SubmitFeedbackScreen extends StatefulWidget {
+  final String orderId; // Pass Order ID to the screen
+
+  SubmitFeedbackScreen({required this.orderId});
+
   @override
   _SubmitFeedbackScreenState createState() => _SubmitFeedbackScreenState();
 }
 
 class _SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController locationController = TextEditingController();
-  final TextEditingController orderIdController = TextEditingController();
   final TextEditingController reviewController = TextEditingController();
   double rating = 0.0;
 
   void submitFeedback() async {
+    final review = reviewController.text.trim();
+
     if (_formKey.currentState!.validate() && rating > 0) {
-      await FirebaseFirestore.instance.collection('feedbacks').add({
-        'name': nameController.text.trim(),
-        'location': locationController.text.trim(),
-        'orderId': orderIdController.text.trim(),
-        'review': reviewController.text.trim(),
-        'rating': rating,
-        'date': Timestamp.now(),
-      });
+      try {
+        DocumentReference orderRef = FirebaseFirestore.instance.collection('orders').doc(widget.orderId);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Feedback submitted successfully!')),
-      );
+        // Check if the order exists
+        DocumentSnapshot orderSnapshot = await orderRef.get();
+        if (!orderSnapshot.exists) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Order not found')),
+          );
+          return;
+        }
 
-      // Clear fields
-      nameController.clear();
-      locationController.clear();
-      orderIdController.clear();
-      reviewController.clear();
-      setState(() {
-        rating = 0.0;
-      });
+        // Update feedback inside the order
+        await orderRef.update({
+          'feedback': {
+            'review': review,
+            'rating': rating,
+            'date': Timestamp.now(),
+          }
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Feedback submitted successfully!')),
+        );
+
+        // Clear fields
+        reviewController.clear();
+        setState(() {
+          rating = 0.0;
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error submitting feedback: $e')),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill all fields and give a rating')),
@@ -51,17 +70,12 @@ class _SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Submit Feedback",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text("Submit Feedback", style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xff570101),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -70,9 +84,6 @@ class _SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
           key: _formKey,
           child: Column(
             children: [
-              //buildTextField(nameController, "Name"),
-              //buildTextField(locationController, "Location"),
-              //buildTextField(orderIdController, "Order ID"),
               buildTextField(reviewController, "Review", maxLines: 3),
               SizedBox(height: 16),
               Text("Rating", style: TextStyle(fontSize: 16)),
@@ -83,8 +94,7 @@ class _SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
                 allowHalfRating: true,
                 itemCount: 5,
                 itemSize: 35,
-                itemBuilder: (context, _) =>
-                    Icon(Icons.star, color: Colors.amber),
+                itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
                 onRatingUpdate: (value) {
                   setState(() {
                     rating = value;

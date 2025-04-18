@@ -14,6 +14,7 @@ class _EditPizzaScreenState extends State<EditPizzaScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;
+  late TextEditingController _ingredientsController;
   late TextEditingController _descriptionController;
   late TextEditingController _smallPriceController;
   late TextEditingController _mediumPriceController;
@@ -21,28 +22,34 @@ class _EditPizzaScreenState extends State<EditPizzaScreen> {
   late TextEditingController _familyPriceController;
 
   @override
-void initState() {
-  super.initState();
-  _nameController = TextEditingController(text: widget.item["name"] ?? "");
-  _descriptionController = TextEditingController(text: widget.item["description"] ?? "");
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.item["name"] ?? "");
+    _ingredientsController =
+        TextEditingController(text: widget.item["ingredients"] ?? "");
+    _descriptionController =
+        TextEditingController(text: widget.item["description"] ?? "");
 
-  // Explicitly casting data() to a Map<String, dynamic>
-  Map<String, dynamic> data = widget.item.data() as Map<String, dynamic>;
+    // Explicitly casting data() to a Map<String, dynamic>
+    Map<String, dynamic> data = widget.item.data() as Map<String, dynamic>;
 
-  Map<String, dynamic> prices = data.containsKey("prices") ? data["prices"] : {};
+    Map<String, dynamic> prices =
+        data.containsKey("prices") ? data["prices"] : {};
 
-  _smallPriceController = TextEditingController(text: prices["small"]?.toString() ?? "");
-  _mediumPriceController = TextEditingController(text: prices["medium"]?.toString() ?? "");
-  _largePriceController = TextEditingController(text: prices["large"]?.toString() ?? "");
-  _familyPriceController = TextEditingController(text: prices["family"]?.toString() ?? "");
-}
-
-
-  
+    _smallPriceController =
+        TextEditingController(text: prices["small"]?.toString() ?? "");
+    _mediumPriceController =
+        TextEditingController(text: prices["medium"]?.toString() ?? "");
+    _largePriceController =
+        TextEditingController(text: prices["large"]?.toString() ?? "");
+    _familyPriceController =
+        TextEditingController(text: prices["family"]?.toString() ?? "");
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _ingredientsController.dispose();
     _descriptionController.dispose();
     _smallPriceController.dispose();
     _mediumPriceController.dispose();
@@ -60,6 +67,7 @@ void initState() {
           .doc(widget.item.id)
           .update({
         "name": _nameController.text,
+        "ingredients": _ingredientsController.text,
         "description": _descriptionController.text,
         "smallPrice": double.parse(_smallPriceController.text),
         "mediumPrice": double.parse(_mediumPriceController.text),
@@ -96,13 +104,21 @@ void initState() {
                       value!.isEmpty ? "Enter pizza name" : null,
                 ),
                 TextFormField(
+                  controller: _ingredientsController,
+                  decoration: InputDecoration(labelText: "Ingredients"),
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter ingredients" : null,
+                ),
+                TextFormField(
                   controller: _descriptionController,
                   decoration: InputDecoration(labelText: "Description"),
                   validator: (value) =>
                       value!.isEmpty ? "Enter description" : null,
                 ),
                 SizedBox(height: 10),
-                Text("Pizza Prices", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text("Pizza Prices",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 TextFormField(
                   controller: _smallPriceController,
                   decoration: InputDecoration(labelText: "Small Price"),
