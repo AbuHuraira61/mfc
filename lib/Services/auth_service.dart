@@ -9,7 +9,7 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> signUpUser(
-      String email, String password, BuildContext context) async {
+      String email, String password, String name, BuildContext context) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -26,6 +26,7 @@ class AuthService {
       await _firestore.collection("users").doc(userCredential.user!.uid).set({
         "email": email,
         "role": role,
+        "name":name,
       });
 
       // Navigate to the correct screen
