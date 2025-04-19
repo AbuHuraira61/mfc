@@ -105,6 +105,7 @@ class OrdersList extends StatelessWidget {
               customerName: data['name'] ?? 'Unknown',
               orderDetailsList: orderDetailsList,
               assignedTo: assignedTo,
+              customerPhone: data['phone'],
             );
           },
         );
@@ -114,6 +115,7 @@ class OrdersList extends StatelessWidget {
 }
 
 class OrderCard extends StatelessWidget {
+  final String customerPhone;
   final String customerName;
   final String orderStatus;
   final String amount;
@@ -123,6 +125,7 @@ class OrderCard extends StatelessWidget {
 
   const OrderCard({
     super.key,
+    required this.customerPhone,
     required this.id,
     required this.orderStatus,
     required this.amount,
@@ -185,11 +188,14 @@ class OrderCard extends StatelessWidget {
                             'assignedTo': riderName,
                             'assignedToId': riderId,
                             'riderId': riderId,
+                            'status': 'Dispatched',
+                            'phone': customerPhone,
                             'timestamp': FieldValue.serverTimestamp(),
                           });
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Order assigned to $riderName')),
+                            SnackBar(
+                                content: Text('Order assigned to $riderName')),
                           );
                         },
                         child: Text('Assign'),
@@ -261,8 +267,7 @@ class OrderCard extends StatelessWidget {
     } else if (orderStatus == 'Preparing') {
       return Card(
         margin: EdgeInsets.symmetric(vertical: 8),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
@@ -286,8 +291,7 @@ class OrderCard extends StatelessWidget {
                     Text("Customer: $customerName"),
                     Text("Amount: $amount",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
+                            fontWeight: FontWeight.bold, color: Colors.black)),
                     Text("Status: $orderStatus",
                         style: TextStyle(color: Colors.blue)),
                   ],
@@ -310,8 +314,7 @@ class OrderCard extends StatelessWidget {
     } else if (orderStatus == 'Dispatched') {
       return Card(
         margin: EdgeInsets.symmetric(vertical: 8),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
@@ -335,8 +338,7 @@ class OrderCard extends StatelessWidget {
                     Text("Customer: $customerName"),
                     Text("Amount: $amount",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
+                            fontWeight: FontWeight.bold, color: Colors.black)),
                     Text("Status: $orderStatus",
                         style: TextStyle(color: Colors.green)),
                     if (assignedTo.isNotEmpty)
@@ -377,8 +379,7 @@ class OrderCard extends StatelessWidget {
                   Text("Customer: $customerName"),
                   Text("Amount: $amount",
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          fontWeight: FontWeight.bold, color: Colors.black)),
                   Text("Status: $orderStatus",
                       style: TextStyle(color: Colors.black)),
                 ],
