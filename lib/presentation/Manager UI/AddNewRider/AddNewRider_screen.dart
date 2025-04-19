@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AddNewRiderScreen extends StatefulWidget {
@@ -8,24 +10,26 @@ class AddNewRiderScreen extends StatefulWidget {
 }
 
 class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final _formKey = GlobalKey<FormState>();
 
-  void addRider() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Rider added successfully!")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields")),
-      );
-    }
-  }
+  // void addRider() {
+  //   if (_formKey.currentState!.validate()) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Rider added successfully!")),
+  //     );
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Please fill all fields")),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -93,16 +97,16 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
                 child: Column(
                   children: [
                     _buildTextField(
-                        nameController, "Full Name", Icons.person, false),
+                        _nameController, "Full Name", Icons.person, false),
                     const SizedBox(height: 12),
                     _buildTextField(
-                        emailController, "Email Address", Icons.email, false),
+                        _emailController, "Email Address", Icons.email, false),
                     const SizedBox(height: 12),
                     _buildTextField(
-                        phoneController, "Phone Number", Icons.phone, false),
+                        _phoneController, "Phone Number", Icons.phone, false),
                     const SizedBox(height: 12),
                     _buildTextField(
-                        passwordController, "Password", Icons.lock, true),
+                        _passwordController, "Password", Icons.lock, true),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -112,7 +116,20 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
               SizedBox(
                 width: screenWidth * 0.75, // Slightly smaller button
                 child: ElevatedButton(
-                  onPressed: addRider,
+                  onPressed: () async {
+                         UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+                         _firestore.collection("users").doc(userCredential.user!.uid).set({
+                          "email": _emailController.text,
+        "role": 'rider',
+        "name":_nameController.text,
+                         });
+                    Navigator.pop(context);
+
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xff570101),
                     padding: EdgeInsets.symmetric(

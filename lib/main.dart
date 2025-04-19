@@ -7,6 +7,7 @@ import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Customer UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager UI/Home Screen/ManagerHomeScreen.dart';
+import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -34,10 +35,15 @@ Future<Widget> determineInitialScreen() async {
 
   if (userDoc.exists) {
     final role = userDoc['role'] ?? 'customer';
-    if (role == 'admin') {
-      return const ManagerHomeScreen();
-    } else {
-      return const HomeScreen();
+    switch (role){
+      case 'admin':
+           return const ManagerHomeScreen();
+      case 'customer':
+           return const HomeScreen();
+      case 'rider':
+           return const RiderHome();    
+      default:
+           return const SplashScreen();              
     }
   } else {
     return const HomeScreen(); // Fallback in case role is missing

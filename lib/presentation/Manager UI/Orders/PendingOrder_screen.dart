@@ -76,38 +76,39 @@ class OrdersList extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-      .collection('orders')
-      .where('status', isEqualTo: orderStatus )
-      .snapshots(),
+          .collection('orders')
+          .where('status', isEqualTo: orderStatus)
+          .snapshots(),
       builder: (context, snapshot) {
-       
-       if(snapshot.connectionState == ConnectionState.waiting){
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
-       }
+        }
 
-         final docs = snapshot.data?.docs ?? [];
-
-         if(docs.isEmpty){
-           return Center(child: Text("No $orderStatus orders."));
-         }
-
+        final docs = snapshot.data?.docs ?? [];
+        if (docs.isEmpty) {
+          return Center(child: Text("No $orderStatus orders."));
+        }
 
         return ListView.builder(
           padding: EdgeInsets.all(16),
-          itemCount: docs.length, // Sample data
+          itemCount: docs.length,
           itemBuilder: (context, index) {
             final data = docs[index].data() as Map<String, dynamic>;
             final id = docs[index].id;
-            final List<Map<String, dynamic>> orderDetailsList = List<Map<String, dynamic>>.from(data['items']);
+            final List<Map<String, dynamic>> orderDetailsList =
+                List<Map<String, dynamic>>.from(data['items']);
+            final assignedTo = data['assignedTo'] ?? '';
             return OrderCard(
-               id: id,
+              id: id,
+              orderStatus: orderStatus,
+              amount: data['totalPrice'].toString(),
+              customerName: data['name'] ?? 'Unknown',
               orderDetailsList: orderDetailsList,
-              ammount: data['totalPrice'],
-              customerName:  data['name'] ?? 'Unknown',
-              orderStatus: orderStatus);
+              assignedTo: assignedTo,
+            );
           },
         );
-      }
+      },
     );
   }
 }
@@ -115,27 +116,154 @@ class OrdersList extends StatelessWidget {
 class OrderCard extends StatelessWidget {
   final String customerName;
   final String orderStatus;
-  final String ammount;
+  final String amount;
   final String id;
-    final List<Map<String,dynamic>> orderDetailsList;
+  final List<Map<String, dynamic>> orderDetailsList;
+  final String assignedTo;
 
-  const OrderCard({super.key, required this.id,required this.orderStatus, required this.ammount, required this.customerName, required this.orderDetailsList});
+  const OrderCard({
+    super.key,
+    required this.id,
+    required this.orderStatus,
+    required this.amount,
+    required this.customerName,
+    required this.orderDetailsList,
+    this.assignedTo = '',
+  });
+
+  void _showAssignRiderDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('Assign Rider'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .where('role', isEqualTo: 'rider')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                final riders = snapshot.data?.docs ?? [];
+                if (riders.isEmpty) {
+                  return Center(child: Text('No riders available'));
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: riders.length,
+                  itemBuilder: (context, index) {
+                    final rData = riders[index].data() as Map<String, dynamic>;
+                    final riderName = rData['name'] ?? 'Unknown';
+                    final riderId = riders[index].id;
+
+                    return ListTile(
+                      title: Text(riderName),
+                      trailing: ElevatedButton(
+                        onPressed: () async {
+                          // Update order document
+                          await FirebaseFirestore.instance
+                              .collection('orders')
+                              .doc(id)
+                              .update({
+                            'status': 'Dispatched',
+                            'assignedTo': riderName,
+                            'riderId': riderId,
+                          });
+                          // Create record in DispatchedOrders collection
+                          await FirebaseFirestore.instance
+                              .collection('DispatchedOrders')
+                              .doc(id)
+                              .set({
+                            'orderId': id,
+                            'customerName': customerName,
+                            'totalPrice': amount,
+                            'items': orderDetailsList,
+                            'assignedTo': riderName,
+                            'assignedToId': riderId,
+                            'riderId': riderId,
+                            'timestamp': FieldValue.serverTimestamp(),
+                          });
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Order assigned to $riderName')),
+                          );
+                        },
+                        child: Text('Assign'),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    if(orderStatus == 'pending'){
-       return InkWell(
-        onTap: (){
+    if (orderStatus == 'pending') {
+      return InkWell(
+        onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return AdminOrderDetails(
               id: id,
-              totalAmount: ammount, customerName: customerName,orderDetailsList: orderDetailsList,);
-          },));
+              totalAmount: amount,
+              customerName: customerName,
+              orderDetailsList: orderDetailsList,
+            );
+          }));
         },
-         child: Card(
-               margin: EdgeInsets.symmetric(vertical: 8),
-               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-               child: Padding(
+        child: Card(
+          margin: EdgeInsets.symmetric(vertical: 8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage('assets/largepizza.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Customer: $customerName"),
+                      Text("Amount: $amount",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black)),
+                      Text("Status: $orderStatus",
+                          style: TextStyle(color: Colors.blue)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } else if (orderStatus == 'Preparing') {
+      return Card(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
@@ -150,29 +278,79 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Text("Order ID: #12345",
-                    //     style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("Customer: $customerName" ),
-                    Text("Amount: $ammount",
+                    Text("Customer: $customerName"),
+                    Text("Amount: $amount",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black)),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
                     Text("Status: $orderStatus",
                         style: TextStyle(color: Colors.blue)),
                   ],
                 ),
               ),
-              
+              ElevatedButton(
+                onPressed: () => _showAssignRiderDialog(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff570101),
+                ),
+                child: Text(
+                  'Dispatch',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
-               ),
-             ),
-       );
+        ),
+      );
+    } else if (orderStatus == 'Dispatched') {
+      return Card(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage('assets/largepizza.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Customer: $customerName"),
+                    Text("Amount: $amount",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    Text("Status: $orderStatus",
+                        style: TextStyle(color: Colors.green)),
+                    if (assignedTo.isNotEmpty)
+                      Text("Assigned to: $assignedTo",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     }
+    // Fallback for any other status
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -191,52 +369,21 @@ class OrderCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Text("Order ID: #12345",
-                  //     style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("Customer: $customerName" ),
-                  Text("Amount: $ammount",
+                  Text("Customer: $customerName"),
+                  Text("Amount: $amount",
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black)),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
                   Text("Status: $orderStatus",
-                      style: TextStyle(color: Colors.blue)),
+                      style: TextStyle(color: Colors.black)),
                 ],
               ),
             ),
-            if (orderStatus != "On The Way")
-              ElevatedButton(
-                onPressed: () async {
-                
- try {
-    await FirebaseFirestore.instance
-        .collection('orders')
-        .doc(id) // Use the order's document ID
-        .update({'status': 'Dispatched'}); // Update the status field
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Order status updated to Preparing')),
-    );
-
-   // Optional: go back after updating
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to update order: $e')),
-    );
-  }
-
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff570101),
-                ),
-                child: Text(
-                  orderStatus == "Pending" ? "Accept" : "Dispatch",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
           ],
         ),
       ),
