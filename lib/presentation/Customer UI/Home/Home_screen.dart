@@ -2,11 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-<<<<<<< HEAD
 import 'package:mfc/Chatbot/ChatbotScreeen.dart';
-=======
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
->>>>>>> 9022fa6bf6e242b5572b2f601b603f643bdfefa3
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
@@ -113,7 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
                     _buildDrawerItem(
                         Icons.article, 'Terms or Conditions', () {}),
-                    _buildDrawerItem(Icons.chat, 'Chat with us', () {}),
+                    _buildDrawerItem(Icons.chat, 'Chat with us', () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return ChatBotScreen();
+                        },
+                      ));
+                    }),
                     _buildDrawerItem(Icons.logout, 'Log out', () {
                       FirebaseAuth.instance.signOut();
                       Navigator.pushAndRemoveUntil(
@@ -597,7 +600,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ChatBotScreen()),
+          MaterialPageRoute(builder: (context) => OrderStatusScreen()),
         );
         break;
       case 3:
