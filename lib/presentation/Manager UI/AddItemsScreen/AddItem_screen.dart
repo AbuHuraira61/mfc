@@ -15,6 +15,7 @@ class AddItemScreen extends StatefulWidget {
 
 class _AddItemScreenState extends State<AddItemScreen> {
   final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _itemIngredientsController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _smallPriceController = TextEditingController();
@@ -44,7 +45,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   }
 
   Future<void> _addItemToFirestore() async {
-    if (_itemNameController.text.isEmpty || _descriptionController.text.isEmpty) {
+    if (_itemNameController.text.isEmpty || _descriptionController.text.isEmpty || _itemIngredientsController.text.isEmpty) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text("Please fill all fields")),
   );
@@ -75,6 +76,7 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
 
     Map<String, dynamic> itemData = {
       "name": _itemNameController.text,
+      "ingredients": _itemIngredientsController.text,
       "price": _itemPriceController.text,
       "description": _descriptionController.text,
       "image": imageBase64 ?? "",
@@ -166,6 +168,15 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
                 controller: _itemNameController,
                 decoration: InputDecoration(
                   labelText: "Item Name",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
+              ),
+              SizedBox(height: 12),
+              TextField(
+                controller: _itemIngredientsController,
+                decoration: InputDecoration(
+                  labelText: "Item Ingredients",
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12),
                 ),

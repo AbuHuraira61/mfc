@@ -11,6 +11,8 @@ class AddDealsScreen extends StatefulWidget {
 
 class _AddDealsScreenState extends State<AddDealsScreen> {
   final TextEditingController _dealNameController = TextEditingController();
+  final TextEditingController _dealIngredientsController =
+      TextEditingController();
   final TextEditingController _dealPriceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -36,6 +38,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
 
   Future<void> _addDealToFirestore() async {
     if (_dealNameController.text.isEmpty ||
+        _dealIngredientsController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
         _dealPriceController.text.isEmpty ||
         _selectedImage == null) {
@@ -49,6 +52,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
 
     Map<String, dynamic> dealData = {
       "name": _dealNameController.text,
+      "ingredients": _dealIngredientsController.text,
       "price": int.parse(_dealPriceController.text),
       "description": _descriptionController.text,
       "image": imageBase64 ?? "",
@@ -123,6 +127,19 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                 controller: _dealNameController,
                 decoration: InputDecoration(
                   labelText: "Deal Name",
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff570101)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  labelStyle: TextStyle(color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _dealIngredientsController,
+                decoration: InputDecoration(
+                  labelText: "Deal Ingredients",
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xff570101)),

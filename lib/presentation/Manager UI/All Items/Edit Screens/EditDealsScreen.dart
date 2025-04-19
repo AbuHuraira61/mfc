@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EditOtherFoodScreen extends StatefulWidget {
+class EditDealsScreen extends StatefulWidget {
   final QueryDocumentSnapshot item;
   final String category; // Category (Burger, Others, Deals)
 
-  EditOtherFoodScreen({super.key, required this.item, required this.category});
+  EditDealsScreen({super.key, required this.item, required this.category});
 
   @override
-  _EditOtherFoodScreenState createState() => _EditOtherFoodScreenState();
+  _EditDealsScreenState createState() => _EditDealsScreenState();
 }
 
-class _EditOtherFoodScreenState extends State<EditOtherFoodScreen> {
+class _EditDealsScreenState extends State<EditDealsScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;
@@ -43,12 +43,12 @@ class _EditOtherFoodScreenState extends State<EditOtherFoodScreen> {
 
   void _updateFoodItem() async {
     if (_formKey.currentState!.validate()) {
+      // Correcting the update function to handle the Deals category
       await FirebaseFirestore.instance
-          .collection("food_items")
-          .doc(widget
-              .category) // Use category as document ID (Burger, Others, Deals)
-          .collection("items")
-          .doc(widget.item.id)
+          .collection("deals") // Deals collection
+          .doc(widget.category) // Using category for document
+          .collection("deal") // Deals sub-collection
+          .doc(widget.item.id) // Targeting the specific document by its ID
           .update({
         "name": _nameController.text,
         "ingredients": _ingredientsController.text,

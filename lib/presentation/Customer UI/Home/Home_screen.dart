@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:mfc/Chatbot/ChatbotScreeen.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
@@ -22,6 +23,7 @@ import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 
 void main() {
   runApp(MyApp());
@@ -108,7 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
                     _buildDrawerItem(
                         Icons.article, 'Terms or Conditions', () {}),
-                    _buildDrawerItem(Icons.chat, 'Chat with us', () {}),
+                    _buildDrawerItem(Icons.chat, 'Chat with us', () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return ChatBotScreen();
+                        },
+                      ));
+                    }),
                     _buildDrawerItem(Icons.logout, 'Log out', () {
                       FirebaseAuth.instance.signOut();
                       Navigator.pushAndRemoveUntil(
