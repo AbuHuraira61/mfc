@@ -2,7 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+<<<<<<< HEAD
 import 'package:mfc/Chatbot/ChatbotScreeen.dart';
+=======
+import 'package:mfc/auth/SplashScreen/splashscreen.dart';
+>>>>>>> 9022fa6bf6e242b5572b2f601b603f643bdfefa3
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
@@ -20,7 +24,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/StudentsDeals
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/TwoPersonDeal.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
-import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 
@@ -115,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LoginSignUpScreen()),
+                            builder: (context) => const SplashScreen()),
                         (route) => false,
                       );
                     }),

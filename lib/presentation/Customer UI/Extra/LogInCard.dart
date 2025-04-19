@@ -1,31 +1,27 @@
-// ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
+
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
-class SignUpCard extends StatefulWidget {
-  const SignUpCard({super.key});
+class LogInCard extends StatefulWidget {
+  const LogInCard({super.key});
 
   @override
-  State<SignUpCard> createState() => _SignUpCardState();
+  State<LogInCard> createState() => _LogInCardState();
 }
 
-final TextEditingController emailController = TextEditingController();
-final TextEditingController passwordController = TextEditingController();
+final TextEditingController EmailController = TextEditingController();
+final TextEditingController PasswordController = TextEditingController();
 final AuthService authService = AuthService();
-final _signUpformkey = GlobalKey<FormState>();
+final _loginFormkey = GlobalKey<FormState>();
 
-
-
-class _SignUpCardState extends State<SignUpCard> {
+class _LogInCardState extends State<LogInCard> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _signUpformkey,
+      key: _loginFormkey,
       child: SingleChildScrollView(
         child: Container(
             decoration: BoxDecoration(
@@ -41,7 +37,9 @@ class _SignUpCardState extends State<SignUpCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: customTextFormField(
                       labletext: 'Enter your email!',
-                      TextController: emailController, validatorText: 'Email'),
+                      TextController: EmailController,
+                      validatorText: 'Email',
+                      icon: Icons.mail),
                 ),
                 SizedBox(
                   height: 40,
@@ -51,9 +49,10 @@ class _SignUpCardState extends State<SignUpCard> {
                     horizontal: 20,
                   ),
                   child: customTextFormField(
-                    validatorText:'Password' ,
                       labletext: 'Enter your password',
-                      TextController: passwordController),
+                      TextController: PasswordController,
+                      validatorText: 'Email',
+                      icon: Icons.lock),
                 ),
                 SizedBox(
                   height: 40,
@@ -63,27 +62,15 @@ class _SignUpCardState extends State<SignUpCard> {
                       shape: ContinuousRectangleBorder(
                           borderRadius: BorderRadius.circular(20))),
                   onPressed: () {
-                    if(_signUpformkey.currentState!.validate()){
-                       authService.signUpUser(emailController.text, passwordController.text, context).then(
-                         (value) {
-                          Get.snackbar('Success!', 'Email added sccuessfully!');
-                            Get.off(HomeScreen());
-
-                         },
-                       ).onError(
-                        (error, stackTrace) {
-                          Get.snackbar('Error', error.toString());
-                          return;
-                        },
-                        );
-                      
+                    if (_loginFormkey.currentState!.validate()) {
+                      authService.loginUser(EmailController.text,
+                          PasswordController.text, context);
                     }
-                             
                   },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 70),
                       child: Text(
-                        'Sign Up',
+                        'Login',
                         style: TextStyle(color: primaryColor),
                       )),
                 ),
@@ -101,9 +88,11 @@ class _SignUpCardState extends State<SignUpCard> {
                 ),
                 Center(
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      
+                    },
                     child: Text(
-                      'Signup with Google',
+                      'Login with Google',
                       style: TextStyle(color: secondaryColor),
                     ),
                   ),

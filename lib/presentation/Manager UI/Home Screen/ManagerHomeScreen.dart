@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Manager%20UI/AddItemsScreen/AddItem_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/AddNewRider/AddNewRider_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dart';
@@ -8,7 +9,7 @@ import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Extra/ManagerPizzaScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/Manage%20Deals/AddDeals_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/PendingOrder_screen.dart';
-import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 
 class ManagerHomeScreen extends StatefulWidget {
   const ManagerHomeScreen({super.key});
@@ -25,7 +26,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
       // ✅ Ensure context is still valid
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const LoginSignUpScreen()),
+        MaterialPageRoute(builder: (context) => const SplashScreen()),
         (route) => false,
       );
     }

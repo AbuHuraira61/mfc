@@ -62,3 +62,14 @@ dependencies {
 tasks.withType(Test).configureEach {
     it.enabled = false
 }
+
+configurations.all {
+  resolutionStrategy.eachDependency { details ->
+    if (details.requested.group == 'androidx.core'
+        && (details.requested.name == 'core-ktx' || details.requested.name == 'core')) {
+      // 1.15.0 still works with AGP 8.4.1
+      details.useVersion '1.15.0'
+      details.because "1.16.0 requires AGP 8.6+, we're on 8.4.1"
+    }
+  }
+}

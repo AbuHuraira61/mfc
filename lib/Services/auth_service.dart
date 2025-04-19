@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
+import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> signUpUser(
-      String email, String password, BuildContext context) async {
+      String email, String password, String name, BuildContext context) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -26,6 +27,7 @@ class AuthService {
       await _firestore.collection("users").doc(userCredential.user!.uid).set({
         "email": email,
         "role": role,
+        "name":name,
       });
 
       // Navigate to the correct screen
@@ -64,12 +66,13 @@ class AuthService {
   }
 
   void _navigateUser(String role, BuildContext context) {
-    if (role == "admin") {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => ManagerHomeScreen()));
-    } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    switch (role){
+      case 'admin':
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  ManagerHomeScreen(),));
+      case 'customer':
+           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  HomeScreen(),));
+      case 'rider':
+           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  RiderHome(),));       
     }
   }
 }

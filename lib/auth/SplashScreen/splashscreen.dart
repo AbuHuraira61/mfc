@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/auth/LoginSignUpScreen/Commons/LoginScreen.dart';
+import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';
+import 'package:mfc/auth/SplashScreen/CustomElevatedButton.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'dart:async';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
-import 'package:mfc/auth/LoginSignUpScreen/LoginSignUpScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,104 +21,95 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fadeInAnimation;
+ 
+ 
 
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat();
-
-    _fadeInAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-
-    // Check user authentication status and role
-    _checkUserStatus();
   }
 
-  Future<void> _checkUserStatus() async {
-    await Future.delayed(
-        const Duration(seconds: 3)); // Show splash for 3 seconds
+  // Future<void> _checkUserStatus() async {
+   
 
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      String role = await _getUserRole(user.uid);
-      _navigateTo(role);
-    } else {
-      _navigateTo(null);
-    }
-  }
+  //   User? user = FirebaseAuth.instance.currentUser;
+  //   if (user != null) {
+  //     String role = await _getUserRole(user.uid);
+  //     _navigateTo(role);
+  //   } else {
+  //     _navigateTo(null);
+  //   }
+  // }
 
-  Future<String> _getUserRole(String uid) async {
-    final userDoc =
-        await FirebaseFirestore.instance.collection("users").doc(uid).get();
-    return userDoc.exists ? userDoc["role"] : "customer";
-  }
+  // Future<String> _getUserRole(String uid) async {
+  //   final userDoc =
+  //       await FirebaseFirestore.instance.collection("users").doc(uid).get();
+  //   return userDoc.exists ? userDoc["role"] : "customer";
+  // }
 
-  void _navigateTo(String? role) {
-    Widget nextScreen;
-    if (role == "admin") {
-      nextScreen = ManagerHomeScreen();
-    } else if (role == "customer") {
-      nextScreen = HomeScreen();
-    } else {
-      nextScreen = LoginSignUpScreen();
-    }
+  // void _navigateTo(String? role) {
+  //   Widget nextScreen;
+  //   if (role == "admin") {
+  //     nextScreen = ManagerHomeScreen();
+  //   } else if (role == "customer") {
+  //     nextScreen = HomeScreen();
+  //   } else {
+  //     nextScreen = LoginSignUpScreen();
+  //   }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => nextScreen),
-    );
-  }
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => nextScreen),
+  //   );
+  // }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+   
 
     return Scaffold(
       backgroundColor: const Color(0xFF570101),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
+        children: [
+          Container(
+            height: Get.height*1,
+            width: Get.width*1,
+            color: primaryColor,
+          ),
+          Center(
+            child: Image(image: AssetImage('assets/logo.png')),
+          ),
+          Column(mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Transform(
-                    transform:
-                        Matrix4.rotationY(_controller.value * 2 * 3.1416),
-                    alignment: Alignment.center,
-                    child: child,
-                  );
+
+              CustomelEvatedButton(
+                onPressed: () {
                 },
-                child: FadeTransition(
-                  opacity: _fadeInAnimation,
-                  child: SizedBox(
-                    width: screenWidth * 0.5,
-                    height: screenHeight * 0.4,
-                    child: const Image(
-                      image: AssetImage("assets/splash-screen.png"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
+                buttonName: 'Login with Google'),
+              SizedBox( height: 10,),
+             CustomelEvatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen(),));
+              },
+              buttonName: 'Create a new account'),
+              SizedBox( height: 10,),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                Text(style: TextStyle(color: secondaryColor),'Already have an account?'),
+                TextButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                }, child: Text(style: TextStyle(color: secondaryColor),'LogIn'),),
+              ],),
+              SizedBox( height: 10,),
+
             ],
           ),
-        ),
+        ],
+      
       ),
     );
   }

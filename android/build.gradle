@@ -1,3 +1,19 @@
+ buildscript {
+   ext.kotlin_version = '1.9.20'
+   repositories {
+     google()
+     mavenCentral()
+   }
+   dependencies {
+    // use AGP 8.6.1 to match your wrapper
+    classpath 'com.android.tools.build:gradle:8.6.1'
+     // Kotlin plugin version must match ext.kotlin_version
+     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+     // Google services plugin
+     classpath 'com.google.gms:google-services:4.3.15'
+   }
+ }
+
 plugins {
     // Add the dependency for the Google services Gradle plugin
     id 'com.google.gms.google-services' version '4.3.15' apply false
