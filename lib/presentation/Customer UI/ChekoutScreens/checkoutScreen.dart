@@ -229,13 +229,10 @@ class _checkoutScreenState extends State<checkoutScreen> {
     }).toList();
 
     DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
-<<<<<<< HEAD
 
-    // Get the Order ID here
-    String orderId = orderRef.id;
+    String orderId = orderRef.id; 
 
-=======
->>>>>>> 9022fa6bf6e242b5572b2f601b603f643bdfefa3
+     
     await orderRef.set({
       "orderId": orderRef.id,
       "userId": getCurrentUserId(),
