@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/Services/firestore_chat_service.dart';
 import 'package:mfc/services/groq_service.dart'; // import your GroqService file
+
+
+bool isDeleting = false;
 
 // Message Model
 class Message {
@@ -16,7 +18,7 @@ class Message {
 // Chat Bubble Widget
 class ChatBubble extends StatelessWidget {
   final Message message;
-  const ChatBubble({Key? key, required this.message}) : super(key: key);
+  const ChatBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class ChatBubble extends StatelessWidget {
 
 // ChatBot Screen
 class ChatBotScreen extends StatefulWidget {
-  const ChatBotScreen({Key? key}) : super(key: key);
+  const ChatBotScreen({super.key});
 
   @override
   State<ChatBotScreen> createState() => _ChatBotScreenState();
@@ -59,23 +61,13 @@ class ChatBotScreen extends StatefulWidget {
 class _ChatBotScreenState extends State<ChatBotScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final FirestoreChatService _firestoreService = FirestoreChatService();
   bool _isTyping = false;
-
-  late final String _uid;
-  late final CollectionReference _messagesRef;
 
   @override
   void initState() {
     super.initState();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      throw Exception('User not logged in');
-    }
-    _uid = user.uid;
-    _messagesRef = FirebaseFirestore.instance
-        .collection('chatbot')
-        .doc(_uid)
-        .collection('messages');
+    
   }
 
   @override
@@ -103,12 +95,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     _controller.clear();
 
     // save user message
-    await _messagesRef.add({
-      'text': text,
-      'isUser': true,
-      'timestamp': Timestamp.now(),
-    });
-
+    _firestoreService.sendMessage(text: text, isUser: true);
     // show typing indicator
     setState(() => _isTyping = true);
 
@@ -116,11 +103,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     final botResponse = await fetchGroqReply(text);
 
     // save bot response
-    await _messagesRef.add({
-      'text': botResponse,
-      'isUser': false,
-      'timestamp': Timestamp.now(),
-    });
+    _firestoreService.sendMessage(isUser: false,text: botResponse);
 
     // hide typing indicator
     setState(() => _isTyping = false);
@@ -137,17 +120,24 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         centerTitle: true,
         elevation: 0,
         actions: [ElevatedButton(onPressed: () async {
-           final messages = await _messagesRef.get();
-  for (var doc in messages.docs) {
-    await doc.reference.delete();
-  }
+          setState(() => isDeleting = true);
+          _firestoreService.clearMessages();
+          setState(() => isDeleting = false);
         }, child: Text('Clear Chat'))],
       ),
       body: Column(
         children: [
-          Expanded(
+          isDeleting ? Center(
+            child: Column(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text('Deleting your chat...'),
+              ],
+            ),
+          ) : Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _messagesRef.orderBy('timestamp').snapshots(),
+              stream: _firestoreService.getMessagesStream(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());

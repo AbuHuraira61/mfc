@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -7,10 +5,6 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/LoginScreen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';
 import 'package:mfc/auth/SplashScreen/CustomElevatedButton.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
-import 'dart:async';
-import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
-import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

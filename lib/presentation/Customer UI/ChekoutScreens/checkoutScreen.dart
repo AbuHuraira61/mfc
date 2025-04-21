@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
-import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/common/checkoutCustomTextField.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,6 @@ class checkoutScreen extends StatefulWidget {
 final TextEditingController nameController = TextEditingController();
 final TextEditingController phoneController = TextEditingController();
 final TextEditingController addressController = TextEditingController();
-final AuthService _authService = AuthService();
 
 String? getCurrentUserId() {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -211,9 +210,15 @@ class _checkoutScreenState extends State<checkoutScreen> {
   }
 
   void _confirmOrder() async {
-    print("Name: ${nameController.text}");
-    print("Phone: ${phoneController.text}");
-    print("Address: ${addressController.text}");
+    if (kDebugMode) {
+      print("Name: ${nameController.text}");
+    }
+    if (kDebugMode) {
+      print("Phone: ${phoneController.text}");
+    }
+    if (kDebugMode) {
+      print("Address: ${addressController.text}");
+    }
 
     DBHelper dbHelper = DBHelper();
     List<Cart> cartItems = await dbHelper.getCartList();
@@ -265,9 +270,13 @@ class _checkoutScreenState extends State<checkoutScreen> {
       builder: (context) => SubmitFeedbackScreen(orderId: orderId),  // Pass the orderId
     ),
   );
-    print("Name: ${nameController.text}");
+    if (kDebugMode) {
+      print("Name: ${nameController.text}");
+    }
     print("Phone: ${phoneController.text}");
-    print("Address: ${addressController.text}");
+    if (kDebugMode) {
+      print("Address: ${addressController.text}");
+    }
   }
 }
 

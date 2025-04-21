@@ -9,7 +9,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 class SinglePizzaScreen extends StatefulWidget {
   final Map<String, dynamic> singlePizza;
-  const SinglePizzaScreen({Key? key, required this.singlePizza}) : super(key: key);
+  const SinglePizzaScreen({super.key, required this.singlePizza});
 
   @override
   State<SinglePizzaScreen> createState() => _SinglePizzaScreenState();
@@ -66,7 +66,7 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cartProv = Provider.of<CartProvider>(context);
+    Provider.of<CartProvider>(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
