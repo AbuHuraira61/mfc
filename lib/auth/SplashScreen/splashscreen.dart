@@ -21,16 +21,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
- 
- 
-
   @override
   void initState() {
     super.initState();
   }
 
   // Future<void> _checkUserStatus() async {
-   
 
   //   User? user = FirebaseAuth.instance.currentUser;
   //   if (user != null) {
@@ -63,53 +59,74 @@ class _SplashScreenState extends State<SplashScreen>
   //   );
   // }
 
- 
   @override
   Widget build(BuildContext context) {
-   
-
     return Scaffold(
-      backgroundColor: const Color(0xFF570101),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Container(
-            height: Get.height*1,
-            width: Get.width*1,
-            color: primaryColor,
+            height: Get.height * 1,
+            width: Get.width * 1,
+            color: secondaryColor,
           ),
-          Center(
-            child: Image(image: AssetImage('assets/logo.png')),
+          Transform.translate(
+            offset: Offset(0, -40),
+            child: Center(
+              child: Image(image: AssetImage('assets/logo.png')),
+            ),
           ),
-          Column(mainAxisAlignment: MainAxisAlignment.end,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-
               CustomelEvatedButton(
-                onPressed: () {
-                },
-                buttonName: 'Login with Google'),
-              SizedBox( height: 10,),
-             CustomelEvatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen(),));
-              },
-              buttonName: 'Create a new account'),
-              SizedBox( height: 10,),
+                  onPressed: () {}, buttonName: 'Login with Google'),
+              SizedBox(
+                height: 10,
+              ),
+              CustomelEvatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignUpScreen(),
+                        ));
+                  },
+                  buttonName: 'Create a new account'),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
-                Text(style: TextStyle(color: secondaryColor),'Already have an account?'),
-                TextButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
-                }, child: Text(style: TextStyle(color: secondaryColor),'LogIn'),),
-              ],),
-              SizedBox( height: 10,),
-
+                  Text(
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                      'Already have an account?'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ));
+                    },
+                    child: Text(
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 17),
+                        'Login'),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ],
-      
       ),
     );
   }

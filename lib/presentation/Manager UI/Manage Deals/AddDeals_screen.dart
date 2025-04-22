@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:mfc/Constants/colors.dart';
+
 class AddDealsScreen extends StatefulWidget {
   @override
   _AddDealsScreenState createState() => _AddDealsScreenState();
@@ -76,11 +78,18 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Add Deals Screen'),
+        title: Text(
+          'Add Deals Screen',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -89,16 +98,16 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Select Deal Type", style: TextStyle(color: Colors.grey)),
+              Text("Select Deal Type", style: TextStyle(color: Colors.black54)),
               SizedBox(height: 5),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xff570101)),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  labelStyle: TextStyle(color: Colors.black),
+                  labelStyle: TextStyle(color: primaryColor),
                 ),
                 hint: Text(
                   "Select Deal Type",
@@ -130,7 +139,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xff570101)),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   labelStyle: TextStyle(color: Colors.black),
                 ),
@@ -142,8 +151,8 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                   labelText: "Deal Ingredients",
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xff570101)),
-                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   labelStyle: TextStyle(color: Colors.black),
                 ),
@@ -155,8 +164,8 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                   labelText: "Deal Price",
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xff570101)),
-                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   labelStyle: TextStyle(color: Colors.black),
                 ),
@@ -177,7 +186,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                       ? Center(
                           child: Icon(
                           Icons.add_a_photo,
-                          color: Colors.grey,
+                          color: primaryColor,
                           size: 40,
                         ))
                       : Image.file(_selectedImage!, fit: BoxFit.cover),
@@ -190,7 +199,7 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                   labelText: "Short Description",
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xff570101)),
+                    borderSide: BorderSide(color: primaryColor),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   labelStyle: TextStyle(color: Colors.black),
@@ -203,9 +212,9 @@ class _AddDealsScreenState extends State<AddDealsScreen> {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xff570101),
+                    backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   onPressed: _addDealToFirestore,

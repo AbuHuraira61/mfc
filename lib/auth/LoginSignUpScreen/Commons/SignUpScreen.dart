@@ -40,8 +40,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 color: primaryColor,
               ),
               Container(
-                margin:
-                    EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 3),
                 height: MediaQuery.of(context).size.height / 3,
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
@@ -59,7 +59,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     Center(
                       child: Image.asset(
-                        "assets/logo.png",
+                        "assets/logoo.png",
                         width: MediaQuery.of(context).size.width / 1.7,
                         fit: BoxFit.cover,
                       ),
@@ -104,26 +104,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             SizedBox(height: 60),
                             InkWell(
-                              onTap: (){
+                              onTap: () {
                                 _indicator = true;
-       if (_signUpformkey.currentState!.validate()) {
-                      _authService
-                          .signUpUser(_emailController.text,
-                              _passwordController.text, _nameController.text, context)
-                          .then(
-                        (value) {
-                          Get.snackbar('Success!', 'Email added sccuessfully!');
-                          _indicator = false;
-                          Get.off(HomeScreen());
-                        },
-                      ).onError(
-                        (error, stackTrace) {
-                          Get.snackbar('Error', error.toString());
-                          _indicator = false;
-                          return;
-                        },
-                      );
-                    }
+                                if (_signUpformkey.currentState!.validate()) {
+                                  _authService
+                                      .signUpUser(
+                                          _emailController.text,
+                                          _passwordController.text,
+                                          _nameController.text,
+                                          context)
+                                      .then(
+                                    (value) {
+                                      Get.snackbar('Success!',
+                                          'Email added sccuessfully!');
+                                      _indicator = false;
+                                      Get.off(HomeScreen());
+                                    },
+                                  ).onError(
+                                    (error, stackTrace) {
+                                      Get.snackbar('Error', error.toString());
+                                      _indicator = false;
+                                      return;
+                                    },
+                                  );
+                                }
                               },
                               child: Container(
                                 padding: EdgeInsets.all(7.0),
@@ -133,22 +137,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: _indicator
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
-          : const Text(
-              "SignUp",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Text(
+                                          "SignUp",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ),

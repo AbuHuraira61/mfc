@@ -28,22 +28,20 @@ Future<Widget> determineInitialScreen() async {
     return const SplashScreen(); // Not logged in
   }
 
-  final userDoc = await FirebaseFirestore.instance
-      .collection("users")
-      .doc(user.uid)
-      .get();
+  final userDoc =
+      await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
 
   if (userDoc.exists) {
     final role = userDoc['role'] ?? 'customer';
-    switch (role){
+    switch (role) {
       case 'admin':
-           return const ManagerHomeScreen();
+        return const ManagerHomeScreen();
       case 'customer':
-           return const HomeScreen();
+        return const HomeScreen();
       case 'rider':
-           return const RiderHome();    
+        return const RiderHome();
       default:
-           return const SplashScreen();              
+        return const SplashScreen();
     }
   } else {
     return const HomeScreen(); // Fallback in case role is missing
@@ -58,11 +56,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CartProvider(),
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: initialScreen,
-      ),
-    );
+        create: (_) => CartProvider(),
+        child: GetMaterialApp(
+          theme: ThemeData(
+            fontFamily: 'Poppins', // Default font family set to Poppins
+            textTheme: TextTheme(
+              displayLarge: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold, // Bold for headings
+                fontSize: 32, // Adjust size as per requirement
+              ),
+              displayMedium: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500, // Medium for subheadings
+                fontSize: 24, // Adjust size as per requirement
+              ),
+              bodyLarge: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.normal, // Regular font for normal text
+                fontSize: 16, // Adjust size as per requirement
+              ),
+            ),
+          ),
+          debugShowCheckedModeBanner: false,
+          home: initialScreen,
+        ));
   }
 }

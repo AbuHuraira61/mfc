@@ -4,6 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:mfc/Chatbot/ChatbotScreeen.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
+import 'package:mfc/auth/UserProfile.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
@@ -604,6 +605,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UserProfileScreen()),
+        );
         break;
     }
   }

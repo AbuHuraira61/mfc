@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dart';
 import 'dart:convert';
-
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -15,7 +15,8 @@ class AddItemScreen extends StatefulWidget {
 
 class _AddItemScreenState extends State<AddItemScreen> {
   final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _itemIngredientsController = TextEditingController();
+  final TextEditingController _itemIngredientsController =
+      TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _smallPriceController = TextEditingController();
@@ -45,32 +46,34 @@ class _AddItemScreenState extends State<AddItemScreen> {
   }
 
   Future<void> _addItemToFirestore() async {
-    if (_itemNameController.text.isEmpty || _descriptionController.text.isEmpty || _itemIngredientsController.text.isEmpty) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Please fill all fields")),
-  );
-  return;
-}
+    if (_itemNameController.text.isEmpty ||
+        _descriptionController.text.isEmpty ||
+        _itemIngredientsController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
 
 // If the selected category is Pizza, check for empty size-based prices
-if (_selectedCategory == 'Pizza' &&
-    (_smallPriceController.text.isEmpty ||
-     _mediumPriceController.text.isEmpty ||
-     _largePriceController.text.isEmpty ||
-     _familyPriceController.text.isEmpty)) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Please fill all pizza size prices")),
-  );
-  return;
-}
+    if (_selectedCategory == 'Pizza' &&
+        (_smallPriceController.text.isEmpty ||
+            _mediumPriceController.text.isEmpty ||
+            _largePriceController.text.isEmpty ||
+            _familyPriceController.text.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all pizza size prices")),
+      );
+      return;
+    }
 
 // If it's NOT pizza, ensure the general price is filled
-if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Please enter the item price")),
-  );
-  return;
-}
+    if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter the item price")),
+      );
+      return;
+    }
 
     String? imageBase64 = await _encodeImageToBase64();
 
@@ -83,16 +86,15 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
       "timestamp": FieldValue.serverTimestamp(),
     };
 
-    if (_selectedCategory == 'Pizza'){
+    if (_selectedCategory == 'Pizza') {
       itemData.addAll({
         "pizzaType": _selectedPizzaType,
-        "prices":{
+        "prices": {
           "small": _smallPriceController.text,
           "medium": _mediumPriceController.text,
           "large": _largePriceController.text,
           "family": _familyPriceController.text,
         }
-        
       });
     }
 
@@ -116,11 +118,11 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Item", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("Add Item", style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: primaryColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -136,40 +138,69 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
               SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
-                items: ['Pizza', 'Burger','Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken']
-                    .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                items: [
+                  'Pizza',
+                  'Burger',
+                  'Fries',
+                  'Chicken Roll',
+                  'Hot Wings',
+                  'Pasta',
+                  'Sandwich',
+                  'Broast Chicken'
+                ]
+                    .map((type) =>
+                        DropdownMenuItem(value: type, child: Text(type)))
                     .toList(),
                 onChanged: (value) {
                   setState(() {
                     _selectedCategory = value!;
                   });
                 },
-                decoration: InputDecoration(labelText: "Select Item Type", border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    labelText: "Select Item Type",
+                    floatingLabelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColor, width: 1.5)),
+                    border: OutlineInputBorder()),
               ),
-              if (_selectedCategory == "Pizza") ... [
-                SizedBox(height: 10,),
+              if (_selectedCategory == "Pizza") ...[
+                SizedBox(
+                  height: 10,
+                ),
                 DropdownButtonFormField<String>(
                   value: _selectedPizzaType,
                   items: ['Standard', 'Premium', 'New Addition', 'Matka Pizza']
-                      .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                      .map((type) =>
+                          DropdownMenuItem(value: type, child: Text(type)))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedPizzaType = value!;
                     });
                   },
-                  decoration: InputDecoration(labelText: "Select Pizza Type", border: OutlineInputBorder()),
+                  decoration: InputDecoration(
+                      labelText: "Select Pizza Type",
+                      floatingLabelStyle: TextStyle(color: Colors.black),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: primaryColor, width: 1.5)),
+                      border: OutlineInputBorder()),
                 ),
-                  SizedBox(height: 10,),
-                
+                SizedBox(
+                  height: 10,
+                ),
               ],
               SizedBox(height: 12),
               TextField(
                 controller: _itemNameController,
                 decoration: InputDecoration(
                   labelText: "Item Name",
+                  floatingLabelStyle: TextStyle(color: primaryColor),
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor, width: 1.5)),
                 ),
               ),
               SizedBox(height: 12),
@@ -177,45 +208,70 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
                 controller: _itemIngredientsController,
                 decoration: InputDecoration(
                   labelText: "Item Ingredients",
+                  floatingLabelStyle: TextStyle(color: primaryColor),
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor, width: 1.5)),
                 ),
               ),
               SizedBox(height: 12),
-              if(_selectedCategory == 'Pizza')...[
-               TextField(
-                controller: _smallPriceController,
-               
-                decoration: InputDecoration(labelText: "Price for Small"),
-              ),
-              TextField(
-                controller: _mediumPriceController,
-                
-                decoration: InputDecoration(labelText: "Price for Medium"),
-              ),
-              TextField(
-                controller: _largePriceController,
-             
-                decoration: InputDecoration(labelText: "Price for Large"),
-              ),
-              TextField(
-                controller: _familyPriceController,
-               
-                decoration: InputDecoration(labelText: "Price for Family"),
-              ), 
-
-               ] else ...[
+              if (_selectedCategory == 'Pizza') ...[
                 TextField(
-                controller: _itemPriceController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Item Price",
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                  controller: _smallPriceController,
+                  decoration: InputDecoration(
+                    labelText: "Price for Small",
+                    floatingLabelStyle: TextStyle(color: primaryColor),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColor, width: 1.5)),
+                  ),
                 ),
-              ),
-               ],
-              
+                TextField(
+                  controller: _mediumPriceController,
+                  decoration: InputDecoration(
+                    labelText: "Price for Medium",
+                    floatingLabelStyle: TextStyle(color: primaryColor),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColor, width: 1.5)),
+                  ),
+                ),
+                TextField(
+                  controller: _largePriceController,
+                  decoration: InputDecoration(
+                    labelText: "Price for Large",
+                    floatingLabelStyle: TextStyle(color: primaryColor),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColor, width: 1.5)),
+                  ),
+                ),
+                TextField(
+                  controller: _familyPriceController,
+                  decoration: InputDecoration(
+                    labelText: "Price for Family",
+                    floatingLabelStyle: TextStyle(color: primaryColor),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColor, width: 1.5)),
+                  ),
+                ),
+              ] else ...[
+                TextField(
+                  controller: _itemPriceController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Item Price",
+                    floatingLabelStyle: TextStyle(color: primaryColor),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColor, width: 1.5)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                  ),
+                ),
+              ],
               SizedBox(height: 12),
               Text("Item Image", style: TextStyle(fontSize: 16)),
               GestureDetector(
@@ -238,10 +294,10 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.add_a_photo,
-                                  size: 40, color: Colors.grey),
+                                  size: 40, color: primaryColor),
                               SizedBox(height: 5),
                               Text("Tap to select image",
-                                  style: TextStyle(color: Colors.grey)),
+                                  style: TextStyle(color: primaryColor)),
                             ],
                           ),
                         ),
@@ -253,12 +309,14 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
                 maxLines: 3,
                 decoration: InputDecoration(
                   labelText: "Short Description",
+                  floatingLabelStyle: TextStyle(color: primaryColor),
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.all(12),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor, width: 1.5)),
                 ),
               ),
               SizedBox(height: 12),
-
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -280,5 +338,3 @@ if (_selectedCategory != 'Pizza' && _itemPriceController.text.isEmpty) {
     );
   }
 }
-
-

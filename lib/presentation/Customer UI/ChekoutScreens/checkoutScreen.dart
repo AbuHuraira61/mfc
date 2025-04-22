@@ -62,19 +62,23 @@ class _checkoutScreenState extends State<checkoutScreen> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      Get.snackbar('Permission Denied', 'Location permissions are permanently denied.');
+      Get.snackbar(
+          'Permission Denied', 'Location permissions are permanently denied.');
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
 
     // Optionally open in Google Maps
-    final googleMapUrl = 'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
+    final googleMapUrl =
+        'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
     if (await canLaunchUrl(Uri.parse(googleMapUrl))) {
       await launchUrl(Uri.parse(googleMapUrl));
     }
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     if (placemarks.isNotEmpty) {
       final place = placemarks.first;
       final address = [
@@ -104,106 +108,155 @@ class _checkoutScreenState extends State<checkoutScreen> {
             onPressed: () => Navigator.pop(context),
           ),
         ),
-        body: Form(
-          key: _checkoutFormKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 30),
-              // Customer Details Card
-              Card(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                color: secondaryColor,
-                shape: const ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Icon(Icons.person),
-                          SizedBox(width: 20),
-                          Text(
-                            'Customer Details',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _checkoutFormKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 30),
+                // Customer Details Card
+                Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  color: secondaryColor,
+                  shape: const ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.person,
+                                color: primaryColor,
+                                size: 30,
+                              ),
+                              SizedBox(width: 15),
+                              Text(
+                                'Customer Details',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: primaryColor),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: checkoutCustomTextField(
-                        labletext: 'Full Name',
-                        TextController: nameController,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: checkoutCustomTextField(
-                        labletext: 'Phone Number',
-                        TextController: phoneController,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: checkoutCustomTextField(
-                        labletext: 'Delivery Address',
-                        TextController: addressController,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-              // ** Replaced Payment Method with Add Current Location **
-              Card(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                color: secondaryColor,
-                shape: const ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.location_on),
-                          SizedBox(width: 10),
-                          Text(
-                            'Add Current Location',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: primaryColor),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            height: 50,
+                            child: checkoutCustomTextField(
+                              labletext: 'Full Name',
+                              TextController: nameController,
+                            ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: _getCurrentLocation,
-                        child: Text('Use Current Location'),
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            height: 50,
+                            child: checkoutCustomTextField(
+                              labletext: 'Phone Number',
+                              TextController: phoneController,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            height: 50,
+                            child: checkoutCustomTextField(
+                              labletext: 'Delivery Address',
+                              TextController: addressController,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_checkoutFormKey.currentState!.validate()) {
-                    _confirmOrder();
-                  } else {
-                    Get.snackbar('Error', 'Unknown error has occurred!');
-                  }
-                },
-                child: Text('Confirm Order'),
-              ),
-              const Card(),
-            ],
+                const SizedBox(height: 20),
+                // ** Replaced Payment Method with Add Current Location **
+                Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  color: secondaryColor,
+                  shape: const ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: primaryColor,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Add Current Location',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: _getCurrentLocation,
+                            child: Text(
+                              'Use Current Location',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 200),
+                SizedBox(
+                  width: 270,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_checkoutFormKey.currentState!.validate()) {
+                        _confirmOrder();
+                      } else {
+                        Get.snackbar('Error', 'Unknown error has occurred!');
+                      }
+                    },
+                    child: Text(
+                      'Confirm Order',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5))),
+                  ),
+                ),
+                const Card(),
+              ],
+            ),
           ),
         ),
       ),
@@ -228,11 +281,11 @@ class _checkoutScreenState extends State<checkoutScreen> {
       };
     }).toList();
 
-    DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
+    DocumentReference orderRef =
+        FirebaseFirestore.instance.collection("orders").doc();
 
-    String orderId = orderRef.id; 
+    String orderId = orderRef.id;
 
-     
     await orderRef.set({
       "orderId": orderRef.id,
       "userId": getCurrentUserId(),
@@ -250,7 +303,8 @@ class _checkoutScreenState extends State<checkoutScreen> {
       await dbHelper.delete(item.id.toString());
     }
 
-    DocumentReference userRef = FirebaseFirestore.instance.collection("users").doc(getCurrentUserId());
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection("users").doc(getCurrentUserId());
     await userRef.set({
       "orderId": FieldValue.arrayUnion([orderRef.id]),
     }, SetOptions(merge: true));
@@ -258,13 +312,14 @@ class _checkoutScreenState extends State<checkoutScreen> {
     Provider.of<CartProvider>(context, listen: false).clearCartData();
     Get.snackbar('Success', 'Your order is placed!');
 
-     // Navigate to the feedback screen and pass the orderId
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => SubmitFeedbackScreen(orderId: orderId),  // Pass the orderId
-    ),
-  );
+    // Navigate to the feedback screen and pass the orderId
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            SubmitFeedbackScreen(orderId: orderId), // Pass the orderId
+      ),
+    );
     print("Name: ${nameController.text}");
     print("Phone: ${phoneController.text}");
     print("Address: ${addressController.text}");
