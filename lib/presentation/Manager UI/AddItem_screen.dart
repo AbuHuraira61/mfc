@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/Extra/ManagerBurgerScreen.dart';
 
 class AddItemScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
       appBar: AppBar(
         title: Text("Add Item", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: primaryColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {

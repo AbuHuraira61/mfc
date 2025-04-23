@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/Order%20Details/admin_Order_details.dart';
 
 void main() {
@@ -36,19 +37,19 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: primaryColor,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
+            icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text('Pending Orders', style: TextStyle(color: Colors.black)),
+          title: Text('Pending Orders', style: TextStyle(color: Colors.white)),
           centerTitle: true,
           bottom: TabBar(
-            labelColor: Colors.black,
-            indicatorColor: Colors.blue,
+            labelColor: Colors.white,
+            indicatorColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
             tabs: [
               Tab(text: "Pending"),
               Tab(text: "Preparing"),
@@ -234,8 +235,8 @@ class OrderCard extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 60,
+                  width: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -255,7 +256,7 @@ class OrderCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: Colors.black)),
                       Text("Status: $orderStatus",
-                          style: TextStyle(color: Colors.blue)),
+                          style: TextStyle(color: primaryColor)),
                     ],
                   ),
                 ),
@@ -273,8 +274,8 @@ class OrderCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                height: 50,
-                width: 50,
+                height: 100,
+                width: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
@@ -283,7 +284,7 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 16),
+              SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,18 +294,19 @@ class OrderCard extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black)),
                     Text("Status: $orderStatus",
-                        style: TextStyle(color: Colors.blue)),
+                        style: TextStyle(color: primaryColor)),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      onPressed: () => _showAssignRiderDialog(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff570101),
+                      ),
+                      child: Text(
+                        'Dispatch',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showAssignRiderDialog(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff570101),
-                ),
-                child: Text(
-                  'Dispatch',
-                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -340,7 +342,7 @@ class OrderCard extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black)),
                     Text("Status: $orderStatus",
-                        style: TextStyle(color: Colors.green)),
+                        style: TextStyle(color: primaryColor)),
                     if (assignedTo.isNotEmpty)
                       Text("Assigned to: $assignedTo",
                           style: TextStyle(fontWeight: FontWeight.bold)),

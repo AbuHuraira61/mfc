@@ -14,8 +14,8 @@ class _LoginscreenState extends State<LoginScreen> {
   final TextEditingController _EmailController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
   final AuthService _authService = AuthService();
-final _loginFormkey = GlobalKey<FormState>();
-bool _indicator = false;
+  final _loginFormkey = GlobalKey<FormState>();
+  bool _indicator = false;
 
   final Color primaryColor = const Color(0xff570101);
 
@@ -34,8 +34,8 @@ bool _indicator = false;
                 color: primaryColor,
               ),
               Container(
-                margin:
-                    EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 3),
                 height: MediaQuery.of(context).size.height / 3,
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
@@ -53,7 +53,7 @@ bool _indicator = false;
                   children: [
                     Center(
                       child: Image.asset(
-                        "assets/logo.png",
+                        "assets/logoo.png",
                         width: MediaQuery.of(context).size.width / 1.7,
                         fit: BoxFit.cover,
                       ),
@@ -100,12 +100,12 @@ bool _indicator = false;
                             ),
                             const SizedBox(height: 60),
                             InkWell(
-                              onTap: (){
-                                       _indicator = true;
-                                  if (_loginFormkey.currentState!.validate()) {
-                      _authService.loginUser(_EmailController.text,
-                          _PasswordController.text, context);
-                    }
+                              onTap: () {
+                                _indicator = true;
+                                if (_loginFormkey.currentState!.validate()) {
+                                  _authService.loginUser(_EmailController.text,
+                                      _PasswordController.text, context);
+                                }
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(7.0),
@@ -114,20 +114,22 @@ bool _indicator = false;
                                     color: const Color(0xff570101),
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
-                                  child: _indicator ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            ): Text(
-                                    "Login",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
+                                  child: _indicator
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Login",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        ),
                                 ),
                               ),
                             ),

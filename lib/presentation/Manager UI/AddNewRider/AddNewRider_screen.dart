@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mfc/Constants/colors.dart';
 
 class AddNewRiderScreen extends StatefulWidget {
   const AddNewRiderScreen({super.key});
@@ -14,7 +15,7 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final _formKey = GlobalKey<FormState>();
@@ -76,7 +77,7 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
                 style: TextStyle(
                   fontSize: screenWidth * 0.06, // Slightly smaller
                   fontWeight: FontWeight.bold,
-                  color: Color(0xff570101),
+                  color: primaryColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -111,24 +112,26 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 50),
               // Submit Button
               SizedBox(
-                width: screenWidth * 0.75, // Slightly smaller button
+                width: screenWidth * 0.85, // Slightly smaller button
                 child: ElevatedButton(
                   onPressed: () async {
-                         UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-                         _firestore.collection("users").doc(userCredential.user!.uid).set({
-                          "email": _emailController.text,
-        "role": 'rider',
-        "name":_nameController.text,
-                         });
+                    UserCredential userCredential =
+                        await _auth.createUserWithEmailAndPassword(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
+                    _firestore
+                        .collection("users")
+                        .doc(userCredential.user!.uid)
+                        .set({
+                      "email": _emailController.text,
+                      "role": 'rider',
+                      "name": _nameController.text,
+                    });
                     Navigator.pop(context);
-
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xff570101),
@@ -136,7 +139,7 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
                       vertical: screenHeight * 0.015, // Slightly smaller button
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   child: Text(
@@ -163,7 +166,7 @@ class _AddNewRiderScreenState extends State<AddNewRiderScreen> {
       decoration: InputDecoration(
         labelText: hint,
         prefixIcon: Icon(icon, color: Color(0xff570101)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         filled: true,
         fillColor: Colors.grey[100],
       ),

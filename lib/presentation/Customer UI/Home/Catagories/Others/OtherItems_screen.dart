@@ -21,9 +21,8 @@ class _OtherItemsScreenState extends State<OtherItemsScreen>
       appBar: AppBar(
         title: Text("Other Items Screen",
             style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold)),
+              color: Colors.white,
+            )),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),

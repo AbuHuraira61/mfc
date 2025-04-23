@@ -9,7 +9,9 @@ import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 class SinglePizzaScreen extends StatefulWidget {
   final Map<String, dynamic> singlePizza;
+
   const SinglePizzaScreen({super.key, required this.singlePizza});
+
 
   @override
   State<SinglePizzaScreen> createState() => _SinglePizzaScreenState();
@@ -39,7 +41,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
     if (quantity > 1) setState(() => quantity--);
   }
 
-  void selectVariation(String variation) => setState(() => selectedVariation = variation);
+  void selectVariation(String variation) =>
+      setState(() => selectedVariation = variation);
 
   Future<void> _addToCart() async {
     final cartProv = Provider.of<CartProvider>(context, listen: false);
@@ -82,7 +85,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                 width: double.infinity,
                 color: const Color(0xff570101),
                 child: Center(
-                  child: widget.singlePizza['image'] != null && widget.singlePizza['image'].isNotEmpty
+                  child: widget.singlePizza['image'] != null &&
+                          widget.singlePizza['image'].isNotEmpty
                       ? Image.memory(
                           decodeImage(widget.singlePizza['image']),
                           height: 200,
@@ -98,7 +102,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                 top: 50,
                 left: 20,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.white, size: 28),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -111,7 +116,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                     color: Colors.white.withOpacity(0.9),
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.favorite_border, color: Colors.red, size: 24),
+                    icon: const Icon(Icons.favorite_border,
+                        color: Colors.red, size: 24),
                     onPressed: () {},
                   ),
                 ),
@@ -137,7 +143,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 3),
                           decoration: BoxDecoration(
                             color: const Color(0xff570101),
                             borderRadius: BorderRadius.circular(20),
@@ -146,28 +153,40 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                             children: const [
                               Icon(Icons.star, color: Colors.yellow, size: 20),
                               SizedBox(width: 5),
-                              Text('4.8', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                              Text('4.8',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(widget.singlePizza['name'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(widget.singlePizza['name'],
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
-                    Text(widget.singlePizza['description'] ?? '', style: const TextStyle(color: Colors.black54)),
+                    Text(widget.singlePizza['description'] ?? '',
+                        style: const TextStyle(color: Colors.black54)),
                     const SizedBox(height: 12),
 
                     // Variations
-                    const Text('Variations:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                    const Text('Please select one option:', style: TextStyle(color: Colors.black54, fontSize: 13)),
-                    const SizedBox(height: 8),
+                    const Text('Variations:',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 3),
+                    const Text('Please select one option:',
+                        style: TextStyle(color: Colors.black54, fontSize: 13)),
+
                     ...variationPrices.keys.map((variation) {
                       final price = variationPrices[variation]!;
                       return RadioListTile<String>(
                         dense: true,
                         contentPadding: EdgeInsets.zero,
-                        title: Text('$variation  RS ${price.toStringAsFixed(0)}'),
+                        title:
+                            Text('$variation  RS ${price.toStringAsFixed(0)}'),
                         value: variation,
                         groupValue: selectedVariation,
                         activeColor: const Color(0xff570101),
@@ -185,20 +204,33 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
                           children: [
                             _buildQtyButton(Icons.remove, decreaseQuantity),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
+                              child: Text('$quantity',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
                             ),
                             _buildQtyButton(Icons.add, increaseQuantity),
                           ],
                         ),
                         ElevatedButton.icon(
                           onPressed: _addToCart,
-                          icon: const Icon(Icons.shopping_cart, size: 18),
-                          label: const Text('Add To Cart'),
+                          icon: const Icon(
+                            Icons.shopping_cart,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'Add To Cart',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff570101),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 12),
                           ),
                         ),
                       ],
@@ -217,7 +249,8 @@ class _SinglePizzaScreenState extends State<SinglePizzaScreen> {
     return Container(
       height: 28,
       width: 28,
-      decoration: const BoxDecoration(color: Color(0xff570101), shape: BoxShape.circle),
+      decoration:
+          const BoxDecoration(color: Color(0xff570101), shape: BoxShape.circle),
       child: IconButton(
         icon: Icon(icon, size: 16, color: Colors.white),
         onPressed: onTap,

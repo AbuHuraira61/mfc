@@ -37,10 +37,17 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
-          'MFC Food Delivery App',
+          'MFC Admin Panel',
           style: TextStyle(color: secondaryColor),
         ),
+        centerTitle: true,
         backgroundColor: primaryColor,
       ),
       body: Column(
@@ -180,7 +187,7 @@ Widget _buildDetailItem(IconData icon, String title, String value) {
 Widget _buildButton(IconData icon, String label) {
   return Ink(
     decoration: BoxDecoration(
-      color: Colors.grey.shade300,
+      color: Color(0xffEFEEEA),
       borderRadius: BorderRadius.circular(10),
     ),
     child: Column(
