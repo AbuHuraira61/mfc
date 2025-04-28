@@ -4,6 +4,7 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
+import 'package:mfc/Services/image_service.dart';
 import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/checkoutScreen.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -18,6 +19,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final DBHelper _dbHelper = DBHelper();
+  final ImageService _imageService = ImageService();
 
   @override
   void initState() {
@@ -68,18 +70,12 @@ class _CartScreenState extends State<CartScreen> {
 
             return Column(
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       final cartItem = items[index];
-                      Uint8List? imageBytes;
-                      try {
-                        imageBytes = base64Decode(cartItem.image!);
-                      } catch (_) {
-                        imageBytes = null;
-                      }
 
                       return Card(
                         color: primaryColor,
@@ -94,22 +90,46 @@ class _CartScreenState extends State<CartScreen> {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  if (imageBytes != null)
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.memory(
-                                        imageBytes,
-                                        width: 62,
-                                        height: 62,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  else
-                                    const Icon(
-                                      Icons.image_not_supported,
-                                      size: 62,
-                                      color: Colors.white,
-                                    ),
+                                  // 🔄 CACHE-ENABLED IMAGE LOADER
+                                  FutureBuilder<Uint8List?>(
+                                    future: cartItem.image != null
+                                        ? ImageService.decodeBase64(
+                                            cartItem.id!, cartItem.image!)
+                                        : Future.value(null),
+                                    builder: (context, snap) {
+                                      if (snap.connectionState !=
+                                          ConnectionState.done) {
+                                        return const SizedBox(
+                                          width: 62,
+                                          height: 62,
+                                          child: Center(
+                                            child:
+                                                CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      }
+                                      final imageBytes = snap.data;
+                                      if (imageBytes != null &&
+                                          imageBytes.isNotEmpty) {
+                                        return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.memory(
+                                            imageBytes,
+                                            width: 62,
+                                            height: 62,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        );
+                                      }
+                                      return const Icon(
+                                        Icons.image_not_supported,
+                                        size: 62,
+                                        color: Colors.white,
+                                      );
+                                    },
+                                  ),
+
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
@@ -152,7 +172,6 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                 ],
                               ),
-                              // const SizedBox(height: 10),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Row(
@@ -162,9 +181,11 @@ class _CartScreenState extends State<CartScreen> {
                                       icon: Icons.remove,
                                       onTap: () async {
                                         if (cartItem.quantity! > 1) {
-                                          final newQty = cartItem.quantity! - 1;
-                                          final newPrice =
-                                              cartItem.initialPrice! * newQty;
+                                          final newQty = cartItem.quantity! -
+                                              1;
+                                          final newPrice = cartItem
+                                                  .initialPrice! *
+                                              newQty;
                                           await _dbHelper.updateQuantity(
                                             Cart(
                                               id: cartItem.id!,
@@ -187,19 +208,23 @@ class _CartScreenState extends State<CartScreen> {
                                       child: Text(
                                         cartItem.quantity.toString(),
                                         style: const TextStyle(
-                                            color: Colors.white, fontSize: 16),
+                                            color: Colors.white,
+                                            fontSize: 16),
                                       ),
                                     ),
                                     _circleIconButton(
                                       icon: Icons.add,
                                       onTap: () async {
-                                        final newQty = cartItem.quantity! + 1;
-                                        final newPrice =
-                                            cartItem.initialPrice! * newQty;
+                                        final newQty =
+                                            cartItem.quantity! + 1;
+                                        final newPrice = cartItem
+                                                .initialPrice! *
+                                            newQty;
                                         await _dbHelper.updateQuantity(
                                           Cart(
                                             id: cartItem.id!,
-                                            productName: cartItem.productName!,
+                                            productName:
+                                                cartItem.productName!,
                                             initialPrice:
                                                 cartItem.initialPrice!,
                                             productPrice: newPrice,
@@ -256,7 +281,8 @@ class _CartScreenState extends State<CartScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -268,7 +294,8 @@ class _CartScreenState extends State<CartScreen> {
                           },
                           child: const Text(
                             'Proceed to Checkout',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.white),
                           ),
                         ),
                       ),
@@ -323,6 +350,7 @@ class ReusableWidget extends StatelessWidget {
     );
   }
 }
+
 
 
 

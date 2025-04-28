@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Customer UI/Home/Home_screen.dart';
@@ -14,10 +15,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Decide initial screen
-  Widget initialScreen = await determineInitialScreen();
+ 
 
-  runApp(MyApp(initialScreen: initialScreen));
+
+  runApp(const MyApp());
 }
 
 // Determine initial screen logic
@@ -50,8 +51,8 @@ Future<Widget> determineInitialScreen() async {
 
 // Main App
 class MyApp extends StatelessWidget {
-  final Widget initialScreen;
-  const MyApp({super.key, required this.initialScreen});
+  
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,22 @@ class MyApp extends StatelessWidget {
             ),
           ),
           debugShowCheckedModeBanner: false,
-          home: initialScreen,
+          home: FutureBuilder<Widget>(
+          future: determineInitialScreen(),
+          builder: (context, snapshot) {
+            // **1. Still loading?** show just your logo:
+            if (snapshot.connectionState != ConnectionState.done) {
+              return Scaffold(
+                backgroundColor: secondaryColor,
+                body: Center(
+                  child: Image.asset('assets/logo.png'),
+                ),
+              );
+            }
+            // **2. Done?** show whatever screen we resolved to:
+            return snapshot.data!;
+          },
+        ),
         ));
   }
 }
