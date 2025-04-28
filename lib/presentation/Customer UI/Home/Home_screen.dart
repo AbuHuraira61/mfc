@@ -18,7 +18,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaD
 
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/OnePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/DealsList.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
@@ -377,12 +377,12 @@ class SliderSection extends StatefulWidget {
 
 class _SliderSectionState extends State<SliderSection> {
   List<Map<String, dynamic>> imageList = [
-    {"id": 1, "image_path": 'assets/banner4.png', "route": OnePersonDeal()},
-    {"id": 2, "image_path": 'assets/banner1.png', "route": TwoPersonDeal()},
-    {"id": 3, "image_path": 'assets/banner3.png', "route": StudentDeals()},
-    {"id": 4, "image_path": 'assets/banner2.png', "route": SpecialPizzaDeals()},
-    {"id": 5, "image_path": 'assets/banner5.jpg', "route": FamilyDeals()},
-    {"id": 6, "image_path": 'assets/banner6.jpg', "route": LunchNightDeals()},
+    {"id": 1, "image_path": 'assets/banner4.png', "route": DealsList(dealName: 'One Person Deal',)},
+    {"id": 2, "image_path": 'assets/banner1.png', "route":DealsList(dealName: 'Two Person Deals')},
+    {"id": 3, "image_path": 'assets/banner3.png', "route":DealsList(dealName: 'Student Deals')},
+    {"id": 4, "image_path": 'assets/banner2.png', "route":DealsList(dealName: 'Special Pizza Deals')},
+    {"id": 5, "image_path": 'assets/banner5.jpg', "route":DealsList(dealName: 'Family Deals')},
+    {"id": 6, "image_path": 'assets/banner6.jpg', "route":DealsList(dealName: 'Lunch Night Deals')},
   ];
 
   final CarouselSliderController carouselController =
