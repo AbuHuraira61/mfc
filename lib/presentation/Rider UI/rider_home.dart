@@ -27,24 +27,38 @@ class _RiderHomeState extends State<RiderHome> {
               onPressed: () {
                 setState(() {});
               },
-              icon: Icon(Icons.refresh)),
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+              )),
           backgroundColor: primaryColor,
           actions: [
-            IconButton(
-              color: Colors.white,
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                if (context.mounted) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SplashScreen()),
-                    (route) => false,
-                  );
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert,
+                  color: Colors.white), // White 3-dots icon
+              onSelected: (value) async {
+                if (value == 'Logout') {
+                  await FirebaseAuth.instance.signOut();
+                  if (context.mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SplashScreen()),
+                      (route) => false,
+                    );
+                  }
                 }
               },
-              icon: Icon(Icons.logout),
-            )
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem<String>(
+                  value: 'Logout',
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text('Logout'),
+                  ),
+                ),
+              ],
+            ),
           ],
           title: Center(
             child: Text(
@@ -111,7 +125,6 @@ class _RiderHomeState extends State<RiderHome> {
                             orderData?['phone'] ?? 'No Contact Number';
                         final amount = orderData?['totalPrice'] ?? '';
 
-                        // Return your existing Card widget
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 16.0),
@@ -158,6 +171,7 @@ class _RiderHomeState extends State<RiderHome> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 5),
                                   Row(
                                     children: [
                                       Icon(Icons.money, color: Colors.white),
@@ -172,6 +186,7 @@ class _RiderHomeState extends State<RiderHome> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 6),
                                   Row(
                                     children: [
                                       Icon(Icons.phone, color: Colors.white),
@@ -458,8 +473,6 @@ class _RiderHomeState extends State<RiderHome> {
                 );
               },
             ),
-
-            // Complete Orders Tab
           ],
         ),
       ),

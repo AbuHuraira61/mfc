@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/state_manager.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Common/foodItemCard.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 
 class BurgerScreen extends StatefulWidget {
  
@@ -23,7 +27,7 @@ class _BurgerScreenState extends State<BurgerScreen> {
         "id": doc.id,
         "name": doc["name"],
         "image": doc["image"],
-        "prices": doc["price"],
+        "price": doc["price"],
         "description":doc["description"],
       };
     }).toList();
@@ -70,7 +74,11 @@ class _BurgerScreenState extends State<BurgerScreen> {
       ),
       itemCount: burgers!.length,
       itemBuilder: (context, index) {
-        return FoodItemsCard(foodItems: burgers[index]);
+        return GestureDetector(
+          onTap: (){
+            Get.off(SingleBurgerScreen( singleBurger:  burgers[index],));
+          },
+          child: FoodItemsCard(foodItems: burgers[index]));
       },
     );
         }, )

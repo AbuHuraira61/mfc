@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:mfc/Chatbot/ChatbotScreeen.dart';
+import 'package:mfc/Helper/cart_provider.dart';
+import 'package:mfc/Helper/db_helper.dart';
+import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
+import 'package:mfc/auth/UserProfile.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
@@ -13,7 +18,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaD
 
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/OnePersonDeal.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/DealsList.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
@@ -24,6 +29,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.d
 import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -117,15 +123,55 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ));
                     }),
-                    _buildDrawerItem(Icons.logout, 'Log out', () {
-                      FirebaseAuth.instance.signOut();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SplashScreen()),
-                        (route) => false,
-                      );
-                    }),
+                    _buildDrawerItem(Icons.logout, 'Log out', () async {
+
+
+
+                     
+                     
+                      DBHelper dbHelper = DBHelper();
+                       DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
+                      List<Cart> cartItems = await dbHelper.getCartList();
+                     String? getCurrentUserId() {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  final User? user = auth.currentUser;
+
+  if (user != null) {
+    String uid = user.uid; // This is the user ID
+    print("Current User ID: $uid");
+    return uid;
+  } else {
+    print("No user is currently signed in.");
+    return null;
+  }
+}
+// Optionally clear the cart
+    for (var item in cartItems) {
+      await dbHelper.delete(item.id.toString());
+
+     
+    }
+
+
+   
+   DocumentReference userRef = FirebaseFirestore.instance.collection("users").doc(getCurrentUserId());
+   
+   await userRef.set({
+    "orderId": FieldValue.arrayUnion([orderRef.id]),
+       }, SetOptions(merge: true));
+
+    Provider.of<CartProvider>(context, listen: false).clearCartData();
+ await FirebaseAuth.instance.signOut();
+
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+  return SplashScreen();
+},));
+    
+   
+  },
+                    ),
+                     
                   ],
                 ),
               ),
@@ -331,12 +377,12 @@ class SliderSection extends StatefulWidget {
 
 class _SliderSectionState extends State<SliderSection> {
   List<Map<String, dynamic>> imageList = [
-    {"id": 1, "image_path": 'assets/banner4.png', "route": OnePersonDeal()},
-    {"id": 2, "image_path": 'assets/banner1.png', "route": TwoPersonDeal()},
-    {"id": 3, "image_path": 'assets/banner3.png', "route": StudentDeals()},
-    {"id": 4, "image_path": 'assets/banner2.png', "route": SpecialPizzaDeals()},
-    {"id": 5, "image_path": 'assets/banner5.jpg', "route": FamilyDeals()},
-    {"id": 6, "image_path": 'assets/banner6.jpg', "route": LunchNightDeals()},
+    {"id": 1, "image_path": 'assets/banner4.png', "route": DealsList(dealName: 'One Person Deal',)},
+    {"id": 2, "image_path": 'assets/banner1.png', "route":DealsList(dealName: 'Two Person Deals')},
+    {"id": 3, "image_path": 'assets/banner3.png', "route":DealsList(dealName: 'Student Deals')},
+    {"id": 4, "image_path": 'assets/banner2.png', "route":DealsList(dealName: 'Special Pizza Deals')},
+    {"id": 5, "image_path": 'assets/banner5.jpg', "route":DealsList(dealName: 'Family Deals')},
+    {"id": 6, "image_path": 'assets/banner6.jpg', "route":DealsList(dealName: 'Lunch Night Deals')},
   ];
 
   final CarouselSliderController carouselController =
@@ -485,15 +531,7 @@ class PopularItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (name.toLowerCase().contains('burger')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SingleBurgerScreen(),
-            ),
-          );
-        } else if (name.toLowerCase().contains('pizza')) {}
-      },
+         },
       child: Container(
         width: double.infinity,
         height: screenWidth * 0.55,
@@ -604,6 +642,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 3:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UserProfileScreen()),
+        );
         break;
     }
   }

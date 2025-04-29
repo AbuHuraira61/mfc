@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
-import 'package:mfc/presentation/Customer%20UI/Extra/LogInCard.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/LoginScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -40,8 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 color: primaryColor,
               ),
               Container(
-                margin:
-                    EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 3),
                 height: MediaQuery.of(context).size.height / 3,
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
@@ -59,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     Center(
                       child: Image.asset(
-                        "assets/logo.png",
+                        "assets/logoo.png",
                         width: MediaQuery.of(context).size.width / 1.7,
                         fit: BoxFit.cover,
                       ),
@@ -104,26 +101,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             SizedBox(height: 60),
                             InkWell(
-                              onTap: (){
+                              onTap: () {
                                 _indicator = true;
-       if (_signUpformkey.currentState!.validate()) {
-                      _authService
-                          .signUpUser(_emailController.text,
-                              _passwordController.text, _nameController.text, context)
-                          .then(
-                        (value) {
-                          Get.snackbar('Success!', 'Email added sccuessfully!');
-                          _indicator = false;
-                          Get.off(HomeScreen());
-                        },
-                      ).onError(
-                        (error, stackTrace) {
-                          Get.snackbar('Error', error.toString());
-                          _indicator = false;
-                          return;
-                        },
-                      );
-                    }
+                                if (_signUpformkey.currentState!.validate()) {
+                                  _authService
+                                      .signUpUser(
+                                          _emailController.text,
+                                          _passwordController.text,
+                                          _nameController.text,
+                                          context)
+                                      .then(
+                                    (value) {
+                                      Get.snackbar('Success!',
+                                          'Email added sccuessfully!');
+                                      _indicator = false;
+                                      Get.off(HomeScreen());
+                                    },
+                                  ).onError(
+                                    (error, stackTrace) {
+                                      Get.snackbar('Error', error.toString());
+                                      _indicator = false;
+                                      return;
+                                    },
+                                  );
+                                }
                               },
                               child: Container(
                                 padding: EdgeInsets.all(7.0),
@@ -133,22 +134,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: _indicator
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
-          : const Text(
-              "SignUp",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Text(
+                                          "SignUp",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ),
@@ -160,29 +161,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          child: Text(
-                            'Already have an Account?',
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          'Already have an Account?',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 3),
-                        Container(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()),
-                              );
-                            },
-                            child: Text(
-                              'Login',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );
+                          },
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),

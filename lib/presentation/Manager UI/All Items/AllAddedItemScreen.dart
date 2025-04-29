@@ -39,9 +39,9 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
             labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             unselectedLabelStyle:
                 TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            labelColor: Colors.yellow,
+            labelColor: Colors.white,
             unselectedLabelColor: Colors.white,
-            indicatorColor: Colors.yellow,
+            indicatorColor: Colors.white,
             tabs: [
               Tab(text: "Pizza"),
               Tab(text: "Burger"),
@@ -104,7 +104,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return Center(
                   child: Text("No Pizza Items Available",
-                      style: TextStyle(fontSize: 16, color: Colors.green)),
+                      style: TextStyle(fontSize: 16, color: Colors.black54)),
                 );
               }
 
@@ -171,7 +171,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return Center(
                   child: Text("No ${_selectedOtherType} Available",
-                      style: TextStyle(fontSize: 16, color: Colors.green)),
+                      style: TextStyle(fontSize: 16, color: Colors.black54)),
                 );
               }
 
@@ -206,7 +206,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
             child: Text("No $category Items Available",
-                style: TextStyle(fontSize: 16, color: Colors.green)),
+                style: TextStyle(fontSize: 16, color: Colors.black54)),
           );
         }
 
@@ -271,7 +271,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return Center(
                   child: Text("No Pizza Items Available",
-                      style: TextStyle(fontSize: 16, color: Colors.green)),
+                      style: TextStyle(fontSize: 16, color: Colors.black54)),
                 );
               }
 

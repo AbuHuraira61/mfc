@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mfc/Utilities/ImageDecoder.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
 
 class OtherItemsScreen extends StatefulWidget {
   @override
@@ -21,9 +24,8 @@ class _OtherItemsScreenState extends State<OtherItemsScreen>
       appBar: AppBar(
         title: Text("Other Items Screen",
             style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold)),
+              color: Colors.white,
+            )),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -40,7 +42,7 @@ class _OtherItemsScreenState extends State<OtherItemsScreen>
           isScrollable: true,
           labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           tabs: [
-            Tab(text: "Crispy Fries"),
+            Tab(text: "Fries"),
             Tab(text: "Chicken Roll"),
             Tab(text: "Hot Wings"),
             Tab(text: "Pasta"),
@@ -63,6 +65,8 @@ class _OtherItemsScreenState extends State<OtherItemsScreen>
     );
   }
 }
+
+
 
 class FriesScreen extends StatelessWidget {
   @override
@@ -124,21 +128,58 @@ class OtherItemsList extends StatelessWidget {
     {"name": "Broast Chicken", "price": "9.99"},
   ];
 
+  Future<List<Map<String, dynamic>>> fetchBurgerData() async {
+    // ✅ Use await to wait for data before accessing .docs
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+        .collection("food_items")
+        .doc(category)
+        .collection("items") 
+        .get();
+
+    // ✅ Properly return the list after mapping
+    return snapshot.docs.map((doc) {
+      return {
+        "id": doc.id,
+        "name": doc["name"],
+        "image": doc["image"],
+        "price": doc["price"],
+        "description":doc["description"],
+      };
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: EdgeInsets.all(10),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: sampleFoods.length,
-      itemBuilder: (context, index) {
-        return OtherItemsCard(food: sampleFoods[index]);
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: fetchBurgerData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No items available'));
+        }
+        var foods = snapshot.data!;
+
+        return GridView.builder(
+          padding: EdgeInsets.all(10),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.7,
+          ),
+          itemCount: foods.length,
+          itemBuilder: (context, index) {
+            return OtherItemsCard(food: foods[index]);
+          },
+        );
       },
     );
+    
+    
+    
+   
   }
 }
 
@@ -150,7 +191,15 @@ class OtherItemsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        // Handle item tap
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SingleBurgerScreen(singleBurger: food),
+          ),
+        );
+      },
       child: Stack(
         children: [
           Container(
@@ -165,14 +214,20 @@ class OtherItemsCard extends StatelessWidget {
                 Spacer(),
                 Center(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      "assets/largepizza.png",
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  child:
+                  food['image']!=null && food['image'].isNotEmpty?
+                   Image.memory(decodeImage(food['image']),
+    
+    
+                      fit: BoxFit.cover, height: 100, width: 100):
+                       Image.asset(
+                  "assets/default-food.png",
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
+                ),
                 ),
                 Spacer(),
                 Padding(

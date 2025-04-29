@@ -154,7 +154,7 @@ class _FamilyDealsState extends State<FamilyDeals> {
                                         ),
                                         SizedBox(height: screenWidth * 0.015),
                                         Text(
-                                          "Price: ${item["price"]}" ?? "Rs.00",
+                                          "Price: ${item["price"]}",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,

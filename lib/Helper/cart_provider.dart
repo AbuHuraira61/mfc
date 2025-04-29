@@ -87,6 +87,12 @@ class CartProvider with ChangeNotifier {
     _setPrefItems();
     notifyListeners();
   }
+
+   // Define the cartItems getter
+  List<Cart> get cartItems => _cartItems;
+
+  // Assuming _cartItems is a private field in your CartProvider
+  final List<Cart> _cartItems = [];
 }
 
 

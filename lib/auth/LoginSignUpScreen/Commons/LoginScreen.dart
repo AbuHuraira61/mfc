@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';
-import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/checkoutScreen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,8 +14,8 @@ class _LoginscreenState extends State<LoginScreen> {
   final TextEditingController _EmailController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
   final AuthService _authService = AuthService();
-final _loginFormkey = GlobalKey<FormState>();
-bool _indicator = false;
+  final _loginFormkey = GlobalKey<FormState>();
+  bool _indicator = false;
 
   final Color primaryColor = const Color(0xff570101);
 
@@ -37,8 +34,8 @@ bool _indicator = false;
                 color: primaryColor,
               ),
               Container(
-                margin:
-                    EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 3),
                 height: MediaQuery.of(context).size.height / 3,
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
@@ -56,7 +53,7 @@ bool _indicator = false;
                   children: [
                     Center(
                       child: Image.asset(
-                        "assets/logo.png",
+                        "assets/logoo.png",
                         width: MediaQuery.of(context).size.width / 1.7,
                         fit: BoxFit.cover,
                       ),
@@ -103,12 +100,12 @@ bool _indicator = false;
                             ),
                             const SizedBox(height: 60),
                             InkWell(
-                              onTap: (){
-                                       _indicator = true;
-                                  if (_loginFormkey.currentState!.validate()) {
-                      _authService.loginUser(_EmailController.text,
-                          _PasswordController.text, context);
-                    }
+                              onTap: () {
+                                _indicator = true;
+                                if (_loginFormkey.currentState!.validate()) {
+                                  _authService.loginUser(_EmailController.text,
+                                      _PasswordController.text, context);
+                                }
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(7.0),
@@ -117,20 +114,22 @@ bool _indicator = false;
                                     color: const Color(0xff570101),
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
-                                  child: _indicator ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            ): Text(
-                                    "Login",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
+                                  child: _indicator
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Login",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        ),
                                 ),
                               ),
                             ),
@@ -142,29 +141,25 @@ bool _indicator = false;
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          child: Text(
-                            'Dont have an Account?',
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          'Dont have an Account?',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 3),
-                        Container(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignUpScreen()),
-                              );
-                            },
-                            child: Text(
-                              'SignUp',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpScreen()),
+                            );
+                          },
+                          child: Text(
+                            'SignUp',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
