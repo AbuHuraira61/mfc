@@ -106,11 +106,12 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                     },));
                   },
                   child: Padding(
+
                     padding: const EdgeInsets.all(12.0),
                     child: Container(
                       height: 100,
                       decoration: BoxDecoration(
-                        color: secondaryColor,
+                        color: primaryColor,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: primaryColor, width: 2),
                       ),
@@ -121,12 +122,12 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                           children: [
                             Text("Order: #${index + 1 ?? 'N/A'}",
                                 style: TextStyle(
-                                    color: primaryColor, fontSize: 14)),
+                                    color: secondaryColor, fontSize: 14)),
                             RichText(
                               text: TextSpan(
                                 text: "Status: ",
                                 style: TextStyle(
-                                  color: primaryColor,
+                                  color: secondaryColor,
                                   fontSize: 14,
                                 ),
                                 children: [
@@ -135,8 +136,8 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                                     style: TextStyle(
                                       color: (order['status']?.toLowerCase() ==
                                               'pending')
-                                          ? primaryColor
-                                          : Colors.green,
+                                          ? Colors.amber
+                                          : Colors.lightBlueAccent,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -145,11 +146,11 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                             ),
                             Text(formattedDate,
                                 style: TextStyle(
-                                    color: primaryColor, fontSize: 12)),
+                                    color: secondaryColor, fontSize: 12)),
                                     if (order['status']?.toLowerCase() == 'completed' ||
-        order['status']?.toLowerCase() == 'canceled')
+        order['status']?.toLowerCase() == 'cancelled')
       IconButton(
-        icon: Icon(Icons.delete, color: Colors.red),
+        icon: Icon(Icons.delete, color: secondaryColor),
         onPressed: () async {
            await _deleteOrder(order['orderId']);
           setState(() {

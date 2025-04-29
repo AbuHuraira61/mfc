@@ -12,9 +12,7 @@ import 'package:mfc/auth/UserProfile.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FamilyDeals.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/LunchNightDeals.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaDeals.dart';
+
 
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 
@@ -22,8 +20,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/DealsList.dar
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/StudentsDeals.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/TwoPersonDeal.dart';
+
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
