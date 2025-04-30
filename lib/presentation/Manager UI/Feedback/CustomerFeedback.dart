@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 
 class SubmitFeedbackScreen extends StatefulWidget {
   final String orderId; // Pass Order ID to the screen
 
-  SubmitFeedbackScreen({required this.orderId});
+  const SubmitFeedbackScreen({super.key, required this.orderId});
 
   @override
-  _SubmitFeedbackScreenState createState() => _SubmitFeedbackScreenState();
+  SubmitFeedbackScreenState createState() => SubmitFeedbackScreenState();
 }
 
-class _SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
+class SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController reviewController = TextEditingController();
   double rating = 0.0;
@@ -66,7 +65,7 @@ class _SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+   
 
     return Scaffold(
       appBar: AppBar(

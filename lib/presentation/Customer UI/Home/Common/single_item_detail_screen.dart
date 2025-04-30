@@ -7,15 +7,15 @@ import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer UI/Home/Cart/Cart_screen.dart';
 
-class SingleBurgerScreen extends StatefulWidget {
+class SingleItemDetailScreen extends StatefulWidget {
   final Map<String, dynamic> singleBurger;
-  const SingleBurgerScreen({Key? key, required this.singleBurger}) : super(key: key);
+  const SingleItemDetailScreen({Key? key, required this.singleBurger}) : super(key: key);
 
   @override
-  _SingleBurgerScreenState createState() => _SingleBurgerScreenState();
+  _SingleItemDetailScreenState createState() => _SingleItemDetailScreenState();
 }
 
-class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
+class _SingleItemDetailScreenState extends State<SingleItemDetailScreen> {
   final DBHelper _dbHelper = DBHelper();
   int quantity = 1;
 
@@ -206,16 +206,16 @@ class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
 // import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 // import 'package:provider/provider.dart';
 
-// class SingleBurgerScreen extends StatefulWidget {
+// class SingleItemDetailScreen extends StatefulWidget {
 //   final Map<String, dynamic> singleBurger;
-//   const SingleBurgerScreen({super.key,required this.singleBurger});
+//   const SingleItemDetailScreen({super.key,required this.singleBurger});
 
 
 //   @override
-//   _SingleBurgerScreenState createState() => _SingleBurgerScreenState();
+//   _SingleItemDetailScreenState createState() => _SingleItemDetailScreenState();
 // }
 
-// class _SingleBurgerScreenState extends State<SingleBurgerScreen> {
+// class _SingleItemDetailScreenState extends State<SingleItemDetailScreen> {
 //    final DBHelper _dbHelper = DBHelper();
 //   String selectedVariation = "Small";
 //   int quantity = 1;

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
 
 class OtherItemsScreen extends StatefulWidget {
   @override
@@ -196,7 +196,7 @@ class OtherItemsCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SingleBurgerScreen(singleBurger: food),
+            builder: (context) => SingleItemDetailScreen(singleBurger: food),
           ),
         );
       },

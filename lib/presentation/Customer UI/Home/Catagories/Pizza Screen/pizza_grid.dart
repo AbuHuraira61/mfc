@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 
-class PizzaScreen extends StatefulWidget {
+class PizzaGrid extends StatefulWidget {
   @override
-  _PizzaScreenState createState() => _PizzaScreenState();
+  _PizzaGridState createState() => _PizzaGridState();
 }
 
-class _PizzaScreenState extends State<PizzaScreen>
+class _PizzaGridState extends State<PizzaGrid>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 

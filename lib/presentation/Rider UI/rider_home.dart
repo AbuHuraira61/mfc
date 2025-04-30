@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
-import 'package:mfc/presentation/Rider%20UI/RiderPendingOrders.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RiderHome extends StatefulWidget {

@@ -120,7 +120,7 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Order: #${index + 1 ?? 'N/A'}",
+                            Text("Order: #${index + 1}",
                                 style: TextStyle(
                                     color: secondaryColor, fontSize: 14)),
                             RichText(
