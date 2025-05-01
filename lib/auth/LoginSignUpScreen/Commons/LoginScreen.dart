@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mfc/Constants/custom_snackbar.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';
@@ -101,11 +102,17 @@ class _LoginscreenState extends State<LoginScreen> {
                             const SizedBox(height: 60),
                             InkWell(
                               onTap: () {
+                                FocusScope.of(context).unfocus();
                                 _indicator = true;
                                 if (_loginFormkey.currentState!.validate()) {
                                   _authService.loginUser(_EmailController.text,
                                       _PasswordController.text, context);
+
                                 }
+                                 _indicator = false;
+                               
+                                _EmailController.clear();
+                                _PasswordController.clear();
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(7.0),

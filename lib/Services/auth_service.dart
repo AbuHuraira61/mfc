@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mfc/Constants/custom_snackbar.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
@@ -40,30 +41,64 @@ class AuthService {
     }
   }
 
-  Future<void> loginUser(
-      String email, String password, BuildContext context) async {
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  Future<void> loginUser(String email, String password, BuildContext context) async {
+  try {
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      DocumentSnapshot userDoc = await _firestore
-          .collection("users")
-          .doc(userCredential.user!.uid)
-          .get();
+    CustomSnackbar().showSnackbar('Success!', 'Login successful!');
 
-      if (userDoc.exists) {
-        String role = userDoc["role"];
-        if (context.mounted) {
-          // ✅ Safe check before using context
-          _navigateUser(role, context);
-        }
+    DocumentSnapshot userDoc = await _firestore
+        .collection("users")
+        .doc(userCredential.user!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      String role = userDoc["role"];
+      if (context.mounted) {
+        _navigateUser(role, context);
       }
-    } catch (e) {
-      print("Error: $e");
     }
+  } on FirebaseAuthException catch (e) {
+    CustomSnackbar().showSnackbar('Error', 'Login failed: ${e.message}');
+  } catch (e) {
+    print("Error: $e");
+    CustomSnackbar().showSnackbar('Error', 'Unexpected error occurred.');
   }
+}
+
+
+  // Future<void> loginUser(String email, String password, BuildContext context) async {
+  //   try {
+  //     Null userCredential = await _auth.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     ).then((value) async {
+  //       CustomSnackbar().showSnackbar('Success!', 'Login successful!');
+  //       DocumentSnapshot userDoc = await _firestore
+  //         .collection("users")
+  //         .doc(userCredential.user!.uid)
+  //         .get();
+
+  //     if (userDoc.exists) {
+  //       String role = userDoc["role"];
+  //       if (context.mounted) {
+  //         // ✅ Safe check before using context
+  //         _navigateUser(role, context);
+  //       }
+  //     }
+  //     },).onError((error, stackTrace) {
+  //       CustomSnackbar().showSnackbar('Error', 'Login failed: $error');
+        
+  //     },);
+
+      
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
 
   void _navigateUser(String role, BuildContext context) {
     switch (role){
