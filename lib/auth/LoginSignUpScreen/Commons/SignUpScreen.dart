@@ -103,6 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             InkWell(
                               onTap: () {
                                 _indicator = true;
+                                FocusNode().unfocus();
                                 if (_signUpformkey.currentState!.validate()) {
                                   _authService
                                       .signUpUser(
@@ -115,6 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       Get.snackbar('Success!',
                                           'Email added sccuessfully!');
                                       _indicator = false;
+
                                       Get.off(HomeScreen());
                                     },
                                   ).onError(
@@ -125,6 +127,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     },
                                   );
                                 }
+                                _emailController.clear();
+                                _passwordController.clear();
+                                _nameController.clear();
                               },
                               child: Container(
                                 padding: EdgeInsets.all(7.0),
@@ -169,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(width: 3),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => LoginScreen()),
