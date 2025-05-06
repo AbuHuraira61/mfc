@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/Order%20Details/admin_Order_details.dart';
@@ -35,7 +36,7 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
@@ -44,24 +45,32 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Text('Pending Orders', style: TextStyle(color: Colors.white)),
+          title: Text('Orders Status', style: TextStyle(color: Colors.white)),
           centerTitle: true,
           bottom: TabBar(
+            isScrollable: true,
+            
             labelColor: Colors.white,
             indicatorColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             tabs: [
               Tab(text: "Pending"),
               Tab(text: "Preparing"),
+              Tab(text: "Assigneded"),
               Tab(text: "Dispatched"),
+              Tab(text: "Complete"),
             ],
           ),
         ),
         body: TabBarView(
+          physics: BouncingScrollPhysics(),
+
           children: [
             OrdersList(orderStatus: 'pending'),
             OrdersList(orderStatus: 'Preparing'),
+            OrdersList(orderStatus: 'Assigned'),
             OrdersList(orderStatus: 'Dispatched'),
+            OrdersList(orderStatus: 'Complete'),
           ],
         ),
       ),
@@ -173,13 +182,13 @@ class OrderCard extends StatelessWidget {
                               .collection('orders')
                               .doc(id)
                               .update({
-                            'status': 'Dispatched',
+                            'status': 'Assigned',
                             'assignedTo': riderName,
                             'riderId': riderId,
                           });
                           // Create record in DispatchedOrders collection
                           await FirebaseFirestore.instance
-                              .collection('DispatchedOrders')
+                              .collection('AssignedOrders')
                               .doc(id)
                               .set({
                             'orderId': id,
@@ -189,7 +198,7 @@ class OrderCard extends StatelessWidget {
                             'assignedTo': riderName,
                             'assignedToId': riderId,
                             'riderId': riderId,
-                            'status': 'Dispatched',
+                            'status': 'Assigned',
                             'phone': customerPhone,
                             'timestamp': FieldValue.serverTimestamp(),
                           });
@@ -302,7 +311,7 @@ class OrderCard extends StatelessWidget {
                         backgroundColor: Color(0xff570101),
                       ),
                       child: Text(
-                        'Dispatch',
+                        'Assign Rider',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -313,7 +322,87 @@ class OrderCard extends StatelessWidget {
           ),
         ),
       );
-    } else if (orderStatus == 'Dispatched') {
+    } else if (orderStatus == 'Assigned') {
+      return Card(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage('assets/largepizza.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Customer: $customerName"),
+                    Text("Amount: $amount",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black)),
+                    Text("Status: $orderStatus",
+                        style: TextStyle(color: primaryColor)),
+                    if (assignedTo.isNotEmpty)
+                      Text("Assigned to: $assignedTo",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (orderStatus == 'Dispatched'){
+      return Card(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage('assets/largepizza.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Customer: $customerName"),
+                    Text("Amount: $amount",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black)),
+                    Text("Status: $orderStatus",
+                        style: TextStyle(color: primaryColor)),
+                    if (assignedTo.isNotEmpty)
+                      Text("Assigned to: $assignedTo",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (orderStatus == 'Completed'){
       return Card(
         margin: EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

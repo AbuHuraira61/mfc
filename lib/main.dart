@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
+import 'package:mfc/Helper/order_status_provider.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Customer UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager UI/Home Screen/ManagerHomeScreen.dart';
@@ -56,8 +57,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => CartProvider(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => CartProvider()),
+          // Add other providers here if needed
+          ChangeNotifierProvider(create: (_) => OrderStatusProvider()),
+        ],
         child: GetMaterialApp(
           theme: ThemeData(
             fontFamily: 'Poppins', // Default font family set to Poppins

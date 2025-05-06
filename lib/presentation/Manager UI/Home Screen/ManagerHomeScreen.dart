@@ -9,7 +9,7 @@ import 'package:mfc/presentation/Manager%20UI/AddNewRider/AddNewRider_screen.dar
 import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Manage%20Deals/AddDeals_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/Orders/PendingOrder_screen.dart';
+import 'package:mfc/presentation/Manager%20UI/Orders/orders_status_screen.dart';
 
 class ManagerHomeScreen extends StatefulWidget {
   const ManagerHomeScreen({super.key});
