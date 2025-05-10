@@ -3,11 +3,20 @@ import 'package:mfc/Constants/colors.dart';
 
 final TextEditingController TextController = TextEditingController();
 
+
 TextFormField checkoutCustomTextField({
   required String labletext,
-  required TextEditingController TextController,
+  required TextController,
+  required String validatorText,
 }) {
   return TextFormField(
+     validator: (value) {
+      if (value!.isEmpty) {
+        return 'Please enter $validatorText';
+      }
+      return null;
+    },
+    
     controller: TextController,
     cursorColor: primaryColor,
     decoration: InputDecoration(

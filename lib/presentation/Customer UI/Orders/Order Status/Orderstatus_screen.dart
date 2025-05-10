@@ -92,9 +92,18 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
           ),
         ),
       ),
-      body: ordersList.isEmpty
-          ? Center(child: Center(child: Text('No order in this list!'),))
-          : ListView.builder(
+      body: Builder(builder: (_) {
+  if (orderProvider.isLoading) {
+    // 1️⃣ Loading…
+    return Center(child: CircularProgressIndicator());
+  }
+
+  if (orderProvider.ordersList.isEmpty) {
+    // 2️⃣ Fetched, but nothing there
+    return Center(child: Text('No order in this list!'));
+  }
+      
+      return ListView.builder(
               itemCount: ordersList.length,
               itemBuilder: (context, index) {
                 final order = ordersList[index];
@@ -155,9 +164,12 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                                     color: secondaryColor, fontSize: 12)),
                                     if (order['status']?.toLowerCase() == 'complete' ||
         order['status']?.toLowerCase() == 'cancelled')
-      IconButton(
+           orderProvider.isLoading ? CircularProgressIndicator(
+            color: secondaryColor,
+           ) : IconButton(
         icon: Icon(Icons.delete, color: secondaryColor),
         onPressed: () async {
+          
            await OrderStatusProvider().deleteOrder(id);
           
         },
@@ -169,7 +181,9 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                   ),
                 );
               },
-            ),
-    );
+            );
+            }
+    ),);
+
   }
 }

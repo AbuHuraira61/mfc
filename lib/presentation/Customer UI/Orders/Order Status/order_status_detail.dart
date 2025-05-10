@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/state_manager.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
+import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
 
 class OrderStatusDetail extends StatefulWidget {
   final String id;
@@ -95,7 +97,7 @@ Future<void> checkTime() async {
               }
 
               final data = snapshot.data!.data() as Map<String, dynamic>;
-              final status = data['status']?.toString().toLowerCase() ?? '';
+              final status = data['status']?.toString() ?? '';
 
                // If order is canceled, show only canceled message
                if(status == 'Complete'){
@@ -115,7 +117,10 @@ Future<void> checkTime() async {
                     isCompleted: true,
                   ),
                   Spacer(),
-                  ElevatedButton(onPressed: (){},  style: ElevatedButton.styleFrom(
+                  ElevatedButton(onPressed: (){ 
+                   Get.off(SubmitFeedbackScreen(orderId: widget.id,));
+                    
+                  },  style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff570101),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -154,11 +159,20 @@ Future<void> checkTime() async {
               bool isReceived = true; // always true, order is received
               bool isPreparing = false;
               bool isOnTheWay = false;
+              if(status == 'pending'){
+                isReceived = true;
+
+              }
               if(status == 'preparing'){
                 isReceived = true;
                 isPreparing = true;
               }
               if(status == 'Dispatched'){
+                isReceived = true;
+                isPreparing = true;
+                isOnTheWay = true;
+              }
+              if(status == 'Complete'){
                 isReceived = true;
                 isPreparing = true;
                 isOnTheWay = true;

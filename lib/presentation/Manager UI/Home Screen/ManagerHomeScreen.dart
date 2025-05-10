@@ -144,11 +144,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     child: _buildButton(Icons.local_shipping, "Order Status")),
                 InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FeedbackScreen()),
-                      );
+                      
                     },
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),

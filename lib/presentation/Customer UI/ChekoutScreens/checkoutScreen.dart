@@ -8,6 +8,7 @@ import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/common/checkoutCustomTextField.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,7 @@ class checkoutScreen extends StatefulWidget {
   @override
   State<checkoutScreen> createState() => _checkoutScreenState();
 }
-
+bool _isprocessing = false;
 final TextEditingController nameController = TextEditingController();
 final TextEditingController phoneController = TextEditingController();
 final TextEditingController addressController = TextEditingController();
@@ -96,6 +97,8 @@ class _checkoutScreenState extends State<checkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -150,6 +153,7 @@ class _checkoutScreenState extends State<checkoutScreen> {
                           child: SizedBox(
                             height: 50,
                             child: checkoutCustomTextField(
+                              validatorText: 'Please enter your name',
                               labletext: 'Full Name',
                               TextController: nameController,
                             ),
@@ -161,6 +165,7 @@ class _checkoutScreenState extends State<checkoutScreen> {
                           child: SizedBox(
                             height: 50,
                             child: checkoutCustomTextField(
+                              validatorText: 'Please enter your phone number',
                               labletext: 'Phone Number',
                               TextController: phoneController,
                             ),
@@ -172,6 +177,7 @@ class _checkoutScreenState extends State<checkoutScreen> {
                           child: SizedBox(
                             height: 50,
                             child: checkoutCustomTextField(
+                              validatorText: 'Please enter your address',
                               labletext: 'Delivery Address',
                               TextController: addressController,
                             ),
@@ -235,15 +241,31 @@ class _checkoutScreenState extends State<checkoutScreen> {
                 SizedBox(
                   width: 270,
                   height: 45,
-                  child: ElevatedButton(
-                    onPressed: () async {
+                  child:  ElevatedButton(
+                    onPressed: _isprocessing ? null : () async {
                       if (_checkoutFormKey.currentState!.validate()) {
+                        setState(() {
+                          _isprocessing = true;
+                        });
                         _confirmOrder();
-                      } else {
-                        Get.snackbar('Error', 'Unknown error has occurred!');
-                      }
+                       
+                        
+                      } 
+                      // else {
+                      //   Get.snackbar('Error', 'Unknown error has occurred!');
+                      //   setState(() {
+                      //     _isprocessing = false;
+                      //   });
+                      // }
                     },
-                    child: Text(
+                    child: _isprocessing ?  const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    ) : Text(
                       'Confirm Order',
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
@@ -319,12 +341,18 @@ class _checkoutScreenState extends State<checkoutScreen> {
 
 
      // Navigate to the feedback screen and pass the orderId
-  Navigator.push(
+     Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => SubmitFeedbackScreen(orderId: orderId),  // Pass the orderId
+      builder: (context) => HomeScreen(),  // Pass the orderId
     ),
+
+    
   );
+  _isprocessing = false;
+  nameController.clear();
+  phoneController.clear();
+  addressController.clear();
     if (kDebugMode) {
       print("Name: ${nameController.text}");
     }

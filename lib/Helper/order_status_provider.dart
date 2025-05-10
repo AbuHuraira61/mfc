@@ -4,16 +4,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class OrderStatusProvider with ChangeNotifier {
   List<Map<String, dynamic>> _ordersList = [];
+  bool _isLoading = false;
+
 
   List<Map<String, dynamic>> get ordersList => _ordersList;
+  bool get isLoading => _isLoading;
 
   Future<void> fetchOrders() async {
+     _isLoading = true;
+    notifyListeners();
+
+
     final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) return;
+    if (currentUser == null) {
+      _ordersList = [];
+      _isLoading = false;
+      notifyListeners();
+    };
 
     final userDoc = await FirebaseFirestore.instance
         .collection("users")
-        .doc(currentUser.uid)
+        .doc(currentUser?.uid)
         .get();
 
     if (userDoc.exists) {
@@ -34,11 +45,14 @@ class OrderStatusProvider with ChangeNotifier {
       }
 
       _ordersList = fetchedOrders;
+      _isLoading = false;
       notifyListeners();
     }
   }
 
   Future<void> deleteOrder(String orderId) async {
+    _isLoading = true;
+     notifyListeners();
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) return;
 
@@ -50,5 +64,7 @@ class OrderStatusProvider with ChangeNotifier {
     });
 
     await fetchOrders();
+    _isLoading = false;
+    notifyListeners();
   }
 }

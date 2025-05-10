@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class FeedbackScreen extends StatelessWidget {
-  const FeedbackScreen({super.key});
+  final String id;
+  const FeedbackScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
