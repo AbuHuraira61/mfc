@@ -6,6 +6,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/order_status_provider.dart';
+import 'package:mfc/Services/notification_service.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Customer UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager UI/Home Screen/ManagerHomeScreen.dart';
@@ -15,9 +16,9 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
- 
-
+  
+  NotificationService().requestNotificarionPermission();
+  
 
   runApp(const MyApp());
 }

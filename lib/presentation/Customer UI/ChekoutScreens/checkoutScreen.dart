@@ -7,6 +7,7 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
 import 'package:mfc/Models/cart_model.dart';
+import 'package:mfc/Services/notification_service.dart';
 import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/common/checkoutCustomTextField.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
@@ -324,6 +325,7 @@ class _checkoutScreenState extends State<checkoutScreen> {
       "totalPrice": widget.totalPrice.toString(),
       "timestamp": Timestamp.now(),
       "items": itemsList,
+      "FCMToken": NotificationService().getDeviceToken(),
     });
 
     for (var item in cartItems) {
