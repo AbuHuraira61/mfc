@@ -101,7 +101,12 @@ class HomeScreenState extends State<HomeScreen> {
                       ));
                     }),
                     _buildDrawerItem(Icons.location_on, 'Address', () {}),
-                    _buildDrawerItem(Icons.favorite, 'Favorite', () {}),
+                    _buildDrawerItem(Icons.favorite, 'Favorite', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FavouritePage()),
+                      );
+                    }),
                     _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
                     _buildDrawerItem(
                         Icons.article, 'Terms or Conditions', () {}),
@@ -623,7 +628,7 @@ class BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 1:
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => FavouritePage()),
         );

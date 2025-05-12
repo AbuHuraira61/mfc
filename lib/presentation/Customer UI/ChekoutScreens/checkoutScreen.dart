@@ -10,7 +10,6 @@ import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/Services/notification_service.dart';
 import 'package:mfc/presentation/Customer%20UI/ChekoutScreens/common/checkoutCustomTextField.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
-import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 import 'package:provider/provider.dart';
 
 // New imports for location

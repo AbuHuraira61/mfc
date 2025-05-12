@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mfc/Utilities/ImageDecoder.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
 
 class FavouritePage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,114 +14,207 @@ class FavouritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = _auth.currentUser;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Favorite Page",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: Color(0xFF6A0202),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            if (Navigator.canPop(context)) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Favorite Page",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: Color(0xFF6A0202),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
               Navigator.pop(context);
+            },
+          ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('favorites')
+              .where('uid', isEqualTo: currentUser?.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError)
+              return Center(child: Text('Something went wrong'));
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+
+            final favorites = snapshot.data!.docs;
+
+            if (favorites.isEmpty) {
+              return Center(child: Text("No favorite items found."));
             }
+
+            return GridView.builder(
+              padding: EdgeInsets.all(16),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: favorites.length,
+              itemBuilder: (context, index) {
+                final data = favorites[index].data() as Map<String, dynamic>;
+                
+                return GestureDetector(
+                  onTap: () {
+                    // Check if it's a pizza by looking for 'prices' field
+                    if (data.containsKey('prices')) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SinglePizzaScreen(
+                            singlePizza: data,
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleItemDetailScreen(
+                            singleBurger: data,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: FavoriteItemCard(foodItem: data),
+                );
+              },
+            );
           },
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('favorites')
-            .where('uid', isEqualTo: currentUser?.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError)
-            return Center(child: Text('Something went wrong'));
-          if (snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator());
+    );
+  }
+}
 
-          final favorites = snapshot.data!.docs;
+class FavoriteItemCard extends StatefulWidget {
+  final Map<String, dynamic> foodItem;
 
-          if (favorites.isEmpty) {
-            return Center(child: Text("No favorite items found."));
-          }
+  const FavoriteItemCard({Key? key, required this.foodItem}) : super(key: key);
 
-          return ListView.builder(
-            padding: EdgeInsets.all(16),
-            itemCount: favorites.length,
-            itemBuilder: (context, index) {
-              final data = favorites[index].data() as Map<String, dynamic>;
-              final docId = favorites[index].id;
+  @override
+  State<FavoriteItemCard> createState() => _FavoriteItemCardState();
+}
 
-              return Container(
-                margin: EdgeInsets.only(bottom: 10),
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF570101), Color(0xFF750202)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
+class _FavoriteItemCardState extends State<FavoriteItemCard> {
+  bool isFavorite = true; // Always true since it's in favorites
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> toggleFavorite() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+
+    if (!isFavorite) {
+      // Remove from favorites
+      await FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(widget.foodItem['itemId'])
+          .delete();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Color(0xff570101),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Spacer(),
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child:
+                  widget.foodItem['image']!=null && widget.foodItem['image'].isNotEmpty?
+                   Image.memory(decodeImage(widget.foodItem['image']),
+                      fit: BoxFit.cover, height: 100, width: 100):
+                       Image.asset(
+                  "assets/default-food.png",
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
                 ),
-                child: Row(
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        data["image"],
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
+                    Text(
+                      widget.foodItem['name'] ?? "Food Item",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Display price based on item type
+                        if (widget.foodItem.containsKey('prices'))
                           Text(
-                            data["name"],
+                            'From \$${widget.foodItem['prices']['small']}',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 4),
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        else
                           Text(
-                            data["description"],
-                            style:
-                                TextStyle(color: Colors.white70, fontSize: 12),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 6),
-                          Text(
-                            data["price"],
+                            '\$${widget.foodItem['price']}',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        FirebaseFirestore.instance
-                            .collection('favorites')
-                            .doc(docId)
-                            .delete();
-                      },
-                      icon: Icon(Icons.delete_outline, color: Colors.white),
+                        Icon(Icons.shopping_cart, color: Colors.white, size: 24),
+                      ],
                     ),
                   ],
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: GestureDetector(
+            onTap: toggleFavorite,
+            child: Icon(
+              Icons.favorite,
+              color: Colors.red,
+              size: 24,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

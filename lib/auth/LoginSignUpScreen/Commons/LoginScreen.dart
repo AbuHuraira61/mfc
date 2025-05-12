@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mfc/Constants/custom_snackbar.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';

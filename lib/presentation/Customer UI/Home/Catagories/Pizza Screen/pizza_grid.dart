@@ -1,8 +1,8 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PizzaGrid extends StatefulWidget {
   @override
@@ -87,7 +87,7 @@ class _PizzaListState extends State<PizzaList> {
         "name": doc["name"],
         "image": doc["image"],
         "prices": doc["prices"],
-        "description":doc["description"],
+        "description": doc["description"],
       };
     }).toList();
   }
@@ -118,102 +118,163 @@ class _PizzaListState extends State<PizzaList> {
       ),
       itemCount: pizzas.length,
       itemBuilder: (context, index) {
-        return PizzaCard(pizza: pizzas[index]);
+        Map<String, dynamic> pizzaData = {...pizzas[index]};
+        // Don't simplify the price structure
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SinglePizzaScreen(singlePizza: pizzaData),
+              ),
+            );
+          },
+          child: PizzaCard(pizza: pizzaData),
+        );
       },
     );
     },);
-    
-   
   }
 }
 
-class PizzaCard extends StatelessWidget {
+class PizzaCard extends StatefulWidget {
   final Map<String, dynamic> pizza;
 
-  PizzaCard({required this.pizza});
+  const PizzaCard({Key? key, required this.pizza}) : super(key: key);
+
+  @override
+  State<PizzaCard> createState() => _PizzaCardState();
+}
+
+class _PizzaCardState extends State<PizzaCard> {
+  bool isFavorite = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    checkIfFavorite();
+  }
+
+  Future<void> checkIfFavorite() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('favorites')
+          .where('uid', isEqualTo: user.uid)
+          .where('itemId', isEqualTo: widget.pizza['id'])
+          .get();
+      
+      setState(() {
+        isFavorite = doc.docs.isNotEmpty;
+      });
+    }
+  }
+
+  Future<void> toggleFavorite() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+
+    if (isFavorite) {
+      // Add to favorites using item's ID as document ID
+      await FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(widget.pizza['id'])
+          .set({
+        'uid': user.uid,
+        'itemId': widget.pizza['id'],
+        'name': widget.pizza['name'],
+        'image': widget.pizza['image'],
+        'prices': widget.pizza['prices'], // Save all price categories
+        'description': widget.pizza['description'],
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Remove from favorites using item's ID
+      await FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(widget.pizza['id'])
+          .delete();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SinglePizzaScreen(singlePizza: pizza,), // No arguments passed
+    return Stack(
+      children: [
+        AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Color(0xff570101),
+            borderRadius: BorderRadius.circular(15),
           ),
-        );
-      },
-      child: Stack(
-        children: [
-          AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Color(0xff570101),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Spacer(),
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child:
-                    pizza['image']!=null && pizza['image'].isNotEmpty?
-                     Image.memory(decodeImage(pizza['image']),
-
-
-                        fit: BoxFit.cover, height: 100, width: 100):
-                         Image.asset(
-                    "assets/default-food.png",
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  ),
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Spacer(),
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child:
+                  widget.pizza['image']!=null && widget.pizza['image'].isNotEmpty?
+                   Image.memory(decodeImage(widget.pizza['image']),
+                      fit: BoxFit.cover, height: 100, width: 100):
+                       Image.asset(
+                  "assets/default-food.png",
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
                 ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(pizza['name'],
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold)),
-                      SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('\$${pizza['prices']['small']}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          Icon(Icons.shopping_cart,
-                              color: Colors.white, size: 24),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.pizza['name'],
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('\$${widget.pizza['prices']['small']}',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                        Icon(Icons.shopping_cart,
+                            color: Colors.white, size: 24),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-          Positioned(
-            top: 5,
-            right: 5,
+        ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: GestureDetector(
+            onTap: toggleFavorite,
             child: Icon(
-              Icons.favorite_border,
-              color: Colors.white,
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.white,
               size: 24,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

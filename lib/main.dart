@@ -17,7 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   
-  NotificationService().requestNotificarionPermission();
+  
   
 
   runApp(const MyApp());

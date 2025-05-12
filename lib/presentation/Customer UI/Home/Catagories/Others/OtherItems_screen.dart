@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class OtherItemsScreen extends StatefulWidget {
   @override
@@ -66,8 +67,6 @@ class _OtherItemsScreenState extends State<OtherItemsScreen>
   }
 }
 
-
-
 class FriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -115,19 +114,6 @@ class OtherItemsList extends StatelessWidget {
 
   OtherItemsList({required this.category});
 
-  final List<Map<String, dynamic>> sampleFoods = [
-    {"name": "Crispy Fries", "price": "5.99"},
-    {"name": "Cheese Roll", "price": "6.49"},
-    {"name": "Spicy Wings", "price": "7.99"},
-    {"name": "Pasta Alfredo", "price": "8.99"},
-    {"name": "Grilled Sandwich", "price": "6.99"},
-    {"name": "Broast Chicken", "price": "9.99"},
-    {"name": "Spicy Wings", "price": "7.99"},
-    {"name": "Pasta Alfredo", "price": "8.99"},
-    {"name": "Grilled Sandwich", "price": "6.99"},
-    {"name": "Broast Chicken", "price": "9.99"},
-  ];
-
   Future<List<Map<String, dynamic>>> fetchBurgerData() async {
     // ✅ Use await to wait for data before accessing .docs
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
@@ -143,7 +129,7 @@ class OtherItemsList extends StatelessWidget {
         "name": doc["name"],
         "image": doc["image"],
         "price": doc["price"],
-        "description":doc["description"],
+        "description": doc["description"],
       };
     }).toList();
   }
@@ -171,114 +157,166 @@ class OtherItemsList extends StatelessWidget {
           ),
           itemCount: foods.length,
           itemBuilder: (context, index) {
-            return OtherItemsCard(food: foods[index]);
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SingleItemDetailScreen(singleBurger: foods[index]),
+                  ),
+                );
+              },
+              child: OtherItemsCard(food: foods[index]),
+            );
           },
         );
       },
     );
-    
-    
-    
-   
   }
 }
 
-class OtherItemsCard extends StatelessWidget {
+class OtherItemsCard extends StatefulWidget {
   final Map<String, dynamic> food;
 
-  OtherItemsCard({required this.food});
+  const OtherItemsCard({Key? key, required this.food}) : super(key: key);
+
+  @override
+  State<OtherItemsCard> createState() => _OtherItemsCardState();
+}
+
+class _OtherItemsCardState extends State<OtherItemsCard> {
+  bool isFavorite = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    checkIfFavorite();
+  }
+
+  Future<void> checkIfFavorite() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('favorites')
+          .where('uid', isEqualTo: user.uid)
+          .where('itemId', isEqualTo: widget.food['id'])
+          .get();
+      
+      setState(() {
+        isFavorite = doc.docs.isNotEmpty;
+      });
+    }
+  }
+
+  Future<void> toggleFavorite() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+
+    if (isFavorite) {
+      // Add to favorites using item's ID as document ID
+      await FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(widget.food['id'])
+          .set({
+        'uid': user.uid,
+        'itemId': widget.food['id'],
+        'name': widget.food['name'],
+        'image': widget.food['image'],
+        'price': widget.food['price'],
+        'description': widget.food['description'],
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Remove from favorites using item's ID
+      await FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(widget.food['id'])
+          .delete();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Handle item tap
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SingleItemDetailScreen(singleBurger: food),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Color(0xff570101),
+            borderRadius: BorderRadius.circular(15),
           ),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Color(0xff570101),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Spacer(),
-                Center(
-                  child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child:
-                  food['image']!=null && food['image'].isNotEmpty?
-                   Image.memory(decodeImage(food['image']),
-    
-    
-                      fit: BoxFit.cover, height: 100, width: 100):
-                       Image.asset(
-                  "assets/default-food.png",
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
-                ),
-                ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        food['name'] ?? "Food Item",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Spacer(),
+              Center(
+                child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child:
+                widget.food['image']!=null && widget.food['image'].isNotEmpty?
+                 Image.memory(decodeImage(widget.food['image']),
+                    fit: BoxFit.cover, height: 100, width: 100):
+                     Image.asset(
+                "assets/default-food.png",
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
+              ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.food['name'] ?? "Food Item",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '\$${food['price'] ?? "--"}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Icon(
-                            Icons.shopping_cart,
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '\$${widget.food['price']}',
+                          style: TextStyle(
                             color: Colors.white,
-                            size: 24,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                        ),
+                        Icon(Icons.shopping_cart, color: Colors.white, size: 24),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Positioned(
-            top: 5,
-            right: 5,
+        ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: GestureDetector(
+            onTap: toggleFavorite,
             child: Icon(
-              Icons.favorite_border,
-              color: Colors.white,
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.white,
               size: 24,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

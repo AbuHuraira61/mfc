@@ -7,12 +7,15 @@ class NotificationService {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 
+
+
+
  void firebaseNotificationInit(){
    FirebaseMessaging.onMessage.listen((message) {
      
    },);
  }
-
+ 
 
 
   requestNotificarionPermission()async{
@@ -44,7 +47,7 @@ class NotificationService {
 
  void isTokenRefresh() {
     messaging.onTokenRefresh.listen((event) {
-      event.toString();;
+      event.toString();
     });
   }
 

@@ -19,7 +19,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    NotificationService().requestNotificarionPermission();
+   
+    
   }
 
   // Future<void> _checkUserStatus() async {
