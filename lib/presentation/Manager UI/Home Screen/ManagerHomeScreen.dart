@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/presentation/Manager%20UI/AddItemsScreen/AddItem_screen.dart';
@@ -10,6 +11,7 @@ import 'package:mfc/presentation/Manager%20UI/All%20Items/AllAddedItemScreen.dar
 import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Manage%20Deals/AddDeals_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/orders_status_screen.dart';
+import 'package:mfc/presentation/Manager UI/Statistics/StatisticsScreen.dart';
 
 class ManagerHomeScreen extends StatefulWidget {
   const ManagerHomeScreen({super.key});
@@ -53,25 +55,74 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
       body: Column(
         children: [
           // Details Panel
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: primaryColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildDetailItem(Icons.info, "Pending", "30"),
-                    _buildDetailItem(Icons.check_box, "Completed", "10"),
-                    _buildDetailItem(Icons.attach_money, "Earning", "100\$"),
-                  ],
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Error loading data',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                );
+              }
+
+              // Calculate statistics
+              int pendingOrders = 0;
+              int completedOrders = 0;
+              double totalEarnings = 0.0;
+
+              if (snapshot.hasData) {
+                for (var doc in snapshot.data!.docs) {
+                  var data = doc.data() as Map<String, dynamic>;
+                  if (data['status'] == 'pending') {
+                    pendingOrders++;
+                  } else if (data['status'] == 'Complete') {
+                    completedOrders++;
+                    if (data['totalPrice'] != null) {
+                      totalEarnings += double.parse(data['totalPrice'].toString());
+                    }
+                  }
+                }
+              }
+
+              return Container(
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ],
-            ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => StatisticsScreen()),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildDetailItem(Icons.info, "Pending", pendingOrders.toString()),
+                          _buildDetailItem(Icons.check_box, "Completed", completedOrders.toString()),
+                          _buildDetailItem(Icons.attach_money, "Earning", "\$${totalEarnings.toStringAsFixed(2)}"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
 
           // Buttons Panel
@@ -144,7 +195,11 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     child: _buildButton(Icons.local_shipping, "Order Status")),
                 InkWell(
                     onTap: () {
-                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),
@@ -152,7 +207,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     child: _buildButton(Icons.feedback_outlined, "Feedback")),
                 InkWell(
                     onTap: () {
-                      _logout(context); // Call logout function
+                      _logout(context);
                     },
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),

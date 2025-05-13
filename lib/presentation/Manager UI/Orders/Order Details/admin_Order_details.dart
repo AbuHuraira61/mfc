@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/Services/notification_service.dart';
 
 class AdminOrderDetails extends StatefulWidget {
   final String totalAmount;
@@ -24,16 +25,30 @@ class AdminOrderDetails extends StatefulWidget {
 class _AdminOrderDetailsState extends State<AdminOrderDetails> {
   void _acceptOrder() async {
     try {
+      // Get customer's FCM token
+      final orderDoc = await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(widget.id)
+          .get();
+      
+      final customerToken = orderDoc.data()?['FCMToken'] ?? '';
+
       await FirebaseFirestore.instance
           .collection('orders')
-          .doc(widget.id) // Use the order's document ID
-          .update({'status': 'Preparing'}); // Update the status field
+          .doc(widget.id)
+          .update({'status': 'Preparing'}); 
+
+      // Send notification to customer
+      await NotificationService().sendOrderAcceptedNotification(
+        customerToken,
+        widget.id,
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order status updated to Preparing')),
       );
 
-      Navigator.pop(context); // Optional: go back after updating
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update order: $e')),

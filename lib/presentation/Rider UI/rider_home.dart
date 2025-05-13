@@ -8,6 +8,7 @@ import 'package:mfc/presentation/Rider%20UI/Common%20Widgets/accept_order_button
 import 'package:mfc/presentation/Rider%20UI/Common%20Widgets/check_address_button.dart';
 import 'package:mfc/presentation/Rider%20UI/Common%20Widgets/mark_as_complete_button.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mfc/Services/notification_service.dart';
 
 class RiderHome extends StatefulWidget {
   const RiderHome({super.key});
@@ -475,6 +476,86 @@ class _RiderHomeState extends State<RiderHome> {
         ),
       ),
     );
+  }
+
+  Future<void> acceptOrder(String orderId) async {
+    try {
+      // Get order details
+      final orderDoc = await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId)
+          .get();
+      
+      final customerToken = orderDoc.data()?['FCMToken'] ?? '';
+      
+      // Get admin's token
+      final adminDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'admin')
+          .get();
+      final adminToken = adminDoc.docs.isNotEmpty ? adminDoc.docs.first['deviceToken'] ?? '' : '';
+
+      // Update order status
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId)
+          .update({'status': 'Dispatched'});
+
+      // Send notifications
+      await NotificationService().sendOrderOnTheWayNotification(
+        customerToken,
+        adminToken,
+        orderId,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order accepted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to accept order: $e')),
+      );
+    }
+  }
+
+  Future<void> completeOrder(String orderId) async {
+    try {
+      // Get order details
+      final orderDoc = await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId)
+          .get();
+      
+      final customerToken = orderDoc.data()?['FCMToken'] ?? '';
+      
+      // Get admin's token
+      final adminDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'admin')
+          .get();
+      final adminToken = adminDoc.docs.isNotEmpty ? adminDoc.docs.first['deviceToken'] ?? '' : '';
+
+      // Update order status
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId)
+          .update({'status': 'Complete'});
+
+      // Send notifications
+      await NotificationService().sendOrderCompletedNotification(
+        customerToken,
+        adminToken,
+        orderId,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order completed successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to complete order: $e')),
+      );
+    }
   }
 }
 

@@ -324,8 +324,11 @@ class _checkoutScreenState extends State<checkoutScreen> {
       "totalPrice": widget.totalPrice.toString(),
       "timestamp": Timestamp.now(),
       "items": itemsList,
-      "FCMToken": NotificationService().getDeviceToken(),
+      "FCMToken": await NotificationService().getDeviceToken(),
     });
+
+    // Send notification to admin about new order
+    await NotificationService().sendNewOrderNotification(orderRef.id);
 
     for (var item in cartItems) {
       await dbHelper.delete(item.id.toString());

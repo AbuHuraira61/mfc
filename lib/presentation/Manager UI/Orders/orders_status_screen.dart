@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/Order%20Details/admin_Order_details.dart';
+import 'package:mfc/Services/notification_service.dart';
 
 void main() {
   runApp(MyApp());
@@ -177,6 +178,13 @@ class OrderCard extends StatelessWidget {
                       title: Text(riderName),
                       trailing: ElevatedButton(
                         onPressed: () async {
+                          // Get rider's FCM token
+                          final riderDoc = await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(riderId)
+                              .get();
+                          final riderToken = riderDoc.data()?['deviceToken'] ?? '';
+
                           // Update order document
                           await FirebaseFirestore.instance
                               .collection('orders')
@@ -186,6 +194,7 @@ class OrderCard extends StatelessWidget {
                             'assignedTo': riderName,
                             'riderId': riderId,
                           });
+
                           // Create record in DispatchedOrders collection
                           await FirebaseFirestore.instance
                               .collection('AssignedOrders')
@@ -202,6 +211,13 @@ class OrderCard extends StatelessWidget {
                             'phone': customerPhone,
                             'timestamp': FieldValue.serverTimestamp(),
                           });
+
+                          // Send notification to rider
+                          await NotificationService().sendOrderAssignedNotification(
+                            riderToken,
+                            id,
+                          );
+
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
