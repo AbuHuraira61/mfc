@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:get/get.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
 
 class DealsList extends StatefulWidget {
   final String dealName;
@@ -107,7 +107,7 @@ class _DealsListState extends State<DealsList> {
 
                     return GestureDetector(
                     onTap: () {
-                      Get.off(SingleBurgerScreen(singleBurger: item));
+                      Get.off(SingleItemDetailScreen(singleBurger: item));
                     },
                     child: Container(
                       margin: EdgeInsets.only(bottom: screenWidth * 0.03),

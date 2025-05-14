@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mfc/Constants/custom_snackbar.dart';
+import 'package:mfc/Services/notification_service.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Home%20Screen/ManagerHomeScreen.dart';
 import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
@@ -8,6 +10,7 @@ import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final NotificationService _notificationService = NotificationService();
 
   Future<void> signUpUser(
       String email, String password, String name, BuildContext context) async {
@@ -18,6 +21,9 @@ class AuthService {
         password: password,
       );
 
+      // Get device token
+      String deviceToken = await _notificationService.getDeviceToken();
+
       // Determine role based on email or password
       String role = (email == "admin@example.com" || password == "Admin@123")
           ? "admin"
@@ -27,12 +33,12 @@ class AuthService {
       await _firestore.collection("users").doc(userCredential.user!.uid).set({
         "email": email,
         "role": role,
-        "name":name,
+        "name": name,
+        "deviceToken": deviceToken,
       });
 
       // Navigate to the correct screen
       if (context.mounted) {
-        // ✅ Safe check before using context
         _navigateUser(role, context);
       }
     } catch (e) {
@@ -40,13 +46,22 @@ class AuthService {
     }
   }
 
-  Future<void> loginUser(
-      String email, String password, BuildContext context) async {
+  Future<void> loginUser(String email, String password, BuildContext context) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // Get device token
+      String deviceToken = await _notificationService.getDeviceToken();
+
+      // Update device token in Firestore
+      await _firestore.collection("users").doc(userCredential.user!.uid).update({
+        "deviceToken": deviceToken,
+      });
+
+      CustomSnackbar().showSnackbar('Success!', 'Login successful!');
 
       DocumentSnapshot userDoc = await _firestore
           .collection("users")
@@ -54,26 +69,35 @@ class AuthService {
           .get();
 
       if (userDoc.exists) {
-        String role = userDoc["role"];
-        if (context.mounted) {
-          // ✅ Safe check before using context
-          _navigateUser(role, context);
-        }
+        String role = userDoc['role'] ?? 'customer';
+        _navigateUser(role, context);
       }
     } catch (e) {
       print("Error: $e");
+      CustomSnackbar().showSnackbar('Error!', 'Login failed: $e');
     }
   }
 
   void _navigateUser(String role, BuildContext context) {
-    switch (role){
+    Widget nextScreen;
+    switch (role) {
       case 'admin':
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  ManagerHomeScreen(),));
+        nextScreen = const ManagerHomeScreen();
+        break;
       case 'customer':
-           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  HomeScreen(),));
+        nextScreen = const HomeScreen();
+        break;
       case 'rider':
-           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  RiderHome(),));       
+        nextScreen = const RiderHome();
+        break;
+      default:
+        nextScreen = const HomeScreen();
     }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextScreen),
+    );
   }
 }
 

@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:mfc/Chatbot/ChatbotScreeen.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
@@ -12,23 +10,14 @@ import 'package:mfc/auth/UserProfile.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/FamilyDeals.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/LunchNightDeals.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/SpecialPizzaDeals.dart';
-
-import 'package:mfc/presentation/Customer%20UI/Home/Cart/cart_scrreen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/DealsList.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/Pizza_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/BurgerScreen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/pizza_grid.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/burger_grid.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/StudentsDeals.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/TwoPersonDeal.dart';
+
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
-import 'package:mfc/presentation/Customer%20UI/Extra/LoginSignUpScreen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:mfc/presentation/Manager%20UI/Feedback/CustomerFeedback.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -53,10 +42,10 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   int selectedCategoryIndex = -1;
 
   final List<Map<String, dynamic>> categories = [
@@ -112,7 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ));
                     }),
                     _buildDrawerItem(Icons.location_on, 'Address', () {}),
-                    _buildDrawerItem(Icons.favorite, 'Favorite', () {}),
+                    _buildDrawerItem(Icons.favorite, 'Favorite', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FavouritePage()),
+                      );
+                    }),
                     _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
                     _buildDrawerItem(
                         Icons.article, 'Terms or Conditions', () {}),
@@ -161,12 +155,16 @@ class _HomeScreenState extends State<HomeScreen> {
     "orderId": FieldValue.arrayUnion([orderRef.id]),
        }, SetOptions(merge: true));
 
-    Provider.of<CartProvider>(context, listen: false).clearCartData();
- await FirebaseAuth.instance.signOut();
+if (mounted) {
+  Provider.of<CartProvider>(context, listen: false).clearCartData();
+}
+await FirebaseAuth.instance.signOut();
 
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-  return SplashScreen();
-},));
+if (mounted) {
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+    return SplashScreen();
+  }));
+}
     
    
   },
@@ -319,17 +317,17 @@ class CategorySection extends StatelessWidget {
                 if (category['title'] == "All") {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BurgerScreen()),
+                    MaterialPageRoute(builder: (context) => BurgerGrid()),
                   );
                 } else if (category['title'] == "Pizza") {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PizzaScreen()),
+                    MaterialPageRoute(builder: (context) => PizzaGrid()),
                   );
                 } else if (category['title'] == "Burger") {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BurgerScreen()),
+                    MaterialPageRoute(builder: (context) => BurgerGrid()),
                   );
                 } else if (category['title'] == "Others") {
                   Navigator.push(
@@ -603,10 +601,10 @@ class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key, required this.selectedIndex});
 
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  BottomNavBarState createState() => BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
+class BottomNavBarState extends State<BottomNavBar> {
   late int _currentIndex;
 
   @override
@@ -630,7 +628,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 1:
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => FavouritePage()),
         );

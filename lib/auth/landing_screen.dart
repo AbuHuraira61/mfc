@@ -6,7 +6,7 @@ import 'package:mfc/presentation/Manager UI/Home Screen/ManagerHomeScreen.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 
 class LandingScreen extends StatefulWidget {
-  const LandingScreen({Key? key}) : super(key: key);
+  const LandingScreen({super.key});
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();

@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/Helper/order_status_provider.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/order_status_detail.dart';
+import 'package:provider/provider.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   const OrderStatusScreen({super.key});
@@ -17,60 +19,64 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchOrders();
+     Future.microtask(() =>
+        Provider.of<OrderStatusProvider>(context, listen: false).fetchOrders());
+   
   }
 
-  Future<void> _deleteOrder(String orderId) async {
-  final currentUser = FirebaseAuth.instance.currentUser;
-  if (currentUser == null) return;
+//   Future<void> _deleteOrder(String orderId) async {
+//   final currentUser = FirebaseAuth.instance.currentUser;
+//   if (currentUser == null) return;
 
-  // // Remove order from "orders" collection
-  // await FirebaseFirestore.instance.collection("orders").doc(orderId).delete();
+//   // // Remove order from "orders" collection
+//   // await FirebaseFirestore.instance.collection("orders").doc(orderId).delete();
 
-  // Remove orderId from user's document
-  await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).update({
-    "orderId": FieldValue.arrayRemove([orderId]),
-  });
+//   // Remove orderId from user's document
+//   await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).update({
+//     "orderId": FieldValue.arrayRemove([orderId]),
+//   });
 
-  // Refresh list
-  _fetchOrders();
-}
+//   // Refresh list
+//   _fetchOrders();
+// }
 
 
-  Future<void> _fetchOrders() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) return;
+//   Future<void> _fetchOrders() async {
+//     final currentUser = FirebaseAuth.instance.currentUser;
+//     if (currentUser == null) return;
 
-    final userDoc = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(currentUser.uid)
-        .get();
+//     final userDoc = await FirebaseFirestore.instance
+//         .collection("users")
+//         .doc(currentUser.uid)
+//         .get();
 
-    if (userDoc.exists) {
-      final orderIds = List<String>.from(userDoc.data()?['orderId'] ?? []);
+//     if (userDoc.exists) {
+//       final orderIds = List<String>.from(userDoc.data()?['orderId'] ?? []);
 
-      List<Map<String, dynamic>> fetchedOrders = [];
-      for (String orderId in orderIds) {
-        final orderDoc = await FirebaseFirestore.instance
-            .collection("orders")
-            .doc(orderId)
-            .get();
+//       List<Map<String, dynamic>> fetchedOrders = [];
+//       for (String orderId in orderIds) {
+//         final orderDoc = await FirebaseFirestore.instance
+//             .collection("orders")
+//             .doc(orderId)
+//             .get();
 
-        if (orderDoc.exists) {
-          final orderData = orderDoc.data()!;
-          orderData['orderId'] = orderId; // Attach orderId for display
-          fetchedOrders.add(orderData);
-        }
-      }
+//         if (orderDoc.exists) {
+//           final orderData = orderDoc.data()!;
+//           orderData['orderId'] = orderId; // Attach orderId for display
+//           fetchedOrders.add(orderData);
+//         }
+//       }
 
-      setState(() {
-        ordersList = fetchedOrders;
-      });
-    }
-  }
+//       setState(() {
+//         ordersList = fetchedOrders;
+//       });
+//     }
+//   }
 
   @override
   Widget build(BuildContext context) {
+    final orderProvider = Provider.of<OrderStatusProvider>(context);
+    final ordersList = orderProvider.ordersList;
     return Scaffold(
       backgroundColor: secondaryColor,
       appBar: AppBar(
@@ -86,9 +92,18 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
           ),
         ),
       ),
-      body: ordersList.isEmpty
-          ? Center(child: Center(child: Text('No order in this list!'),))
-          : ListView.builder(
+      body: Builder(builder: (_) {
+  if (orderProvider.isLoading) {
+    // 1️⃣ Loading…
+    return Center(child: CircularProgressIndicator());
+  }
+
+  if (orderProvider.ordersList.isEmpty) {
+    // 2️⃣ Fetched, but nothing there
+    return Center(child: Text('No order in this list!'));
+  }
+      
+      return ListView.builder(
               itemCount: ordersList.length,
               itemBuilder: (context, index) {
                 final order = ordersList[index];
@@ -106,11 +121,12 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                     },));
                   },
                   child: Padding(
+
                     padding: const EdgeInsets.all(12.0),
                     child: Container(
                       height: 100,
                       decoration: BoxDecoration(
-                        color: secondaryColor,
+                        color: primaryColor,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: primaryColor, width: 2),
                       ),
@@ -119,14 +135,14 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Order: #${index + 1 ?? 'N/A'}",
+                            Text("Order: #${index + 1}",
                                 style: TextStyle(
-                                    color: primaryColor, fontSize: 14)),
+                                    color: secondaryColor, fontSize: 14)),
                             RichText(
                               text: TextSpan(
                                 text: "Status: ",
                                 style: TextStyle(
-                                  color: primaryColor,
+                                  color: secondaryColor,
                                   fontSize: 14,
                                 ),
                                 children: [
@@ -135,8 +151,8 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                                     style: TextStyle(
                                       color: (order['status']?.toLowerCase() ==
                                               'pending')
-                                          ? primaryColor
-                                          : Colors.green,
+                                          ? Colors.amber
+                                          : Colors.lightBlueAccent,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -145,16 +161,16 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                             ),
                             Text(formattedDate,
                                 style: TextStyle(
-                                    color: primaryColor, fontSize: 12)),
-                                    if (order['status']?.toLowerCase() == 'completed' ||
-        order['status']?.toLowerCase() == 'canceled')
-      IconButton(
-        icon: Icon(Icons.delete, color: Colors.red),
+                                    color: secondaryColor, fontSize: 12)),
+                                    if (order['status']?.toLowerCase() == 'complete' ||
+        order['status']?.toLowerCase() == 'cancelled')
+           orderProvider.isLoading ? CircularProgressIndicator(
+            color: secondaryColor,
+           ) : IconButton(
+        icon: Icon(Icons.delete, color: secondaryColor),
         onPressed: () async {
-           await _deleteOrder(order['orderId']);
-          setState(() {
-           
-          });
+          
+           await OrderStatusProvider().deleteOrder(id);
           
         },
       ),
@@ -165,7 +181,9 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                   ),
                 );
               },
-            ),
-    );
+            );
+            }
+    ),);
+
   }
 }

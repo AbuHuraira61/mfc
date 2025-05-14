@@ -7,7 +7,7 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({Key? key}) : super(key: key);
+  const UserProfileScreen({super.key});
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mfc/Constants/custom_snackbar.dart';
 import 'package:mfc/Services/auth_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/Common/CustomTextFormField.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/LoginScreen.dart';
@@ -19,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final AuthService _authService = AuthService();
   final _signUpformkey = GlobalKey<FormState>();
   bool _indicator = false;
+  bool _isPasswordVisible = false;
 
   final Color primaryColor = const Color(0xff570101);
 
@@ -98,13 +100,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextController: _passwordController,
                               validatorText: 'password',
                               icon: Icons.lock,
+                              obscureText: !_isPasswordVisible, // 👈 use visibility flag
+          showSuffixIcon: true, // 👈 enable eye icon
+          toggleVisibility: () {
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
+
                             ),
                             SizedBox(height: 60),
                             InkWell(
-                              onTap: () {
-                                _indicator = true;
+                              onTap: () async {
+                                setState(() {
+  _indicator = true;
+});
+                                FocusNode().unfocus();
                                 if (_signUpformkey.currentState!.validate()) {
-                                  _authService
+                                await  _authService
                                       .signUpUser(
                                           _emailController.text,
                                           _passwordController.text,
@@ -112,9 +125,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           context)
                                       .then(
                                     (value) {
-                                      Get.snackbar('Success!',
+                                      CustomSnackbar().showSnackbar('Success!',
                                           'Email added sccuessfully!');
                                       _indicator = false;
+                                      _emailController.clear();
+                                      _passwordController.clear();
+                                      _nameController.clear();
                                       Get.off(HomeScreen());
                                     },
                                   ).onError(
@@ -123,8 +139,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       _indicator = false;
                                       return;
                                     },
+
                                   );
                                 }
+                                _emailController.clear();
+                                _passwordController.clear();
+                                _nameController.clear();
                               },
                               child: Container(
                                 padding: EdgeInsets.all(7.0),
@@ -169,7 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(width: 3),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => LoginScreen()),

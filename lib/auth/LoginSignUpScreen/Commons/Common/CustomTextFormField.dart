@@ -7,8 +7,13 @@ TextFormField customTextFormField({
   required TextEditingController TextController,
   required String validatorText,
   required IconData icon,
+   bool obscureText = false,
+  VoidCallback? toggleVisibility,
+  bool showSuffixIcon = false,
+
 }) {
   return TextFormField(
+     obscureText: obscureText,
     validator: (value) {
       if (value!.isEmpty) {
         return 'Please enter $validatorText';
@@ -30,6 +35,16 @@ TextFormField customTextFormField({
         minWidth: 40,
         minHeight: 40,
       ),
+      
+      suffixIcon: showSuffixIcon
+          ? IconButton(
+              icon: Icon(
+                obscureText ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey,
+              ),
+              onPressed: toggleVisibility,
+            )
+          : null,
       hintText: labletext,
       hintStyle: const TextStyle(
           color: Colors.grey, fontSize: 15, fontWeight: FontWeight.w500),

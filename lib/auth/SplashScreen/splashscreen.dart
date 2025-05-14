@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:mfc/Constants/colors.dart';
+import 'package:mfc/Services/notification_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/LoginScreen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';
 import 'package:mfc/auth/SplashScreen/CustomElevatedButton.dart';
@@ -18,6 +19,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+   
+    
   }
 
   // Future<void> _checkUserStatus() async {

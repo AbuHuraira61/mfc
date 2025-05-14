@@ -16,6 +16,7 @@ class _LoginscreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   final _loginFormkey = GlobalKey<FormState>();
   bool _indicator = false;
+   bool _isPasswordVisible = false;
 
   final Color primaryColor = const Color(0xff570101);
 
@@ -88,6 +89,14 @@ class _LoginscreenState extends State<LoginScreen> {
                               TextController: _PasswordController,
                               validatorText: 'password',
                               icon: Icons.lock,
+                               obscureText: !_isPasswordVisible, // 👈 use visibility flag
+          showSuffixIcon: true, // 👈 enable eye icon
+          toggleVisibility: () {
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
+
                             ),
                             const SizedBox(height: 10),
                             Container(
@@ -100,12 +109,24 @@ class _LoginscreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 60),
                             InkWell(
-                              onTap: () {
-                                _indicator = true;
-                                if (_loginFormkey.currentState!.validate()) {
-                                  _authService.loginUser(_EmailController.text,
+                              onTap: () async {
+                                     setState(() {
+  _indicator = true;
+});
+                                FocusScope.of(context).unfocus();
+                           
+                                if (_loginFormkey.currentState!.validate())  {
+                               await   _authService.loginUser(_EmailController.text,
                                       _PasswordController.text, context);
+
                                 }
+                              
+                               
+                                _EmailController.clear();
+                                _PasswordController.clear();
+                                  setState(() {
+  _indicator = false;
+});
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(7.0),
@@ -149,7 +170,7 @@ class _LoginscreenState extends State<LoginScreen> {
                         const SizedBox(width: 3),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SignUpScreen()),

@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/state_manager.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Common/foodItemCard.dart';
-import 'package:mfc/presentation/Customer%20UI/Home/Common/Singleburger_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 
-class BurgerScreen extends StatefulWidget {
+class BurgerGrid extends StatefulWidget {
  
   @override
-  State<BurgerScreen> createState() => _BurgerScreenState();
+  State<BurgerGrid> createState() => _BurgerGridState();
 }
 
-class _BurgerScreenState extends State<BurgerScreen> {
+class _BurgerGridState extends State<BurgerGrid> {
   Future<List<Map<String, dynamic>>> fetchBurgerData() async {
     // ✅ Use await to wait for data before accessing .docs
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
@@ -76,7 +76,7 @@ class _BurgerScreenState extends State<BurgerScreen> {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: (){
-            Get.off(SingleBurgerScreen( singleBurger:  burgers[index],));
+            Get.off(SingleItemDetailScreen( singleBurger:  burgers[index],));
           },
           child: FoodItemsCard(foodItems: burgers[index]));
       },
@@ -99,7 +99,7 @@ class _BurgerScreenState extends State<BurgerScreen> {
       //         Navigator.push(
       //           context,
       //           MaterialPageRoute(
-      //             builder: (context) => SingleBurgerScreen(),
+      //             builder: (context) => SingleBurgerGrid(),
       //           ),
       //         );
       //       },
