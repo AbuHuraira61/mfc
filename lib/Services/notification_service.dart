@@ -25,26 +25,28 @@ class NotificationService {
         provisional: false,
       );
 
-      print('User granted permission: ${settings.authorizationStatus}');
+      if (settings.authorizationStatus != AuthorizationStatus.authorized) {
+        debugPrint('Notification permissions not granted');
+        return;
+      }
 
-      // Initialize local notifications
+      // Initialize local notifications for Android
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
-      const DarwinInitializationSettings initializationSettingsIOS =
-          DarwinInitializationSettings();
+      
       const InitializationSettings initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS,
       );
 
       await _flutterLocalNotificationsPlugin.initialize(
         initializationSettings,
         onDidReceiveNotificationResponse: (NotificationResponse response) {
-          print('Notification tapped: ${response.payload}');
+          debugPrint('Notification tapped: ${response.payload}');
+          // Here you can handle notification tap
         },
       );
 
-      // Create notification channel for Android
+      // Create notification channel for Android with enhanced settings
       await _createNotificationChannel();
 
       // Handle background messages
@@ -52,32 +54,33 @@ class NotificationService {
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Got a message whilst in the foreground!');
-        print('Message data: ${message.data}');
+        debugPrint('Got a message whilst in the foreground!');
+        debugPrint('Message data: ${message.data}');
         _showNotification(message);
       });
 
       // Handle notification tap when app is in background
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        print('Message clicked!');
-        print('Message data: ${message.data}');
+        debugPrint('Message clicked!');
+        debugPrint('Message data: ${message.data}');
+        // Handle notification tap here
       });
 
-      // Handle token refresh
-      _firebaseMessaging.onTokenRefresh.listen((String token) async {
-        print('FCM Token Refreshed: $token');
-        await _updateUserToken(token);
-      });
-
-      // Get initial token
+      // Get and update FCM token
       String? token = await _firebaseMessaging.getToken();
       if (token != null) {
-        print('FCM Token: $token');
+        debugPrint('FCM Token: $token');
         await _updateUserToken(token);
       }
 
+      // Handle token refresh
+      _firebaseMessaging.onTokenRefresh.listen((String token) async {
+        debugPrint('FCM Token Refreshed: $token');
+        await _updateUserToken(token);
+      });
+
     } catch (e) {
-      print('Error initializing notifications: $e');
+      debugPrint('Error initializing notifications: $e');
     }
   }
 
@@ -90,6 +93,8 @@ class NotificationService {
       playSound: true,
       enableVibration: true,
       showBadge: true,
+      enableLights: true,
+      ledColor: Color(0xFF570101),
     );
 
     await _flutterLocalNotificationsPlugin
@@ -147,18 +152,16 @@ class NotificationService {
               playSound: true,
               enableVibration: true,
               showWhen: true,
-            ),
-            iOS: const DarwinNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
+              enableLights: true,
+              ticker: 'New notification',
+              fullScreenIntent: true,
             ),
           ),
           payload: message.data['orderId'],
         );
       }
     } catch (e) {
-      print('Error showing notification: $e');
+      debugPrint('Error showing notification: $e');
     }
   }
 
@@ -289,11 +292,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
-  const DarwinInitializationSettings initializationSettingsIOS =
-      DarwinInitializationSettings();
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
   );
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -318,11 +318,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           playSound: true,
           enableVibration: true,
           showWhen: true,
-        ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
         ),
       ),
       payload: message.data['orderId'],
