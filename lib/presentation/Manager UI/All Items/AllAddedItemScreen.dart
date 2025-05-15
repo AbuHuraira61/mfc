@@ -332,18 +332,11 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
                   ),
                 ),
                 SizedBox(height: 4),
-                Text(
-                  item["ingredients"],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                
                 SizedBox(height: 4),
                 Text(
                   item["description"],
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  style: TextStyle(color: Colors.white, fontSize: 8),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 6),

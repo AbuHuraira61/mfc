@@ -15,6 +15,7 @@ import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/DealsList.dar
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/pizza_grid.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/burger_grid.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Search/search_results_screen.dart';
 
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -46,7 +47,83 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+
+  final List<Widget> _screens = [
+    HomeContent(),
+    FavouritePage(),
+    OrderStatusScreen(),
+    UserProfileScreen(),
+  ];
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      _pageController.jumpToPage(index);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: _screens,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: const Color(0xff570101),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey[400],
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
+        items: [
+          _buildNavItem(Icons.home, "Home", 0),
+          _buildNavItem(Icons.favorite, "Favorite", 1),
+          _buildNavItem(Icons.shopping_bag_outlined, "Orders", 2),
+          _buildNavItem(Icons.person, "Profile", 3),
+        ],
+      ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(IconData icon, String label, int index) {
+    bool isSelected = _currentIndex == index;
+    return BottomNavigationBarItem(
+      icon: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.translationValues(0, isSelected ? -4 : 0, 0),
+        child: Icon(
+          icon,
+          size: isSelected ? 32 : 24,
+        ),
+      ),
+      label: label,
+    );
+  }
+}
+
+class HomeContent extends StatefulWidget {
+  const HomeContent({super.key});
+
+  @override
+  HomeContentState createState() => HomeContentState();
+}
+
+class HomeContentState extends State<HomeContent> {
   int selectedCategoryIndex = -1;
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
 
   final List<Map<String, dynamic>> categories = [
     {'title': 'All', 'image': 'assets/platter.png'},
@@ -54,6 +131,115 @@ class HomeScreenState extends State<HomeScreen> {
     {'title': 'Burger', 'image': 'assets/beefburger.png'},
     {'title': 'Others', 'image': 'assets/platter.png'},
   ];
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _performSearch(String query) async {
+    if (query.trim().isEmpty) return;
+
+    setState(() => _isSearching = true);
+
+    try {
+      List<QueryDocumentSnapshot> results = [];
+      
+      // Search in Pizza collection
+      var pizzaSnapshot = await FirebaseFirestore.instance
+          .collection('food_items')
+          .doc('Pizza')
+          .collection('items')
+          .get();
+      
+      results.addAll(pizzaSnapshot.docs.where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final name = (data['name'] ?? '').toString().toLowerCase();
+        return name.contains(query.toLowerCase());
+      }));
+
+      // Search in Burger collection
+      var burgerSnapshot = await FirebaseFirestore.instance
+          .collection('food_items')
+          .doc('Burger')
+          .collection('items')
+          .get();
+      
+      results.addAll(burgerSnapshot.docs.where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final name = (data['name'] ?? '').toString().toLowerCase();
+        return name.contains(query.toLowerCase());
+      }));
+
+      // Search in Others collection
+      var otherCategories = ['Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken'];
+      
+      for (var category in otherCategories) {
+        var othersSnapshot = await FirebaseFirestore.instance
+            .collection('food_items')
+            .doc(category)
+            .collection('items')
+            .get();
+        
+        results.addAll(othersSnapshot.docs.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final name = (data['name'] ?? '').toString().toLowerCase();
+          return name.contains(query.toLowerCase());
+        }));
+      }
+
+      // Search in Deals collection
+      var dealTypes = ['One Person Deal', 'Two Person Deals', 'Student Deals', 'Special Pizza Deals', 'Family Deals', 'Lunch Night Deals'];
+      
+      for (var dealType in dealTypes) {
+        var dealsSnapshot = await FirebaseFirestore.instance
+            .collection('deals')
+            .doc(dealType)
+            .collection('deal')
+            .get();
+        
+        results.addAll(dealsSnapshot.docs.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final name = (data['name'] ?? '').toString().toLowerCase();
+          return name.contains(query.toLowerCase());
+        }));
+      }
+
+      print('Found ${results.length} total results');
+      
+      if (mounted) {
+        setState(() => _isSearching = false);
+        
+        if (results.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('No items found matching "$query"'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchResultsScreen(searchResults: results),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Search error: $e');
+      if (mounted) {
+        setState(() => _isSearching = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error searching products: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,13 +396,34 @@ if (mounted) {
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: TextField(
+                      controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'Search',
+                        hintText: 'Search products...',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        suffixIcon: _isSearching 
+                          ? Padding(
+                              padding: EdgeInsets.all(10),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xff570101),
+                              ),
+                            )
+                          : _searchController.text.isNotEmpty
+                              ? IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() {});
+                                  },
+                                )
+                              : null,
                         border: InputBorder.none,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       ),
+                      onSubmitted: _performSearch,
+                      textInputAction: TextInputAction.search,
+                      onChanged: (value) => setState(() {}),
                     ),
                   ),
                 ),
@@ -264,7 +471,6 @@ if (mounted) {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(selectedIndex: 0),
     );
   }
 
@@ -591,95 +797,6 @@ class PopularItem extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class BottomNavBar extends StatefulWidget {
-  final int selectedIndex;
-
-  const BottomNavBar({super.key, required this.selectedIndex});
-
-  @override
-  BottomNavBarState createState() => BottomNavBarState();
-}
-
-class BottomNavBarState extends State<BottomNavBar> {
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.selectedIndex;
-  }
-
-  void _onItemTapped(int index) {
-    if (index == _currentIndex) return;
-
-    setState(() {
-      _currentIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FavouritePage()),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => OrderStatusScreen()),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UserProfileScreen()),
-        );
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: const Color(0xff570101),
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      currentIndex: _currentIndex,
-      onTap: _onItemTapped,
-      items: [
-        _buildNavItem(Icons.home, 0),
-        _buildNavItem(Icons.favorite, 1),
-        _buildNavItem(Icons.shopping_bag_outlined, 2),
-        _buildNavItem(Icons.person, 3),
-      ],
-    );
-  }
-
-  BottomNavigationBarItem _buildNavItem(IconData icon, int index) {
-    bool isSelected = _currentIndex == index;
-    return BottomNavigationBarItem(
-      icon: AnimatedContainer(
-        duration: const Duration(milliseconds: 20),
-        transform: Matrix4.translationValues(0, isSelected ? -4 : 0, 0),
-        child: Icon(
-          icon,
-          size: isSelected ? 32 : 24,
-        ),
-      ),
-      label: '',
     );
   }
 }
