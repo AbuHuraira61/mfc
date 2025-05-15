@@ -8,18 +8,19 @@ import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
 import 'package:mfc/auth/UserProfile.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Cart/Cart_screen.dart';
-
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Others/OtherItems_screen.dart';
-
 import 'package:mfc/presentation/Customer%20UI/Home/Deals%20Screen/DealsList.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Pizza%20Screen/pizza_grid.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Catagories/Burger%20Screen/burger_grid.dart';
 import 'package:mfc/presentation/Customer%20UI/Favorite/FavouritePage.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Search/search_results_screen.dart';
-
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/Orderstatus_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:mfc/Utilities/ImageDecoder.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -663,83 +664,309 @@ class _SliderSectionState extends State<SliderSection> {
 class PopularSection extends StatelessWidget {
   const PopularSection({super.key});
 
+  Future<List<Map<String, dynamic>>> _fetchPopularItems() async {
+    try {
+      List<Map<String, dynamic>> finalItems = [];
+      var collections = ['Pizza', 'Burger', 'Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken'];
+      
+      // First try to get items with order count
+      var ordersSnapshot = await FirebaseFirestore.instance
+          .collection('orders')
+          .get();
+
+      // Create a map to count item occurrences
+      Map<String, int> itemOrderCount = {};
+      
+      // Count occurrences of each item in orders
+      for (var order in ordersSnapshot.docs) {
+        var items = order.data()['items'] as List<dynamic>?;
+        if (items != null) {
+          for (var item in items) {
+            String itemId = item['id'];
+            itemOrderCount[itemId] = (itemOrderCount[itemId] ?? 0) + 1;
+          }
+        }
+      }
+
+      // If we have ordered items, get them first
+      if (itemOrderCount.isNotEmpty) {
+        // Sort items by order count
+        var sortedItems = itemOrderCount.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+        
+        // Get top item IDs
+        var topItemIds = sortedItems.map((e) => e.key).toList();
+        
+        // Fetch the actual item details
+        for (var collection in collections) {
+          if (finalItems.length >= 4) break;
+          
+          var snapshot = await FirebaseFirestore.instance
+              .collection('food_items')
+              .doc(collection)
+              .collection('items')
+              .where(FieldPath.documentId, whereIn: topItemIds)
+              .get();
+          
+          finalItems.addAll(snapshot.docs.map((doc) => {
+            ...doc.data(),
+            'id': doc.id,
+            'category': collection
+          }));
+        }
+      }
+
+      // If we don't have enough items from orders, get random items to fill up to 4
+      if (finalItems.length < 4) {
+        for (var collection in collections) {
+          if (finalItems.length >= 4) break;
+          
+          var snapshot = await FirebaseFirestore.instance
+              .collection('food_items')
+              .doc(collection)
+              .collection('items')
+              .get();
+          
+          var availableItems = snapshot.docs
+              .where((doc) => !finalItems.any((item) => item['id'] == doc.id))
+              .map((doc) => {
+                ...doc.data(),
+                'id': doc.id,
+                'category': collection
+              })
+              .toList();
+          
+          // Shuffle to get random items
+          availableItems.shuffle();
+          
+          // Add items until we have 4 or run out of items
+          finalItems.addAll(
+            availableItems.take(4 - finalItems.length)
+          );
+        }
+      }
+
+      // Take exactly 4 items
+      return finalItems.take(4).toList();
+    } catch (e) {
+      print('Error fetching popular items: $e');
+      
+      // If there's an error, try to get just random items
+      try {
+        List<Map<String, dynamic>> randomItems = [];
+        var collections = ['Pizza', 'Burger', 'Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken'];
+        
+        for (var collection in collections) {
+          if (randomItems.length >= 4) break;
+          
+          var snapshot = await FirebaseFirestore.instance
+              .collection('food_items')
+              .doc(collection)
+              .collection('items')
+              .get();
+          
+          var items = snapshot.docs.map((doc) => {
+            ...doc.data(),
+            'id': doc.id,
+            'category': collection
+          }).toList();
+          
+          items.shuffle();
+          randomItems.addAll(items.take(4 - randomItems.length));
+        }
+        
+        return randomItems.take(4).toList();
+      } catch (e) {
+        print('Error fetching random items: $e');
+        return [];
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: _fetchPopularItems(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildShimmerLoading();
+        }
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No items available'));
+        }
+
+        final items = snapshot.data!;
+        return Column(
           children: [
-            Expanded(
-              child: PopularItem(
-                'Beef Burger',
-                20,
-                'assets/beefburger.png',
-                imageHeight: screenWidth * 0.5,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: PopularItem(
+                    items[0]['name'],
+                    _getItemPrice(items[0]),
+                    items[0]['image'],
+                    itemData: items[0],
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                Expanded(
+                  child: PopularItem(
+                    items[1]['name'],
+                    _getItemPrice(items[1]),
+                    items[1]['image'],
+                    itemData: items[1],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: screenWidth * 0.02),
-            Expanded(
-              child: PopularItem(
-                'Special Pizza',
-                32,
-                'assets/largepizza.png',
-                imageHeight: screenWidth * 0.3,
-              ),
+            SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: PopularItem(
+                    items[2]['name'],
+                    _getItemPrice(items[2]),
+                    items[2]['image'],
+                    itemData: items[2],
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                Expanded(
+                  child: PopularItem(
+                    items[3]['name'],
+                    _getItemPrice(items[3]),
+                    items[3]['image'],
+                    itemData: items[3],
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-        SizedBox(height: screenWidth * 0.04),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: PopularItem(
-                'Beef Burger',
-                20,
-                'assets/beefburger.png',
-                imageHeight: screenWidth * 0.3,
-              ),
-            ),
-            SizedBox(width: screenWidth * 0.02),
-            Expanded(
-              child: PopularItem(
-                'Special Pizza',
-                32,
-                'assets/largepizza.png',
-                imageHeight: screenWidth * 0.3,
-              ),
-            ),
-          ],
-        ),
-      ],
+        );
+      },
+    );
+  }
+
+  // Helper method to get item price based on item type
+  double _getItemPrice(Map<String, dynamic> item) {
+    try {
+      // For pizza items with multiple prices
+      if (item.containsKey('prices')) {
+        // Get the smallest price from available sizes
+        var prices = item['prices'] as Map<String, dynamic>;
+        return prices.values
+            .map((price) => double.tryParse(price.toString()) ?? 0.0)
+            .reduce((a, b) => a < b ? a : b);
+      }
+      // For pizza items with old price structure
+      else if (item.containsKey('smallPrice')) {
+        return double.tryParse(item['smallPrice'].toString()) ?? 0.0;
+      }
+      // For regular items with single price
+      else if (item.containsKey('price')) {
+        return double.tryParse(item['price'].toString()) ?? 0.0;
+      }
+      // Default price if no price found
+      return 0.0;
+    } catch (e) {
+      print('Error parsing price for item ${item['name']}: $e');
+      return 0.0;
+    }
+  }
+
+  Widget _buildShimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(child: _buildShimmerItem()),
+              SizedBox(width: 8),
+              Expanded(child: _buildShimmerItem()),
+            ],
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(child: _buildShimmerItem()),
+              SizedBox(width: 8),
+              Expanded(child: _buildShimmerItem()),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerItem() {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
     );
   }
 }
 
 class PopularItem extends StatelessWidget {
   final String name;
-  final int price;
-  final String imagePath;
-  final double? imageHeight;
+  final double price;
+  final String? image;
+  final Map<String, dynamic> itemData;
 
-  const PopularItem(this.name, this.price, this.imagePath,
-      {super.key, this.imageHeight});
+  const PopularItem(this.name, this.price, this.image, {
+    super.key,
+    required this.itemData,
+  });
+
+  void _navigateToDetail(BuildContext context) {
+    // Get the category from itemData
+    String category = itemData['category'] ?? '';
+    
+    if (category.toLowerCase() == 'pizza') {
+      // For Pizza items, use SinglePizzaScreen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SinglePizzaScreen(singlePizza: itemData),
+        ),
+      );
+    } else {
+      // For all other items (Burger, Others), use SingleItemDetailScreen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SingleItemDetailScreen(singleBurger: itemData),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double defaultHeight = screenWidth * 0.3;
-
+    double screenHeight = MediaQuery.of(context).size.height;
+    
+    // Calculate responsive dimensions
+    double cardHeight = screenHeight * 0.25;
+    double cardPadding = screenWidth * 0.02;
+    double imageSize = screenWidth * 0.25;
+    double iconSize = screenWidth * 0.055;
+    
     return GestureDetector(
-      onTap: () {
-         },
+      onTap: () => _navigateToDetail(context),
       child: Container(
         width: double.infinity,
-        height: screenWidth * 0.55,
-        padding: EdgeInsets.all(screenWidth * 0.02),
+        height: cardHeight,
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: Color(0xff570101),
           borderRadius: BorderRadius.circular(15),
@@ -747,51 +974,81 @@ class PopularItem extends StatelessWidget {
         child: Stack(
           children: [
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: screenWidth * 0.01),
-                SizedBox(
-                  height: screenWidth * 0.36,
+                // Image Container
+                Expanded(
+                  flex: 3,
                   child: Center(
-                    child: Image.asset(
-                      imagePath,
-                      height: imageHeight ?? defaultHeight,
+                    child: Container(
+                      width: imageSize,
+                      height: imageSize,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: image != null && image!.isNotEmpty
+                            ? Image.memory(
+                                decodeImage(image!),
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/default-food.png",
+                                fit: BoxFit.cover,
+                              ),
+                      ),
                     ),
                   ),
                 ),
-                Text(
-                  name,
-                  style: TextStyle(
-                      color: Colors.white, fontSize: screenWidth * 0.04),
-                ),
-                Text(
-                  '\$$price',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: screenWidth * 0.035),
+                // Text Content
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: cardPadding,
+                      vertical: cardPadding * 0.5,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Product Name
+                        Text(
+                          name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: screenWidth * 0.035,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        // Price
+                        Text(
+                          'Rs. ${price.toStringAsFixed(0)}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: screenWidth * 0.032,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
+            // Cart Icon
             Positioned(
-              top: screenWidth * -0.02,
-              right: screenWidth * -0.02,
+              bottom: 0,
+              right: 0,
               child: IconButton(
-                icon: Icon(Icons.favorite_border, color: Colors.white),
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/favorites',
-                      arguments: {'name': name});
+                  // Handle add to cart
                 },
-              ),
-            ),
-            Positioned(
-              bottom: screenWidth * 0.01,
-              right: screenWidth * -0.02,
-              child: IconButton(
-                icon: Icon(Icons.shopping_cart, color: Colors.white),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/cart',
-                      arguments: {'name': name, 'price': price});
-                },
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
               ),
             ),
           ],
