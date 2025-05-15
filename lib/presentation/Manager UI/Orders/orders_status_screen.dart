@@ -5,27 +5,6 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/Order%20Details/admin_Order_details.dart';
 import 'package:mfc/Services/notification_service.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: PendingOrderScreen(),
-    );
-  }
-}
-
 class PendingOrderScreen extends StatefulWidget {
   const PendingOrderScreen({super.key});
 
@@ -37,7 +16,7 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 6,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
@@ -57,9 +36,10 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
             tabs: [
               Tab(text: "Pending"),
               Tab(text: "Preparing"),
-              Tab(text: "Assigneded"),
+              Tab(text: "Assigned"),
               Tab(text: "Dispatched"),
               Tab(text: "Complete"),
+              Tab(text: "Cancelled"),
             ],
           ),
         ),
@@ -72,6 +52,7 @@ class _PendingOrderScreenState extends State<PendingOrderScreen> {
             OrdersList(orderStatus: 'Assigned'),
             OrdersList(orderStatus: 'Dispatched'),
             OrdersList(orderStatus: 'Complete'),
+            OrdersList(orderStatus: 'cancelled'),
           ],
         ),
       ),
@@ -89,6 +70,7 @@ class OrdersList extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('orders')
           .where('status', isEqualTo: orderStatus)
+          .orderBy('timestamp', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

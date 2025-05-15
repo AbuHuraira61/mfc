@@ -56,6 +56,25 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
     }
   }
 
+  void _cancelOrder() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(widget.id)
+          .update({'status': 'cancelled'});
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order has been cancelled')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to cancel order: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,33 +105,48 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
             ),
           ),
           Text(
-            "Total ammount: ${widget.totalAmount}",
+            "Total amount: ${widget.totalAmount}",
             style: TextStyle(fontSize: 16),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            height: 45,
-            width: 280,
-            child: ElevatedButton(
-              onPressed: () {
-                _acceptOrder();
-              },
-              child: Text(
-                'Accept Order',
-                style: TextStyle(color: secondaryColor, fontSize: 16),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                height: 45,
+                width: 130,
+                child: ElevatedButton(
+                  onPressed: _acceptOrder,
+                  child: Text(
+                    'Accept Order',
+                    style: TextStyle(color: secondaryColor, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      )),
+                ),
               ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  )),
-            ),
+              SizedBox(
+                height: 45,
+                width: 130,
+                child: ElevatedButton(
+                  onPressed: _cancelOrder,
+                  child: Text(
+                    'Cancel Order',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      )),
+                ),
+              ),
+            ],
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
         ],
       ),
     );
