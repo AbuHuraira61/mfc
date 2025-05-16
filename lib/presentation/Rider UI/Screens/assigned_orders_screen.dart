@@ -86,6 +86,10 @@ class AssignedOrdersScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 16),
                       ),
                       Text(
+                        'Phone: ${order['phone'] ?? 'N/A'}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text(
                         'Total Amount: \$${order['totalPrice'] ?? '0.00'}',
                         style: TextStyle(
                           fontSize: 16,
