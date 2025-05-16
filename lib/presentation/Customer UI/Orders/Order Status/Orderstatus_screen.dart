@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mfc/Constants/colors.dart';
-import 'package:mfc/Helper/order_status_provider.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/order_status_detail.dart';
-import 'package:provider/provider.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   const OrderStatusScreen({super.key});
@@ -14,69 +12,48 @@ class OrderStatusScreen extends StatefulWidget {
 }
 
 class _OrderStatusScreenState extends State<OrderStatusScreen> {
-  List<Map<String, dynamic>> ordersList = [];
+  bool _isDeleting = false;
 
-  @override
-  void initState() {
-    super.initState();
-     Future.microtask(() =>
-        Provider.of<OrderStatusProvider>(context, listen: false).fetchOrders());
-   
+  Future<void> _deleteOrder(String orderId) async {
+    if (_isDeleting) return;
+    
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) return;
+
+      // Only remove orderId from user's document
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(currentUser.uid)
+          .update({
+        "orderId": FieldValue.arrayRemove([orderId]),
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order removed from your list')),
+      );
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to remove order: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    }
   }
-
-//   Future<void> _deleteOrder(String orderId) async {
-//   final currentUser = FirebaseAuth.instance.currentUser;
-//   if (currentUser == null) return;
-
-//   // // Remove order from "orders" collection
-//   // await FirebaseFirestore.instance.collection("orders").doc(orderId).delete();
-
-//   // Remove orderId from user's document
-//   await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).update({
-//     "orderId": FieldValue.arrayRemove([orderId]),
-//   });
-
-//   // Refresh list
-//   _fetchOrders();
-// }
-
-
-//   Future<void> _fetchOrders() async {
-//     final currentUser = FirebaseAuth.instance.currentUser;
-//     if (currentUser == null) return;
-
-//     final userDoc = await FirebaseFirestore.instance
-//         .collection("users")
-//         .doc(currentUser.uid)
-//         .get();
-
-//     if (userDoc.exists) {
-//       final orderIds = List<String>.from(userDoc.data()?['orderId'] ?? []);
-
-//       List<Map<String, dynamic>> fetchedOrders = [];
-//       for (String orderId in orderIds) {
-//         final orderDoc = await FirebaseFirestore.instance
-//             .collection("orders")
-//             .doc(orderId)
-//             .get();
-
-//         if (orderDoc.exists) {
-//           final orderData = orderDoc.data()!;
-//           orderData['orderId'] = orderId; // Attach orderId for display
-//           fetchedOrders.add(orderData);
-//         }
-//       }
-
-//       setState(() {
-//         ordersList = fetchedOrders;
-//       });
-//     }
-//   }
 
   @override
   Widget build(BuildContext context) {
-    final orderProvider = Provider.of<OrderStatusProvider>(context);
-    final ordersList = orderProvider.ordersList;
+    final currentUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: secondaryColor,
       appBar: AppBar(
@@ -92,98 +69,134 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
           ),
         ),
       ),
-      body: Builder(builder: (_) {
-  if (orderProvider.isLoading) {
-    // 1️⃣ Loading…
-    return Center(child: CircularProgressIndicator());
-  }
+      body: currentUser == null 
+          ? Center(child: Text('Please login to view orders'))
+          : StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUser.uid)
+                  .snapshots(),
+              builder: (context, userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-  if (orderProvider.ordersList.isEmpty) {
-    // 2️⃣ Fetched, but nothing there
-    return Center(child: Text('No order in this list!'));
-  }
-      
-      return ListView.builder(
-              itemCount: ordersList.length,
-              itemBuilder: (context, index) {
-                final order = ordersList[index];
-                final id = order['orderId'];
-                final timestamp = order['timestamp'] as Timestamp?;
-                // final date = timestamp?.toDate().toString() ?? 'N/A';
-                final dateTime = timestamp?.toDate();
-                final formattedDate = dateTime != null
-                    ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} - ${dateTime.day}/${dateTime.month}"
-                    : 'N/A';
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                     return OrderStatusDetail(id: id,);
-                    },));
-                  },
-                  child: Padding(
+                if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                  return Center(child: Text('No orders found'));
+                }
 
-                    padding: const EdgeInsets.all(12.0),
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: primaryColor, width: 2),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Order: #${index + 1}",
-                                style: TextStyle(
-                                    color: secondaryColor, fontSize: 14)),
-                            RichText(
-                              text: TextSpan(
-                                text: "Status: ",
-                                style: TextStyle(
-                                  color: secondaryColor,
-                                  fontSize: 14,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: order['status'] ?? 'N/A',
-                                    style: TextStyle(
-                                      color: (order['status']?.toLowerCase() ==
-                                              'pending')
-                                          ? Colors.amber
-                                          : Colors.lightBlueAccent,
-                                      fontSize: 14,
+                final orderIds = List<String>.from(userSnapshot.data!.get('orderId') ?? []);
+
+                if (orderIds.isEmpty) {
+                  return Center(child: Text('No orders in this list!'));
+                }
+
+                return StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('orders')
+                      .where(FieldPath.documentId, whereIn: orderIds)
+                      .orderBy('timestamp', descending: true)
+                      .snapshots(),
+                  builder: (context, ordersSnapshot) {
+                    if (ordersSnapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (!ordersSnapshot.hasData || ordersSnapshot.data!.docs.isEmpty) {
+                      return Center(child: Text('No orders found'));
+                    }
+
+                    final orders = ordersSnapshot.data!.docs;
+
+                    return ListView.builder(
+                      itemCount: orders.length,
+                      itemBuilder: (context, index) {
+                        final order = orders[index].data() as Map<String, dynamic>;
+                        final id = orders[index].id;
+                        final timestamp = order['timestamp'] as Timestamp?;
+                        final dateTime = timestamp?.toDate();
+                        final formattedDate = dateTime != null
+                            ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} - ${dateTime.day}/${dateTime.month}"
+                            : 'N/A';
+
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderStatusDetail(id: id),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: primaryColor, width: 2),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Order: #${index + 1}",
+                                      style: TextStyle(color: secondaryColor, fontSize: 14),
                                     ),
-                                  ),
-                                ],
+                                    RichText(
+                                      text: TextSpan(
+                                        text: "Status: ",
+                                        style: TextStyle(
+                                          color: secondaryColor,
+                                          fontSize: 14,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: order['status'] ?? 'N/A',
+                                            style: TextStyle(
+                                              color: (order['status']?.toLowerCase() == 'pending')
+                                                  ? Colors.amber
+                                                  : Colors.lightBlueAccent,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      formattedDate,
+                                      style: TextStyle(color: secondaryColor, fontSize: 12),
+                                    ),
+                                    if (order['status']?.toLowerCase() == 'complete' ||
+                                        order['status']?.toLowerCase() == 'cancelled')
+                                      _isDeleting
+                                          ? SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(
+                                                color: secondaryColor,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : IconButton(
+                                              icon: Icon(Icons.delete, color: secondaryColor),
+                                              onPressed: () => _deleteOrder(id),
+                                            ),
+                                  ],
+                                ),
                               ),
                             ),
-                            Text(formattedDate,
-                                style: TextStyle(
-                                    color: secondaryColor, fontSize: 12)),
-                                    if (order['status']?.toLowerCase() == 'complete' ||
-        order['status']?.toLowerCase() == 'cancelled')
-           orderProvider.isLoading ? CircularProgressIndicator(
-            color: secondaryColor,
-           ) : IconButton(
-        icon: Icon(Icons.delete, color: secondaryColor),
-        onPressed: () async {
-          
-           await OrderStatusProvider().deleteOrder(id);
-          
-        },
-      ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 );
               },
-            );
-            }
-    ),);
-
+            ),
+    );
   }
 }

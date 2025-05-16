@@ -31,7 +31,14 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
           .doc(widget.id)
           .get();
       
-      final customerToken = orderDoc.data()?['FCMToken'] ?? '';
+      final userId = orderDoc.data()?['userId'] ?? '';
+      
+      // Get customer's token
+      final customerDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      final customerToken = customerDoc.data()?['deviceToken'] ?? '';
 
       await FirebaseFirestore.instance
           .collection('orders')
@@ -39,10 +46,18 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
           .update({'status': 'Preparing'}); 
 
       // Send notification to customer
-      await NotificationService().sendOrderAcceptedNotification(
-        customerToken,
-        widget.id,
-      );
+      if (customerToken.isNotEmpty) {
+        final notificationServices = NotificationServices();
+        await notificationServices.sendNotification(
+          token: customerToken,
+          title: 'Order Update',
+          body: 'We are working on your order. Stay with us!',
+          data: {
+            'type': 'order',
+            'orderId': widget.id,
+          },
+        );
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order status updated to Preparing')),

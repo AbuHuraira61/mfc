@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -12,13 +13,18 @@ import 'package:mfc/presentation/Customer UI/Home/Home_screen.dart';
 import 'package:mfc/presentation/Manager UI/Home Screen/ManagerHomeScreen.dart';
 import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final notificationService = NotificationService();
-  await notificationService.initialize();
-
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  
   runApp(const MyApp());
 }
 
@@ -57,6 +63,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      // Initialize notifications
+    final notificationServices = NotificationServices();
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    notificationServices.setupInteractMessage(context);
+    notificationServices.isTokenRefresh();
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => CartProvider()),

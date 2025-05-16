@@ -127,7 +127,6 @@ class HomeContentState extends State<HomeContent> {
   bool _isSearching = false;
 
   final List<Map<String, dynamic>> categories = [
-    {'title': 'All', 'image': 'assets/platter.png'},
     {'title': 'Pizza', 'image': 'assets/largepizza.png'},
     {'title': 'Burger', 'image': 'assets/beefburger.png'},
     {'title': 'Others', 'image': 'assets/platter.png'},
@@ -521,12 +520,7 @@ class CategorySection extends StatelessWidget {
               onTap: () {
                 onCategorySelected(index);
                 // Navigate using Navigator
-                if (category['title'] == "All") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BurgerGrid()),
-                  );
-                } else if (category['title'] == "Pizza") {
+                if (category['title'] == "Pizza") {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => PizzaGrid()),

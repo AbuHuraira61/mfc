@@ -195,10 +195,19 @@ class OrderCard extends StatelessWidget {
                           });
 
                           // Send notification to rider
-                          await NotificationService().sendOrderAssignedNotification(
-                            riderToken,
-                            id,
-                          );
+                          if (riderToken.isNotEmpty) {
+                            final notificationServices = NotificationServices();
+                            await notificationServices.sendNotification(
+                              token: riderToken,
+                              title: 'New Order Assigned',
+                              body: 'You have been assigned a new order from $customerName',
+                              data: {
+                                'type': 'order',
+                                'orderId': id,
+                                'customerName': customerName,
+                              },
+                            );
+                          }
 
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(

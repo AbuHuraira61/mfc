@@ -10,7 +10,7 @@ import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final NotificationService _notificationService = NotificationService();
+  // final NotificationService _notificationService = NotificationService();
 
   Future<void> signUpUser(
       String email, String password, String name, BuildContext context) async {
@@ -22,7 +22,7 @@ class AuthService {
       );
 
       // Get device token
-      String deviceToken = await _notificationService.getDeviceToken();
+      // String deviceToken = await _notificationService.getDeviceToken();
 
       // Determine role based on email or password
       String role = (email == "admin@example.com" || password == "Admin@123")
@@ -34,7 +34,7 @@ class AuthService {
         "email": email,
         "role": role,
         "name": name,
-        "deviceToken": deviceToken,
+        // "deviceToken": deviceToken,
       });
 
       // Navigate to the correct screen
@@ -54,11 +54,11 @@ class AuthService {
       );
 
       // Get device token
-      String deviceToken = await _notificationService.getDeviceToken();
+      // String deviceToken = await _notificationService.getDeviceToken();
 
       // Update device token in Firestore
       await _firestore.collection("users").doc(userCredential.user!.uid).update({
-        "deviceToken": deviceToken,
+        // "deviceToken": deviceToken,
       });
 
       CustomSnackbar().showSnackbar('Success!', 'Login successful!');
