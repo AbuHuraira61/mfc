@@ -93,10 +93,12 @@ class ChatbotService {
   Future<String> processMessage(String userMessage) async {
     final lowerMessage = userMessage.toLowerCase();
     try {
+      // For best dishes and recommendations - use feedback data
       if (lowerMessage.contains('best') || lowerMessage.contains('popular') || 
-          lowerMessage.contains('recommend') || lowerMessage.contains('top rated')) {
+          lowerMessage.contains('recommend') || lowerMessage.contains('top rated') ||
+          lowerMessage.contains('tasty') || lowerMessage.contains('맛있') ||
+          lowerMessage.contains('konsi dish') || lowerMessage.contains('kya khaun')) {
         try {
-          // Feedback-based
           final foodItems = await getAllFoodItems();
           final feedbacks = await getAllFeedback();
           
@@ -105,54 +107,59 @@ class ChatbotService {
                    _getPopularItems(foodItems);
           }
 
-          final prompt = '''You are a restaurant chatbot for MFC. Based on the following menu items and customer feedback data, recommend items from our menu. Only recommend items that are listed in the MENU ITEMS section below.
+          final prompt = '''You are a restaurant chatbot for MFC. Based on the following customer feedback data, recommend items from our menu. Only recommend items that have positive feedback and good ratings.
 
 USER QUESTION: "${userMessage}"
-
-MENU ITEMS:
-${_formatFoodItemsForPrompt(foodItems)}
 
 CUSTOMER FEEDBACK:
 ${_formatFeedbackForPrompt(feedbacks)}
 
 Instructions:
-1. ONLY recommend items that are listed in the MENU ITEMS section above
-2. DO NOT make up or suggest items that are not in our menu
-3. Base your recommendations on actual customer ratings and reviews
-4. Include the rating if available
-5. Keep the response concise and friendly
-6. If you can't find relevant feedback, recommend based on menu categories but mention that it's not based on feedback''';
+1. ONLY recommend items that have positive feedback or high ratings when user ask about best dish or what they wanted to eat
+2. DO NOT make up or suggest items without feedback when user ask about best dish or what they wanted to eat
+3. Base your recommendations STRICTLY on customer ratings and reviews
+4. Include the rating when available
+5. Keep the response concise and friendly in Urdu/Roman Urdu
+6. If you can't find relevant feedback, politely say so''';
           return await _groqService.getChatResponse(prompt);
         } catch (e) {
           print('Error processing menu recommendation: $e');
           return "Maaf kijiye, menu ki maloomat hasil karne mein masla aa gaya hai. Kya aap thodi dair baad dobara koshish kar sakte hain?";
         }
       } 
+      // For health and diet related queries - only use ingredients data
       else if (lowerMessage.contains('health') || lowerMessage.contains('diet') || 
-               lowerMessage.contains('allergy') || lowerMessage.contains('nutrition')) {
-        final foodItems = await getAllFoodItems();
-        if (foodItems.isEmpty) {
-          return "Hamare menu ki maloomat abhi load nahi ho pa rahi. Barah-e-karam thodi dair baad dobara koshish karein.";
-        }
-        final prompt = '''You are a restaurant chatbot for MFC. Based on our menu items and their ingredients listed below, recommend suitable items for the customer's dietary needs. Only recommend items that are listed in the MENU ITEMS section.
+               lowerMessage.contains('allergy') || lowerMessage.contains('nutrition') ||
+               lowerMessage.contains('ingredients') || lowerMessage.contains('sugar') ||
+               lowerMessage.contains('calories') || lowerMessage.contains('spicy')) {
+        try {
+          final foodItems = await getAllFoodItems();
+          if (foodItems.isEmpty) {
+            return "Hamare menu ki maloomat abhi load nahi ho pa rahi. Barah-e-karam thodi dair baad dobara koshish karein.";
+          }
+          final prompt = '''You are a restaurant chatbot for MFC. Based ONLY on our menu items and their ingredients listed below, recommend suitable items for the customer's dietary needs. Focus on ingredients and nutritional aspects.
 
 USER QUESTION: "${userMessage}"
 
-MENU ITEMS:
+MENU ITEMS WITH INGREDIENTS:
 ${_formatFoodItemsForPrompt(foodItems)}
 
 Instructions:
-1. ONLY recommend items that are listed in the MENU ITEMS section above
-2. DO NOT make up or suggest items that are not in our menu
-3. Analyze the ingredients carefully to match dietary requirements
-4. If unsure about an ingredient's effects on health conditions, err on the side of caution
-5. Keep the response concise and friendly
-6. If no suitable items are found, politely inform the user and suggest consulting with staff for customizations
-7. Include a health disclaimer when appropriate''';
-        return await _groqService.getChatResponse(prompt);
+1. ONLY use ingredients information to make recommendations
+2. DO NOT consider customer feedback or ratings
+3. Analyze ingredients carefully for dietary requirements
+4. If unsure about ingredients' effects on health conditions, err on the side of caution
+5. Keep the response concise and friendly in Urdu/Roman Urdu
+6. If no suitable items found, suggest consulting with staff for customizations
+7. Include relevant health disclaimers when appropriate''';
+          return await _groqService.getChatResponse(prompt);
+        } catch (e) {
+          print('Error processing health/diet query: $e');
+          return "Kuch masla aa gaya hai. Barah-e-karam dobara koshish karein ya staff se raabta karein.";
+        }
       }
       else {
-        return "I can help you with:\n1. Finding our best-rated dishes based on customer feedback\n2. Recommending dishes from our menu based on your dietary requirements or health conditions\n\nPlease ask me about either of these topics!";
+        return "Main aap ki in cheezon mein madad kar sakta hoon:\n\n1. Customer feedback ki base par best dishes recommend kar sakta hoon\n2. Ingredients ki base par health aur diet ke hisaab se dishes suggest kar sakta hoon\n\nIn mein se kisi bhi topic ke baare mein poochein!";
       }
     } catch (e) {
       return "Kuch masla aa gaya hai. Barah-e-karam dobara koshish karein ya staff se raabta karein.";
