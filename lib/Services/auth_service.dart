@@ -10,7 +10,7 @@ import 'package:mfc/presentation/Rider%20UI/rider_home.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final NotificationService _notificationService = NotificationService();
+  // final NotificationService _notificationService = NotificationService();
 
   Future<void> signUpUser(
       String email, String password, String name, BuildContext context) async {
@@ -22,7 +22,7 @@ class AuthService {
       );
 
       // Get device token
-      String deviceToken = await _notificationService.getDeviceToken();
+      // String deviceToken = await _notificationService.getDeviceToken();
 
       // Determine role based on email or password
       String role = (email == "admin@example.com" || password == "Admin@123")
@@ -34,7 +34,7 @@ class AuthService {
         "email": email,
         "role": role,
         "name": name,
-        "deviceToken": deviceToken,
+        // "deviceToken": deviceToken,
       });
 
       // Navigate to the correct screen
@@ -48,32 +48,66 @@ class AuthService {
 
   Future<void> loginUser(String email, String password, BuildContext context) async {
     try {
+      // First attempt to sign in with Firebase Auth
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Get device token
-      String deviceToken = await _notificationService.getDeviceToken();
-
-      // Update device token in Firestore
-      await _firestore.collection("users").doc(userCredential.user!.uid).update({
-        "deviceToken": deviceToken,
-      });
-
-      CustomSnackbar().showSnackbar('Success!', 'Login successful!');
-
+      // Check if the user document exists in Firestore
       DocumentSnapshot userDoc = await _firestore
           .collection("users")
           .doc(userCredential.user!.uid)
           .get();
 
-      if (userDoc.exists) {
-        String role = userDoc['role'] ?? 'customer';
+      if (!userDoc.exists) {
+        // If document doesn't exist, create it with default values
+        await _firestore.collection("users").doc(userCredential.user!.uid).set({
+          "email": email,
+          "role": "customer", // Default role
+          "name": email.split('@')[0], // Use email username as default name
+        });
+        
+        // Fetch the newly created document
+        userDoc = await _firestore
+            .collection("users")
+            .doc(userCredential.user!.uid)
+            .get();
+      }
+
+      // Now that we're sure the document exists, we can proceed
+      String role = userDoc['role'] ?? 'customer';
+      
+      // Show success message
+      if (context.mounted) {
+        CustomSnackbar().showSnackbar('Success!', 'Login successful!');
+        // Navigate user based on role
         _navigateUser(role, context);
       }
+    } on FirebaseAuthException catch (e) {
+      // Handle specific Firebase Auth errors
+      String errorMessage = 'Login failed';
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'No user found with this email';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Wrong password provided';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This account has been disabled';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Invalid email address';
+          break;
+        default:
+          errorMessage = 'Login failed: ${e.message}';
+      }
+      print("Firebase Auth Error: ${e.code} - ${e.message}");
+      CustomSnackbar().showSnackbar('Error!', errorMessage);
     } catch (e) {
-      print("Error: $e");
+      // Handle other errors
+      print("General Error: $e");
       CustomSnackbar().showSnackbar('Error!', 'Login failed: $e');
     }
   }

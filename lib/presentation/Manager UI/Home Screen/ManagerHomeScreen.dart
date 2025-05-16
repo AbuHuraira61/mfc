@@ -12,6 +12,7 @@ import 'package:mfc/presentation/Manager%20UI/Feedback/Feedback_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Manage%20Deals/AddDeals_screen.dart';
 import 'package:mfc/presentation/Manager%20UI/Orders/orders_status_screen.dart';
 import 'package:mfc/presentation/Manager UI/Statistics/StatisticsScreen.dart';
+import 'package:mfc/presentation/Manager%20UI/Rider%20Profile%20Management/RiderProfileManagementScreen.dart';
 
 class ManagerHomeScreen extends StatefulWidget {
   const ManagerHomeScreen({super.key});
@@ -205,6 +206,18 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: _buildButton(Icons.feedback_outlined, "Feedback")),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RiderProfileManagementScreen()),
+                      );
+                    },
+                    splashColor: Colors.white.withOpacity(0.3),
+                    highlightColor: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    child: _buildButton(Icons.manage_accounts, "Profile Management")),
                 InkWell(
                     onTap: () {
                       _logout(context);

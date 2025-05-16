@@ -129,7 +129,7 @@ class StatisticsScreen extends StatelessWidget {
                                         months[value.toInt() - 1],
                                         style: TextStyle(
                                           color: Colors.grey[600],
-                                          fontSize: 12,
+                                          fontSize: 10,
                                         ),
                                       ),
                                     );
@@ -259,7 +259,7 @@ class StatisticsScreen extends StatelessWidget {
                                         months[value.toInt()],
                                         style: TextStyle(
                                           color: Colors.grey[600],
-                                          fontSize: 12,
+                                          fontSize: 10,
                                         ),
                                       ),
                                     );
@@ -272,10 +272,10 @@ class StatisticsScreen extends StatelessWidget {
                                   reservedSize: 40,
                                   getTitlesWidget: (value, meta) {
                                     return Text(
-                                      '\$${value.toInt()}',
+                                      '\Rs.${value.toInt()}',
                                       style: TextStyle(
                                         color: Colors.grey[600],
-                                        fontSize: 12,
+                                        fontSize: 10,
                                       ),
                                     );
                                   },
@@ -383,11 +383,11 @@ class StatisticsScreen extends StatelessWidget {
                                     ),
                                     SizedBox(width: 16),
                                     Text(
-                                      '\$${earnings.toStringAsFixed(2)}',
+                                      '\Rs.${earnings.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         color: primaryColor,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],

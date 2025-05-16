@@ -86,6 +86,7 @@ class FeedbackScreen extends StatelessWidget {
               final feedback = data['feedback'] is Map
                   ? Map<String, dynamic>.from(data['feedback'])
                   : null;
+              final items = (data['items'] as List?)?.cast<Map<String, dynamic>>() ?? [];
 
               if (feedback == null) return SizedBox.shrink();
 
@@ -156,6 +157,40 @@ class FeedbackScreen extends StatelessWidget {
                       ),
                       itemCount: 5,
                       itemSize: 20.0,
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'Ordered Items:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                      height: 40,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Container(
+                            margin: EdgeInsets.only(right: 8),
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${item['name']} x${item['quantity']}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     SizedBox(height: 12),
                     Text(

@@ -45,52 +45,91 @@ String? getCurrentUserId() {
 final _checkoutFormKey = GlobalKey<FormState>();
 
 class _checkoutScreenState extends State<checkoutScreen> {
+  bool _isGettingLocation = false;
+
   // Function to get and set current location
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Get.snackbar('Location Error', 'Location services are disabled.');
-      return;
-    }
+    setState(() {
+      _isGettingLocation = true;
+    });
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Get.snackbar('Permission Denied', 'Location permission denied.');
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        Get.snackbar('Location Error', 'Location services are disabled.');
         return;
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      Get.snackbar(
-          'Permission Denied', 'Location permissions are permanently denied.');
-      return;
-    }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          Get.snackbar('Permission Denied', 'Location permission denied.');
+          return;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        Get.snackbar(
+            'Permission Denied', 'Location permissions are permanently denied.');
+        return;
+      }
 
-    // Optionally open in Google Maps
-    final googleMapUrl =
-        'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
-    if (await canLaunchUrl(Uri.parse(googleMapUrl))) {
-      await launchUrl(Uri.parse(googleMapUrl));
-    }
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
 
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    if (placemarks.isNotEmpty) {
-      final place = placemarks.first;
-      final address = [
-        place.street,
-        place.subLocality,
-        place.locality,
-        place.postalCode,
-        place.country
-      ].where((s) => s != null && s.isNotEmpty).join(', ');
+      // Optionally open in Google Maps
 
+    final Uri googleMapUrl = Uri.parse(
+  'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}',
+);
+
+if (await canLaunchUrl(googleMapUrl)) {
+  await launchUrl(
+    googleMapUrl,
+    mode: LaunchMode.externalApplication,
+  );
+} else {
+  Get.snackbar('Error', 'Could not open Google Maps.');
+}
+
+
+//       final googleMapUrl =
+//           'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
+//           final Uri url = Uri.parse(googleMapUrl);
+// if (await canLaunchUrl(url)) {
+//   await launchUrl(url, mode: LaunchMode.externalApplication);
+// } else {
+//   Get.snackbar('Error', 'Could not launch Google Maps');
+// }
+// //       if (await canLaunchUrl(Uri.parse(googleMapUrl))) {
+// //         // await launchUrl(Uri.parse(googleMapUrl));
+// //         await launchUrl(
+// //   Uri.parse(googleMapUrl),
+// //   mode: LaunchMode.externalApplication,
+// // );
+// //       }
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        final address = [
+          place.street,
+          place.subLocality,
+          place.locality,
+          place.postalCode,
+          place.country
+        ].where((s) => s != null && s.isNotEmpty).join(', ');
+
+        setState(() {
+          addressController.text = address;
+        });
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to get location: $e');
+    } finally {
       setState(() {
-        addressController.text = address;
+        _isGettingLocation = false;
       });
     }
   }
@@ -221,16 +260,37 @@ class _checkoutScreenState extends State<checkoutScreen> {
                         const SizedBox(height: 10),
                         Center(
                           child: ElevatedButton(
-                            onPressed: _getCurrentLocation,
-                            child: Text(
-                              'Use Current Location',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            onPressed: _isGettingLocation ? null : _getCurrentLocation,
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),
-                                )),
+                                ),
+                                minimumSize: Size(double.infinity, 50),
+                            ),
+                            child: _isGettingLocation
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        'Getting Location...',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  )
+                                : Text(
+                                    'Use Current Location',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                           ),
                         ),
                       ],
@@ -324,11 +384,27 @@ class _checkoutScreenState extends State<checkoutScreen> {
       "totalPrice": widget.totalPrice.toString(),
       "timestamp": Timestamp.now(),
       "items": itemsList,
-      "FCMToken": await NotificationService().getDeviceToken(),
     });
 
-    // Send notification to admin about new order
-    await NotificationService().sendNewOrderNotification(orderRef.id);
+    // Send notification to admin
+    final adminDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .where('role', isEqualTo: 'admin')
+        .get();
+    final adminToken = adminDoc.docs.isNotEmpty ? adminDoc.docs.first['deviceToken'] ?? '' : '';
+
+    if (adminToken.isNotEmpty) {
+      final notificationServices = NotificationServices();
+      await notificationServices.sendNotification(
+        token: adminToken,
+        title: 'New Order Placed',
+        body: 'A new order has been placed by ${nameController.text}',
+        data: {
+          'type': 'order',
+          'orderId': orderRef.id,
+        },
+      );
+    }
 
     for (var item in cartItems) {
       await dbHelper.delete(item.id.toString());

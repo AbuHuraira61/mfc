@@ -12,23 +12,43 @@ class CheckAdressButton extends StatelessWidget {
     return Expanded(
                                         child: ElevatedButton.icon(
                                           onPressed: () async {
-                                            final query =
-                                                Uri.encodeComponent(address);
-                                            final googleUrl =
-                                                'https://www.google.com/maps/search/?api=1&query=$query';
+  final query = Uri.encodeComponent(address);
+  final googleUrl = 'https://www.google.com/maps/search/?api=1&query=$query';
+  print('Launching URL: $googleUrl');
 
-                                            if (await canLaunchUrl(
-                                                Uri.parse(googleUrl))) {
-                                              await launchUrl(
-                                                Uri.parse(googleUrl),
-                                                mode: LaunchMode
-                                                    .externalApplication,
-                                              );
-                                            } else {
-                                              Get.snackbar('Error',
-                                                  'Could not open Google Maps');
-                                            }
-                                          },
+  final uri = Uri.parse(googleUrl);
+  try {
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched) {
+      Get.snackbar('Error', 'Could not open Google Maps');
+    }
+  } catch (e) {
+    Get.snackbar('Launch Error', e.toString());
+    print('Error launching URL: $e');
+  }
+},
+                                          // onPressed: () async {
+                                          //   final query =
+                                          //       Uri.encodeComponent(address);
+                                          //       print('Launching address: $address');
+                                          //   final googleUrl =
+                                          //       'https://www.google.com/maps/search/?api=1&query=$query';
+
+                                          //   if (await canLaunchUrl(
+                                          //       Uri.parse(googleUrl))) {
+                                          //     await launchUrl(
+                                          //       Uri.parse(googleUrl),
+                                          //       mode: LaunchMode
+                                          //           .externalApplication,
+                                          //     );
+                                          //   } else {
+                                          //     Get.snackbar('Error',
+                                          //         'Could not open Google Maps');
+                                          //   }
+                                          // },
                                           icon: Icon(Icons.map,
                                               color: primaryColor),
                                           label: Text(
