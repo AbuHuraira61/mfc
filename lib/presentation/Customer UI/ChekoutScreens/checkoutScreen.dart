@@ -78,11 +78,36 @@ class _checkoutScreenState extends State<checkoutScreen> {
           desiredAccuracy: LocationAccuracy.high);
 
       // Optionally open in Google Maps
-      final googleMapUrl =
-          'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
-      if (await canLaunchUrl(Uri.parse(googleMapUrl))) {
-        await launchUrl(Uri.parse(googleMapUrl));
-      }
+
+    final Uri googleMapUrl = Uri.parse(
+  'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}',
+);
+
+if (await canLaunchUrl(googleMapUrl)) {
+  await launchUrl(
+    googleMapUrl,
+    mode: LaunchMode.externalApplication,
+  );
+} else {
+  Get.snackbar('Error', 'Could not open Google Maps.');
+}
+
+
+//       final googleMapUrl =
+//           'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
+//           final Uri url = Uri.parse(googleMapUrl);
+// if (await canLaunchUrl(url)) {
+//   await launchUrl(url, mode: LaunchMode.externalApplication);
+// } else {
+//   Get.snackbar('Error', 'Could not launch Google Maps');
+// }
+// //       if (await canLaunchUrl(Uri.parse(googleMapUrl))) {
+// //         // await launchUrl(Uri.parse(googleMapUrl));
+// //         await launchUrl(
+// //   Uri.parse(googleMapUrl),
+// //   mode: LaunchMode.externalApplication,
+// // );
+// //       }
 
       List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);

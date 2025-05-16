@@ -99,6 +99,7 @@ class OrdersList extends StatelessWidget {
               orderDetailsList: orderDetailsList,
               assignedTo: assignedTo,
               customerPhone: data['phone'],
+              customerAddress: data['address'] ?? 'Unknown',
             );
           },
         );
@@ -115,7 +116,7 @@ class OrderCard extends StatelessWidget {
   final String id;
   final List<Map<String, dynamic>> orderDetailsList;
   final String assignedTo;
-
+  final String customerAddress;
   const OrderCard({
     super.key,
     required this.customerPhone,
@@ -125,6 +126,7 @@ class OrderCard extends StatelessWidget {
     required this.customerName,
     required this.orderDetailsList,
     this.assignedTo = '',
+    this.customerAddress = '',
   });
 
   void _showAssignRiderDialog(BuildContext context) {
@@ -192,6 +194,7 @@ class OrderCard extends StatelessWidget {
                             'status': 'Assigned',
                             'phone': customerPhone,
                             'timestamp': FieldValue.serverTimestamp(),
+                            'address': customerAddress,
                           });
 
                           // Send notification to rider

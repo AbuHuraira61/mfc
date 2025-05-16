@@ -134,6 +134,7 @@ class DispatchedOrdersScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 8),
                           ],
+                          CheckAdressButton(address: order['address']),
                           MarkAsCompleteButton(orderId: orderId),
                         ],
                       ),

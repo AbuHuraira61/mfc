@@ -63,7 +63,7 @@ class AssignedOrdersScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final order = orders[index].data() as Map<String, dynamic>;
               final orderId = orders[index].id;
-              final List<Map<String, dynamic>> items = 
+              final List<Map<String, dynamic>> items =
                   List<Map<String, dynamic>>.from(order['items'] ?? []);
 
               return Card(
@@ -119,10 +119,58 @@ class AssignedOrdersScreen extends StatelessWidget {
                             Expanded(
                               child: ElevatedButton.icon(
                                 onPressed: () async {
-                                  final url = 'tel:${order['phone']}';
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
+                                  
+                                  final Uri url = Uri(
+                                    scheme: 'tel',
+                                    path: order['phone'], 
+                                  );
+
+                                  if (await canLaunchUrl(url)) {
+                                    final bool launched = await launchUrl(
+                                      url,
+                                      mode: LaunchMode.externalApplication,
+                                    );
+
+                                    if (!launched) {
+                                      print('Failed to launch dialer');
+                                    }
+                                  } else {
+                                    print('Could not launch $url');
                                   }
+
+
+
+
+
+
+
+
+
+
+
+                                  // final Uri url =
+                                  //     Uri(scheme: 'tel', path: order['phone']);
+                                  // if (await canLaunchUrl(url)) {
+                                  //   await launchUrl(
+                                  //     url,
+                                  //     mode: LaunchMode.externalApplication,
+                                  //   );
+                                  // } else {
+                                  //   print('Could not launch $url');
+                                  // }
+                                  // final Uri url =
+                                  //     Uri(scheme: 'tel', path: order['phone']);
+                                  // if (await canLaunchUrl(url)) {
+                                  //   await launchUrl(url);
+                                  // } else {
+                                  //   // Optional: show error message
+                                  //   print('Could not launch $url');
+                                  // }
+                                  // final url = 'tel:${order['phone']}';
+                                  // final Uri url = Uri.parse('tel:${order['phone']}');
+                                  // if (await canLaunchUrl(url)) {
+                                  //   await launchUrl(url);
+                                  // }
                                 },
                                 icon: Icon(Icons.phone),
                                 label: Text('Call Customer'),
@@ -134,6 +182,8 @@ class AssignedOrdersScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 8),
                           ],
+                          SizedBox(width: 8),
+                          CheckAdressButton(address: order['address']),
                           AcceptOrderButton(orderId: orderId),
                         ],
                       ),
@@ -147,4 +197,4 @@ class AssignedOrdersScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}
