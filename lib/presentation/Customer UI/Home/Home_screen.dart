@@ -125,6 +125,7 @@ class HomeContentState extends State<HomeContent> {
   int selectedCategoryIndex = -1;
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
+  bool _isLoggingOut = false;
 
   final List<Map<String, dynamic>> categories = [
     {'title': 'Pizza', 'image': 'assets/largepizza.png'},
@@ -304,58 +305,63 @@ class HomeContentState extends State<HomeContent> {
                       ));
                     }),
                     _buildDrawerItem(Icons.logout, 'Log out', () async {
+                      try {
+                        setState(() => _isLoggingOut = true);
+                        
+                        DBHelper dbHelper = DBHelper();
+                        DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
+                        List<Cart> cartItems = await dbHelper.getCartList();
+                        
+                        // Clear the cart
+                        for (var item in cartItems) {
+                          await dbHelper.delete(item.id.toString());
+                        }
 
+                        String? getCurrentUserId() {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+                          final User? user = auth.currentUser;
+                          if (user != null) {
+                            String uid = user.uid;
+                            print("Current User ID: $uid");
+                            return uid;
+                          } else {
+                            print("No user is currently signed in.");
+                            return null;
+                          }
+                        }
 
+                        String? userId = getCurrentUserId();
+                        if (userId != null) {
+                          DocumentReference userRef = FirebaseFirestore.instance.collection("users").doc(userId);
+                          await userRef.set({
+                            "orderId": FieldValue.arrayUnion([orderRef.id]),
+                          }, SetOptions(merge: true));
+                        }
 
-                     
-                     
-                      DBHelper dbHelper = DBHelper();
-                       DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
-                      List<Cart> cartItems = await dbHelper.getCartList();
-                     String? getCurrentUserId() {
-  final FirebaseAuth auth = FirebaseAuth.instance;
+                        if (mounted) {
+                          Provider.of<CartProvider>(context, listen: false).clearCartData();
+                        }
+                        
+                        await FirebaseAuth.instance.signOut();
 
-  final User? user = auth.currentUser;
-
-  if (user != null) {
-    String uid = user.uid; // This is the user ID
-    print("Current User ID: $uid");
-    return uid;
-  } else {
-    print("No user is currently signed in.");
-    return null;
-  }
-}
-// Optionally clear the cart
-    for (var item in cartItems) {
-      await dbHelper.delete(item.id.toString());
-
-     
-    }
-
-
-   
-   DocumentReference userRef = FirebaseFirestore.instance.collection("users").doc(getCurrentUserId());
-   
-   await userRef.set({
-    "orderId": FieldValue.arrayUnion([orderRef.id]),
-       }, SetOptions(merge: true));
-
-if (mounted) {
-  Provider.of<CartProvider>(context, listen: false).clearCartData();
-}
-await FirebaseAuth.instance.signOut();
-
-if (mounted) {
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-    return SplashScreen();
-  }));
-}
-    
-   
-  },
-                    ),
-                     
+                        if (mounted) {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                            return SplashScreen();
+                          }));
+                        }
+                      } catch (e) {
+                        print("Logout error: $e");
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error during logout: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          setState(() => _isLoggingOut = false);
+                        }
+                      }
+                    }),
                   ],
                 ),
               ),
@@ -475,6 +481,26 @@ if (mounted) {
   }
 
   Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    if (title == 'Log out' && _isLoggingOut) {
+      return ListTile(
+        leading: Icon(icon, color: Colors.black),
+        title: Row(
+          children: [
+            Text(title),
+            SizedBox(width: 10),
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xff570101)),
+              ),
+            ),
+          ],
+        ),
+        enabled: false,
+      );
+    }
     return ListTile(
       leading: Icon(icon, color: Colors.black),
       title: Text(title),
