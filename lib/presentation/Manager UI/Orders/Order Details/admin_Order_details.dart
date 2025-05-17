@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/notification_service.dart';
 
@@ -23,8 +24,13 @@ class AdminOrderDetails extends StatefulWidget {
 }
 
 class _AdminOrderDetailsState extends State<AdminOrderDetails> {
+  bool _isLoading =false;
+  bool _isLoading2 =false;
   void _acceptOrder() async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       // Get customer's FCM token
       final orderDoc = await FirebaseFirestore.instance
           .collection('orders')
@@ -63,16 +69,30 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
         SnackBar(content: Text('Order status updated to Preparing')),
       );
 
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
       Navigator.pop(context);
+    }
     } catch (e) {
+       setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update order: $e')),
       );
     }
+
+    
   }
 
   void _cancelOrder() async {
     try {
+       setState(() {
+        _isLoading2 = true;
+      });
       await FirebaseFirestore.instance
           .collection('orders')
           .doc(widget.id)
@@ -81,9 +101,17 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order has been cancelled')),
       );
+       setState(() {
+        _isLoading2 = false;
+      });
 
+      if (mounted) {
       Navigator.pop(context);
+    }
     } catch (e) {
+       setState(() {
+        _isLoading2 = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to cancel order: $e')),
       );
@@ -128,13 +156,13 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox(
-                height: 45,
-                width: 130,
+                height: Get.height * 0.06,
+                width: Get.width * 0.4,
                 child: ElevatedButton(
                   onPressed: _acceptOrder,
-                  child: Text(
+                  child: _isLoading ? CircularProgressIndicator(color: secondaryColor,) : Text(
                     'Accept Order',
-                    style: TextStyle(color: secondaryColor, fontSize: 16),
+                    style: TextStyle(color: secondaryColor, fontSize: 14),
                   ),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
@@ -144,13 +172,13 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
                 ),
               ),
               SizedBox(
-                height: 45,
-                width: 130,
+                height: Get.height * 0.06,
+                width: Get.width * 0.4,
                 child: ElevatedButton(
                   onPressed: _cancelOrder,
-                  child: Text(
+                  child: _isLoading2 ? CircularProgressIndicator(color: secondaryColor,)   : Text(
                     'Cancel Order',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

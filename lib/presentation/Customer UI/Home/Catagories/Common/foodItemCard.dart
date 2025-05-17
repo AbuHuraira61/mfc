@@ -116,7 +116,7 @@ class _FoodItemsCardState extends State<FoodItemsCard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('\$${widget.foodItems['price']}',
+                        Text('\Rs.${widget.foodItems['price']}',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

@@ -85,20 +85,20 @@ class _SingleItemDetailScreenState extends State<SingleItemDetailScreen> {
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
-              Positioned(
-                top: 50,
-                right: 20,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.favorite_border, color: Colors.red, size: 24),
-                    onPressed: () {},
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   top: 50,
+              //   right: 20,
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Colors.white.withOpacity(0.9),
+              //     ),
+              //     child: IconButton(
+              //       icon: const Icon(Icons.favorite_border, color: Colors.red, size: 24),
+              //       onPressed: () {},
+              //     ),
+              //   ),
+              // ),
             ],
           ),
 
@@ -119,20 +119,20 @@ class _SingleItemDetailScreenState extends State<SingleItemDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff570101),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.star, color: Colors.yellow, size: 20),
-                              SizedBox(width: 5),
-                              Text('4.8', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        //   decoration: BoxDecoration(
+                        //     color: const Color(0xff570101),
+                        //     borderRadius: BorderRadius.circular(20),
+                        //   ),
+                        //   child: Row(
+                        //     children: const [
+                        //       Icon(Icons.star, color: Colors.yellow, size: 20),
+                        //       SizedBox(width: 5),
+                        //       Text('4.8', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -141,26 +141,27 @@ class _SingleItemDetailScreenState extends State<SingleItemDetailScreen> {
                     Text(widget.singleBurger['name'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
                     Text(widget.singleBurger['description'] ?? '', style: const TextStyle(color: Colors.black54)),
-                    const SizedBox(height: 12),
+                     SizedBox(height: Get.height *0.05),
 
-                    // Price Display
-                    Text('Price: RS ${price.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
+                   
 
                     // Quantity & Add Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            _buildQtyButton(Icons.remove, decreaseQuantity),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                            ),
-                            _buildQtyButton(Icons.add, increaseQuantity),
-                          ],
-                        ),
+                         // Price Display
+                    Text('Price: RS ${price.toStringAsFixed(0)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                        // Row(
+                        //   children: [
+                        //     _buildQtyButton(Icons.remove, decreaseQuantity),
+                        //     Padding(
+                        //       padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        //       child: Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        //     ),
+                        //     _buildQtyButton(Icons.add, increaseQuantity),
+                        //   ],
+                        // ),
                         ElevatedButton.icon(
                           onPressed: _addToCart,
                           icon: const Icon(Icons.shopping_cart, size: 18, color: Colors.white),

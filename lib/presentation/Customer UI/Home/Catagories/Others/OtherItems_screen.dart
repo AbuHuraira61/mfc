@@ -288,7 +288,7 @@ class _OtherItemsCardState extends State<OtherItemsCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$${widget.food['price']}',
+                          '\Rs.${widget.food['price']}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,

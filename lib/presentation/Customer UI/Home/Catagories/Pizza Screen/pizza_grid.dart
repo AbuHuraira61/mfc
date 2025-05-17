@@ -140,7 +140,7 @@ class _PizzaListState extends State<PizzaList> {
 class PizzaCard extends StatefulWidget {
   final Map<String, dynamic> pizza;
 
-  const PizzaCard({Key? key, required this.pizza}) : super(key: key);
+  const PizzaCard({super.key, required this.pizza});
 
   @override
   State<PizzaCard> createState() => _PizzaCardState();
@@ -247,7 +247,7 @@ class _PizzaCardState extends State<PizzaCard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('\$${widget.pizza['prices']['small']}',
+                        Text('\Rs.${widget.pizza['prices']['small']}',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

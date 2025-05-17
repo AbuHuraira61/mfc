@@ -27,7 +27,9 @@ class _RiderHomeState extends State<RiderHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: primaryColor,
         title: Text('Rider Dashboard', style: TextStyle(color: Colors.white)),
         centerTitle: true,
