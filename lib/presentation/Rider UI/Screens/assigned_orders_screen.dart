@@ -90,7 +90,7 @@ class AssignedOrdersScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 16),
                       ),
                       Text(
-                        'Total Amount: \$${order['totalPrice'] ?? '0.00'}',
+                        'Total Amount: \Rs.${order['totalPrice'] ?? '0.00'}',
                         style: TextStyle(
                           fontSize: 16,
                           color: primaryColor,
@@ -114,6 +114,8 @@ class AssignedOrdersScreen extends StatelessWidget {
                           )),
                       SizedBox(height: 16),
                       Row(
+
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           if (order['phone'] != null) ...[
                             Expanded(
@@ -124,56 +126,15 @@ class AssignedOrdersScreen extends StatelessWidget {
                                     scheme: 'tel',
                                     path: order['phone'], 
                                   );
-
-                                  if (await canLaunchUrl(url)) {
-                                    final bool launched = await launchUrl(
+                              
+                                 await launchUrl(
                                       url,
                                       mode: LaunchMode.externalApplication,
                                     );
-
-                                    if (!launched) {
-                                      print('Failed to launch dialer');
-                                    }
-                                  } else {
-                                    print('Could not launch $url');
-                                  }
-
-
-
-
-
-
-
-
-
-
-
-                                  // final Uri url =
-                                  //     Uri(scheme: 'tel', path: order['phone']);
-                                  // if (await canLaunchUrl(url)) {
-                                  //   await launchUrl(
-                                  //     url,
-                                  //     mode: LaunchMode.externalApplication,
-                                  //   );
-                                  // } else {
-                                  //   print('Could not launch $url');
-                                  // }
-                                  // final Uri url =
-                                  //     Uri(scheme: 'tel', path: order['phone']);
-                                  // if (await canLaunchUrl(url)) {
-                                  //   await launchUrl(url);
-                                  // } else {
-                                  //   // Optional: show error message
-                                  //   print('Could not launch $url');
-                                  // }
-                                  // final url = 'tel:${order['phone']}';
-                                  // final Uri url = Uri.parse('tel:${order['phone']}');
-                                  // if (await canLaunchUrl(url)) {
-                                  //   await launchUrl(url);
-                                  // }
+                              
                                 },
                                 icon: Icon(Icons.phone),
-                                label: Text('Call Customer'),
+                                label: Text('Call'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
                                   foregroundColor: Colors.white,
@@ -183,8 +144,9 @@ class AssignedOrdersScreen extends StatelessWidget {
                             SizedBox(width: 8),
                           ],
                           SizedBox(width: 8),
-                          CheckAdressButton(address: order['address']),
-                          AcceptOrderButton(orderId: orderId),
+                          Expanded(child: CheckAdressButton(address: order['address'])),
+                           SizedBox(width: 8),
+                          Expanded(child: AcceptOrderButton(orderId: orderId)),
                         ],
                       ),
                     ],

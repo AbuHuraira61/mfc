@@ -117,7 +117,7 @@ class RiderStatisticsScreen extends StatelessWidget {
                     SizedBox(width: 16),
                     _buildStatCard(
                       'Earnings',
-                      '\$${totalEarnings.toStringAsFixed(2)}',
+                      '\Rs.${totalEarnings.toStringAsFixed(2)}',
                       Icons.attach_money,
                       Colors.purple,
                     ),
@@ -269,7 +269,7 @@ class RiderStatisticsScreen extends StatelessWidget {
 
     return LineChart(
       LineChartData(
-        gridData: FlGridData(show: false),
+        gridData: FlGridData(show: true),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -296,7 +296,7 @@ class RiderStatisticsScreen extends StatelessWidget {
             spots: spots,
             isCurved: true,
             color: primaryColor,
-            barWidth: 3,
+            barWidth: 2,
             dotData: FlDotData(show: true),
           ),
         ],
@@ -353,7 +353,7 @@ class RiderStatisticsScreen extends StatelessWidget {
             spots: spots,
             isCurved: true,
             color: Colors.green,
-            barWidth: 3,
+            barWidth: 2,
             dotData: FlDotData(show: true),
           ),
         ],

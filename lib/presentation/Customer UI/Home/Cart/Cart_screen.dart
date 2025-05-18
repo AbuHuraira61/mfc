@@ -270,7 +270,7 @@ class _CartScreenState extends State<CartScreen> {
                               ReusableWidget(
                                 title: 'Total',
                                 value:
-                                    'Rs ${(cartProv.totalPrice * 0.95).toStringAsFixed(2)}',
+                                    'Rs ${(cartProv.totalPrice ).toStringAsFixed(2)}',
                               ),
                             ],
                           ),
