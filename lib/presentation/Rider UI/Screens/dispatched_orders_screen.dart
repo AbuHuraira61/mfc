@@ -90,7 +90,7 @@ class DispatchedOrdersScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 16),
                       ),
                       Text(
-                        'Total Amount: \$${order['totalPrice'] ?? '0.00'}',
+                        'Total Amount: \Rs.${order['totalPrice'] ?? '0.00'}',
                         style: TextStyle(
                           fontSize: 16,
                           color: primaryColor,
@@ -114,18 +114,25 @@ class DispatchedOrdersScreen extends StatelessWidget {
                           )),
                       SizedBox(height: 16),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           if (order['phone'] != null) ...[
                             Expanded(
                               child: ElevatedButton.icon(
                                 onPressed: () async {
-                                  final url = 'tel:${order['phone']}';
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
-                                  }
+                                  final Uri url = Uri(
+                                    scheme: 'tel',
+                                    path: order['phone'], 
+                                  );
+                              
+                                 await launchUrl(
+                                      url,
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  
                                 },
                                 icon: Icon(Icons.phone),
-                                label: Text('Call Customer'),
+                                label: Text('Call'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
                                   foregroundColor: Colors.white,
@@ -135,6 +142,7 @@ class DispatchedOrdersScreen extends StatelessWidget {
                             SizedBox(width: 8),
                           ],
                           CheckAdressButton(address: order['address']),
+                          SizedBox(width: 8),
                           MarkAsCompleteButton(orderId: orderId),
                         ],
                       ),

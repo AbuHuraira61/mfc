@@ -292,85 +292,88 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
 
   /// **Build Food Item Card**
   Widget buildFoodCard(QueryDocumentSnapshot item, String category) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Color(0xFF570101),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: item["image"] != null && item["image"].isNotEmpty
-                ? Image.memory(
-                    _decodeBase64Image(item["image"]),
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  )
-                : Image.asset(
-                    "assets/default-food.png",
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 10),
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Color(0xFF570101),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: item["image"] != null && item["image"].isNotEmpty
+                  ? Image.memory(
+                      _decodeBase64Image(item["image"]),
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      "assets/default-food.png",
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item["name"],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item["name"],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  SizedBox(height: 4),
+                  
+                  SizedBox(height: 4),
+                  Text(
+                    item["description"],
+                    style: TextStyle(color: Colors.white, fontSize: 8),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                SizedBox(height: 4),
-                
-                SizedBox(height: 4),
-                Text(
-                  item["description"],
-                  style: TextStyle(color: Colors.white, fontSize: 8),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 6),
-
-                /// **Do NOT Show Price for Pizza**
-                category == "Pizza"
-                    ? SizedBox() // Don't show prices in the list
-                    : Text(
-                        "Price: ${item["price"]}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  SizedBox(height: 6),
+      
+                  /// **Do NOT Show Price for Pizza**
+                  category == "Pizza"
+                      ? SizedBox() // Don't show prices in the list
+                      : Text(
+                          "Price: ${item["price"]}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit, color: Colors.white),
+                  onPressed: () {
+                    editItem(item, category);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_outline, color: Colors.white),
+                  onPressed: () {
+                    deleteItem(item, category);
+                  },
+                ),
               ],
             ),
-          ),
-          Column(
-            children: [
-              IconButton(
-                icon: Icon(Icons.edit, color: Colors.white),
-                onPressed: () {
-                  editItem(item, category);
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.delete_outline, color: Colors.white),
-                onPressed: () {
-                  deleteItem(item, category);
-                },
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

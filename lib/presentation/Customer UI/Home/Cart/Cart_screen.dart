@@ -257,20 +257,20 @@ class _CartScreenState extends State<CartScreen> {
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
                             children: [
-                              ReusableWidget(
-                                title: 'Sub Total',
-                                value:
-                                    'Rs ${cartProv.totalPrice.toStringAsFixed(2)}',
-                              ),
-                              ReusableWidget(
-                                title: 'Discount 5%',
-                                value:
-                                    'Rs ${(cartProv.totalPrice * 0.05).toStringAsFixed(2)}',
-                              ),
+                              // ReusableWidget(
+                              //   title: 'Sub Total',
+                              //   value:
+                              //       'Rs ${cartProv.totalPrice.toStringAsFixed(2)}',
+                              // ),
+                              // ReusableWidget(
+                              //   title: 'Discount 5%',
+                              //   value:
+                              //       'Rs ${(cartProv.totalPrice * 0.05).toStringAsFixed(2)}',
+                              // ),
                               ReusableWidget(
                                 title: 'Total',
                                 value:
-                                    'Rs ${(cartProv.totalPrice * 0.95).toStringAsFixed(2)}',
+                                    'Rs ${(cartProv.totalPrice ).toStringAsFixed(2)}',
                               ),
                             ],
                           ),

@@ -116,7 +116,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                         children: [
                           _buildDetailItem(Icons.info, "Pending", pendingOrders.toString()),
                           _buildDetailItem(Icons.check_box, "Completed", completedOrders.toString()),
-                          _buildDetailItem(Icons.attach_money, "Earning", "\$${totalEarnings.toStringAsFixed(2)}"),
+                          _buildDetailItem(Icons.attach_money, "Earning", "\Rs.${totalEarnings.toStringAsFixed(2)}"),
                         ],
                       ),
                     ],
@@ -243,7 +243,7 @@ Widget _buildDetailItem(IconData icon, String title, String value) {
       Text(title,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       SizedBox(height: 5),
-      Text(value, style: TextStyle(color: Colors.white, fontSize: 18)),
+      Text(value, style: TextStyle(color: Colors.white, fontSize: 14)),
     ],
   );
 }
