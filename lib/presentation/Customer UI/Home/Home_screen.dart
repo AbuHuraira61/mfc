@@ -269,23 +269,42 @@ class HomeContentState extends State<HomeContent> {
             Container(
               color: Color(0xff570101),
               padding: EdgeInsets.only(
-                  top: screenHeight * 0.05, bottom: screenHeight * 0.03),
+                  top: screenHeight * 0.15, bottom: screenHeight * 0.03),
               width: double.infinity,
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: screenWidth * 0.1,
-                    backgroundImage: AssetImage('assets/gentle.png'),
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser?.uid)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var userData = snapshot.data!.data() as Map<String, dynamic>;
+                        return Text('${userData['name'] ?? 'User'}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenWidth * 0.05,
+                              fontWeight: FontWeight.bold,
+                            ));
+                      } else {
+                        return Text('N/A');
+                      }
+                    },
                   ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Text(
-                    'Ali Hassan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  // CircleAvatar(
+                  //   radius: screenWidth * 0.1,
+                  //   backgroundImage: AssetImage('assets/gentle.png'),
+                  // ),
+                  // SizedBox(height: screenHeight * 0.01),
+                  // Text(
+                  //   'Ali Hassan',
+                  //   style: TextStyle(
+                  //     color: Colors.white,
+                  //     fontSize: screenWidth * 0.05,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -294,7 +313,13 @@ class HomeContentState extends State<HomeContent> {
                 color: Colors.white,
                 child: ListView(
                   children: [
-                    _buildDrawerItem(Icons.local_offer, 'Deals', () {}),
+                    // _buildDrawerItem(Icons.local_offer, 'Deals', () {
+                    //    Navigator.push(context, MaterialPageRoute(
+                    //     builder: (context) {
+                    //       return DealsList(dealName: ,);
+                    //     },
+                    //   ));
+                    // }),
                     _buildDrawerItem(Icons.list_alt, 'Orders', () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
@@ -302,7 +327,7 @@ class HomeContentState extends State<HomeContent> {
                         },
                       ));
                     }),
-                    _buildDrawerItem(Icons.location_on, 'Address', () {}),
+                    // _buildDrawerItem(Icons.location_on, 'Address', () {}),
                     _buildDrawerItem(Icons.favorite, 'Favorite', () {
                       Navigator.push(
                         context,
@@ -310,10 +335,16 @@ class HomeContentState extends State<HomeContent> {
                             builder: (context) => FavouritePage()),
                       );
                     }),
-                    _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
-                    _buildDrawerItem(
-                        Icons.article, 'Terms or Conditions', () {}),
-                    _buildDrawerItem(Icons.chat, 'Chat with us', () {
+                    _buildDrawerItem(Icons.shopping_cart, 'Cart', () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return CartScreen();
+                        },
+                      ));
+                    }),
+                    // _buildDrawerItem(
+                    //     Icons.article, 'Terms or Conditions', () {}),
+                    _buildDrawerItem(Icons.chat, 'AI Chatbot', () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
                           return ChatBotScreen();
