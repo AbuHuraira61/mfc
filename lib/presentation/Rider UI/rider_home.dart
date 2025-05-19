@@ -40,71 +40,81 @@ class _RiderHomeState extends State<RiderHome> {
         title: Text('Rider Dashboard', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout, color: Colors.white),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SplashScreen()),
-                  (route) => false,
-                );
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (value) async {
+              if (value == 'logout') {
+                await FirebaseAuth.instance.signOut();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SplashScreen()),
+                    (route) => false,
+                  );
+                }
               }
             },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'logout',
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30, right: 10),
+                  child: Text('Logout'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-                .collection('AssignedOrders')
-                .where('assignedToId', isEqualTo: user?.uid)
-                .snapshots(),
-         builder: (context, snapshot) {
-           if (snapshot.hasError) {
-                return Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Error loading data',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                );
+            .collection('AssignedOrders')
+            .where('assignedToId', isEqualTo: user?.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  'Error loading data',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            );
+          }
+
+          // Calculate statistics
+          int assignedOrders = 0;
+          int completedOrders = 0;
+          double totalEarnings = 0.0;
+
+          if (snapshot.hasData) {
+            _assignedOrdersCount = 0; // reset before loop
+            for (var doc in snapshot.data!.docs) {
+              var data = doc.data() as Map<String, dynamic>;
+              if (data['status'] == 'Assigned') {
+                assignedOrders++;
+                _assignedOrdersCount++;
+              } else if (data['status'] == 'Complete') {
+                completedOrders++;
+                if (data['totalPrice'] != null) {
+                  totalEarnings += double.parse(data['totalPrice'].toString());
+                }
               }
+            }
+          }
 
-              // Calculate statistics
-              int assignedOrders = 0;
-              int completedOrders = 0;
-              double totalEarnings = 0.0;
-
-              if (snapshot.hasData) {
-                _assignedOrdersCount = 0; // reset before loop
-                for (var doc in snapshot.data!.docs) {
-                  var data = doc.data() as Map<String, dynamic>;
-                  if (data['status'] == 'Assigned') {
-                    assignedOrders++;
-                    _assignedOrdersCount++;
-                  } else if (data['status'] == 'Complete') {
-                    completedOrders++;
-                    if (data['totalPrice'] != null) {
-                      totalEarnings +=
-                          double.parse(data['totalPrice'].toString());
-                    }
-                  }
-                }}
-
-
-
-   return Column(
-        children: [
-          // Statistics Panel
-          Container(
+          return Column(
+            children: [
+              // Statistics Panel
+              Container(
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -128,119 +138,110 @@ class _RiderHomeState extends State<RiderHome> {
                 ),
               ),
 
-          // Grid Buttons
-          Expanded(
-            child: GridView.count(
-              padding: EdgeInsets.all(10),
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              children: [
-                InkWell(
-
-                  onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AssignedOrdersScreen()),
-                          );
-                        },
-                        splashColor: Colors.white.withOpacity(0.3),
-                        highlightColor: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10),
-                  child: Stack(
-                    
-                    children: [
-                       _buildButton(Icons.assignment, "Assigned Orders"),
-                      
-                      if (_assignedOrdersCount > 0)
-                        
-                           Positioned(
-                            top: 5,
-                            right: 5,
-                             child: Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
+              // Grid Buttons
+              Expanded(
+                child: GridView.count(
+                  padding: EdgeInsets.all(10),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AssignedOrdersScreen()),
+                        );
+                      },
+                      splashColor: Colors.white.withOpacity(0.3),
+                      highlightColor: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Stack(
+                        children: [
+                          _buildButton(Icons.assignment, "Assigned Orders"),
+                          if (_assignedOrdersCount > 0)
+                            Positioned(
+                              top: 5,
+                              right: 5,
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '$_assignedOrdersCount',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
                               ),
-                              child: Text(
-                                '$_assignedOrdersCount',
-                                style: TextStyle(color: Colors.white, fontSize: 12),
-                              ),
-                                                       ),
-                           ),
-                        
-                    ],
-                  ),
-                ),
+                            ),
+                        ],
+                      ),
+                    ),
 
-                // InkWell(
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => AssignedOrdersScreen()),
-                //     );
-                //   },
-                //   splashColor: Colors.white.withOpacity(0.3),
-                //   highlightColor: Colors.white.withOpacity(0.2),
-                //   borderRadius: BorderRadius.circular(10),
-                //   child: _buildButton(Icons.assignment, "Assigned Orders"),
-                // ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DispatchedOrdersScreen()),
-                    );
-                  },
-                  splashColor: Colors.white.withOpacity(0.3),
-                  highlightColor: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10),
-                  child:
-                      _buildButton(Icons.delivery_dining, "Dispatched Orders"),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => AssignedOrdersScreen()),
+                    //     );
+                    //   },
+                    //   splashColor: Colors.white.withOpacity(0.3),
+                    //   highlightColor: Colors.white.withOpacity(0.2),
+                    //   borderRadius: BorderRadius.circular(10),
+                    //   child: _buildButton(Icons.assignment, "Assigned Orders"),
+                    // ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DispatchedOrdersScreen()),
+                        );
+                      },
+                      splashColor: Colors.white.withOpacity(0.3),
+                      highlightColor: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      child: _buildButton(
+                          Icons.delivery_dining, "Dispatched Orders"),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CompletedOrdersScreen()),
+                        );
+                      },
+                      splashColor: Colors.white.withOpacity(0.3),
+                      highlightColor: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      child: _buildButton(
+                          Icons.check_circle_outline, "Completed Orders"),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RiderStatisticsScreen()),
+                        );
+                      },
+                      splashColor: Colors.white.withOpacity(0.3),
+                      highlightColor: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      child: _buildButton(Icons.analytics, "Statistics"),
+                    ),
+                  ],
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CompletedOrdersScreen()),
-                    );
-                  },
-                  splashColor: Colors.white.withOpacity(0.3),
-                  highlightColor: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10),
-                  child: _buildButton(
-                      Icons.check_circle_outline, "Completed Orders"),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RiderStatisticsScreen()),
-                    );
-                  },
-                  splashColor: Colors.white.withOpacity(0.3),
-                  highlightColor: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10),
-                  child: _buildButton(Icons.analytics, "Statistics"),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-
-
-          },
-        
+              ),
+            ],
+          );
+        },
       ),
-      
-      
-      
+
       //  Column(
       //   children: [
       //     // Statistics Panel
@@ -339,9 +340,9 @@ class _RiderHomeState extends State<RiderHome> {
       //               alignment: Alignment.center,
       //               children: [
       //                  _buildButton(Icons.assignment, "Assigned Orders"),
-                      
+
       //                 if (_assignedOrdersCount > 0)
-                        
+
       //                      Container(
       //                       padding: EdgeInsets.all(6),
       //                       decoration: BoxDecoration(
@@ -353,7 +354,7 @@ class _RiderHomeState extends State<RiderHome> {
       //                         style: TextStyle(color: Colors.white, fontSize: 12),
       //                       ),
       //                     ),
-                        
+
       //               ],
       //             ),
       //           ),

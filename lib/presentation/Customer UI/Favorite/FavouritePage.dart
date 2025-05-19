@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
 class FavouritePage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -23,16 +24,22 @@ class FavouritePage extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             "Favorite Page",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Color(0xFF6A0202),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false,
+                );
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              )),
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -62,7 +69,7 @@ class FavouritePage extends StatelessWidget {
               itemCount: favorites.length,
               itemBuilder: (context, index) {
                 final data = favorites[index].data() as Map<String, dynamic>;
-                
+
                 return GestureDetector(
                   onTap: () {
                     // Check if it's a pizza by looking for 'prices' field
@@ -144,16 +151,16 @@ class _FavoriteItemCardState extends State<FavoriteItemCard> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child:
-                  widget.foodItem['image']!=null && widget.foodItem['image'].isNotEmpty?
-                   Image.memory(decodeImage(widget.foodItem['image']),
-                      fit: BoxFit.cover, height: 100, width: 100):
-                       Image.asset(
-                  "assets/default-food.png",
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
+                  child: widget.foodItem['image'] != null &&
+                          widget.foodItem['image'].isNotEmpty
+                      ? Image.memory(decodeImage(widget.foodItem['image']),
+                          fit: BoxFit.cover, height: 100, width: 100)
+                      : Image.asset(
+                          "assets/default-food.png",
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               Spacer(),
@@ -193,7 +200,8 @@ class _FavoriteItemCardState extends State<FavoriteItemCard> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        Icon(Icons.shopping_cart, color: Colors.white, size: 24),
+                        Icon(Icons.shopping_cart,
+                            color: Colors.white, size: 24),
                       ],
                     ),
                   ],
