@@ -11,7 +11,6 @@ class DealsList extends StatefulWidget {
   final String dealName;
   const DealsList({super.key, required this.dealName});
 
-
   @override
   _DealsListState createState() => _DealsListState();
 }
@@ -91,7 +90,7 @@ class _DealsListState extends State<DealsList> {
                     child: Center(
                       child: Text(
                         "No Pizza Deals Available",
-                        style: TextStyle(fontSize: 16, color: Colors.green),
+                        style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
                   );
@@ -101,130 +100,131 @@ class _DealsListState extends State<DealsList> {
 
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final item = deals[index].data() as Map<String, dynamic>;
-                    item["quantity"] ??= 1;
+                    (context, index) {
+                      final item = deals[index].data() as Map<String, dynamic>;
+                      item["quantity"] ??= 1;
 
-                    return GestureDetector(
-                    onTap: () {
-                      Get.off(SingleItemDetailScreen(singleBurger: item));
+                      return GestureDetector(
+                        onTap: () {
+                          Get.off(SingleItemDetailScreen(singleBurger: item));
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: screenWidth * 0.03),
+                          padding: EdgeInsets.all(screenWidth * 0.03),
+                          decoration: BoxDecoration(
+                            color: Color(0xff570101),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IntrinsicHeight(
+                            child: Stack(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: item["image"] != null &&
+                                              item["image"].isNotEmpty
+                                          ? Image.memory(
+                                              _decodeBase64Image(item["image"]),
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.asset(
+                                              "assets/default-food.png",
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                    SizedBox(width: screenWidth * 0.03),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item["name"] ?? "No Name",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth * 0.045,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: screenWidth * 0.01),
+                                          Text(
+                                            item["description"] ?? "",
+                                            style: TextStyle(
+                                              color: Colors.grey[300],
+                                              fontSize: screenWidth * 0.035,
+                                            ),
+                                          ),
+                                          SizedBox(height: screenWidth * 0.015),
+                                          Text(
+                                            "Price: ${item["price"]}" ??
+                                                "Rs.00",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: screenWidth * 0.04,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Positioned(
+                                  top: -2,
+                                  right: 5,
+                                  child: GestureDetector(
+                                    onTap: () => addToCart(item),
+                                    child: Icon(Icons.shopping_cart,
+                                        color: Colors.white,
+                                        size: screenWidth * 0.06),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: -1,
+                                  right: 5,
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          decreaseQuantity();
+                                        },
+                                        child: Icon(Icons.remove_circle,
+                                            color: Colors.white,
+                                            size: screenWidth * 0.06),
+                                      ),
+                                      SizedBox(width: screenWidth * 0.02),
+                                      Text(
+                                        "$quantity",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: screenWidth * 0.045),
+                                      ),
+                                      SizedBox(width: screenWidth * 0.02),
+                                      GestureDetector(
+                                        onTap: () {
+                                          increaseQuantity();
+                                        },
+                                        child: Icon(Icons.add_circle,
+                                            color: Colors.white,
+                                            size: screenWidth * 0.05),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
                     },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: screenWidth * 0.03),
-                      padding: EdgeInsets.all(screenWidth * 0.03),
-                      decoration: BoxDecoration(
-                      color: Color(0xff570101),
-                      borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: IntrinsicHeight(
-                      child: Stack(
-                        children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: item["image"] != null &&
-                                item["image"].isNotEmpty
-                              ? Image.memory(
-                                _decodeBase64Image(item["image"]),
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              )
-                              : Image.asset(
-                                "assets/default-food.png",
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                          ),
-                          SizedBox(width: screenWidth * 0.03),
-                          Expanded(
-                            child: Column(
-                            crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                              item["name"] ?? "No Name",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: screenWidth * 0.045,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              ),
-                              SizedBox(height: screenWidth * 0.01),
-                              Text(
-                              item["description"] ?? "",
-                              style: TextStyle(
-                                color: Colors.grey[300],
-                                fontSize: screenWidth * 0.035,
-                              ),
-                              ),
-                              SizedBox(height: screenWidth * 0.015),
-                              Text(
-                              "Price: ${item["price"]}" ?? "Rs.00",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: screenWidth * 0.04,
-                              ),
-                              ),
-                            ],
-                            ),
-                          ),
-                          ],
-                        ),
-                        Positioned(
-                          top: -2,
-                          right: 5,
-                          child: GestureDetector(
-                          onTap: () => addToCart(item),
-                          child: Icon(Icons.shopping_cart,
-                            color: Colors.white,
-                            size: screenWidth * 0.06),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: -1,
-                          right: 5,
-                          child: Row(
-                          children: [
-                            GestureDetector(
-                            onTap: () {
-                              decreaseQuantity();
-                            },
-                            child: Icon(Icons.remove_circle,
-                              color: Colors.white,
-                              size: screenWidth * 0.06),
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Text(
-                            "$quantity",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: screenWidth * 0.045),
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            GestureDetector(
-                            onTap: () {
-                              increaseQuantity();
-                            },
-                            child: Icon(Icons.add_circle,
-                              color: Colors.white,
-                              size: screenWidth * 0.05),
-                            ),
-                          ],
-                          ),
-                        ),
-                        ],
-                      ),
-                      ),
-                    ),
-                    );
-                  },
-                  childCount: deals.length,
+                    childCount: deals.length,
                   ),
                 );
               },
@@ -235,15 +235,6 @@ class _DealsListState extends State<DealsList> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
 
 // class DealsList extends StatefulWidget {
 //   DealsList({super.key});
