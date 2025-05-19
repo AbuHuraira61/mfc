@@ -103,6 +103,7 @@ Future<void> checkTime() async {
                if(status == 'Complete'){
                 return Column(
                 children: [
+                 
                   SizedBox(height: 20),
                   Image.asset('assets/platter.png', height: 230),
                   SizedBox(height: 20),
@@ -111,6 +112,7 @@ Future<void> checkTime() async {
                     style: TextStyle(color: Colors.grey[700], fontSize: 16),
                   ),
                   SizedBox(height: 20),
+                  
                   OrderStatusStep(
                     icon: Icons.check_circle,
                     title: "Your order is delivered successfully!",

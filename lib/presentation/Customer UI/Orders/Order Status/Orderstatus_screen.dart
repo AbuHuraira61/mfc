@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Customer%20UI/Orders/Order%20Status/order_status_detail.dart';
 
@@ -114,10 +115,13 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                         final order = orders[index].data() as Map<String, dynamic>;
                         final id = orders[index].id;
                         final timestamp = order['timestamp'] as Timestamp?;
-                        final dateTime = timestamp?.toDate();
-                        final formattedDate = dateTime != null
-                            ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} - ${dateTime.day}/${dateTime.month}"
-                            : 'N/A';
+                        // final dateTime = timestamp?.toDate();
+                        // final formattedDate = dateTime != null
+                        //     ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} - ${dateTime.day}/${dateTime.month}"
+                        //     : 'N/A';
+                         final formattedDate = timestamp != null
+                  ? DateFormat('MMM dd, hh:mm a').format(timestamp.toDate())
+                  : 'N/A';
 
                         return GestureDetector(
                           onTap: () {

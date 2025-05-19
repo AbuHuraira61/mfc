@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GroqService {
-  final String apiKey = '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';
+  final String apiKey = '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';
   final String endpoint = 'https://api.groq.com/openai/v1/chat/completions';
 
   Future<String> getChatResponse(String userMessage) async {
