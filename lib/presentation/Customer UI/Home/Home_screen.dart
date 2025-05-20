@@ -70,30 +70,43 @@ class HomeScreenState extends State<HomeScreen> {
       _pageController.jumpToPage(index);
     });
   }
+  Future<bool> _onWillPop() async {
+    if (_currentIndex != 0) {
+      setState(() {
+        _currentIndex = 0;
+        _pageController.jumpToPage(0);
+      });
+      return false; // Prevent popping the route
+    }
+    return true; // Allow popping the route to close the app
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xff570101),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey[400],
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
-        items: [
-          _buildNavItem(Icons.home, "Home", 0),
-          _buildNavItem(Icons.favorite, "Favorite", 1),
-          _buildNavItem(Icons.shopping_bag_outlined, "Orders", 2),
-          _buildNavItem(Icons.person, "Profile", 3),
-        ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: _screens,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: const Color(0xff570101),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey[400],
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
+          items: [
+            _buildNavItem(Icons.home, "Home", 0),
+            _buildNavItem(Icons.favorite, "Favorite", 1),
+            _buildNavItem(Icons.shopping_bag_outlined, "Orders", 2),
+            _buildNavItem(Icons.person, "Profile", 3),
+          ],
+        ),
       ),
     );
   }

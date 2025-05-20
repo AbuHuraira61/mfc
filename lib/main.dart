@@ -52,7 +52,7 @@ Future<Widget> determineInitialScreen() async {
         return const SplashScreen();
     }
   } else {
-    return const HomeScreen(); // Fallback in case role is missing
+    return const SplashScreen(); // Fallback in case role is missing
   }
 }
 
