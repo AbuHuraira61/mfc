@@ -52,7 +52,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   await _auth.currentUser!.updatePassword(newPassword);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Password updated')),
+                    const SnackBar(content: Text('Password changed successfully')),
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
