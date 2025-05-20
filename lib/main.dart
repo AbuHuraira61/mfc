@@ -48,7 +48,7 @@ Future<Widget> determineInitialScreen() async {
         return const HomeScreen();
       case 'rider':
         return const RiderHome();
-      default:
+      default: 
         return const SplashScreen();
     }
   } else {

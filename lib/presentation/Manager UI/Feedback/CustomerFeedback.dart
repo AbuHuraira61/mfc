@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
 
 class SubmitFeedbackScreen extends StatefulWidget {
@@ -45,12 +46,16 @@ class SubmitFeedbackScreenState extends State<SubmitFeedbackScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Feedback submitted successfully!')),
         );
-
+       
         // Clear fields
         reviewController.clear();
         setState(() {
           rating = 0.0;
         });
+
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return const HomeScreen(); // Replace with the appropriate screen
+        },));
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error submitting feedback: $e')),
