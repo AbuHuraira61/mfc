@@ -112,7 +112,7 @@ class MarkAsCompleteButton extends StatelessWidget {
                                           icon: Icon(Icons.check_circle,
                                               color: primaryColor),
                                           label: Text(
-                                            'Accept',
+                                            'Complete',
                                             style:
                                                 TextStyle(color: primaryColor),
                                           ),

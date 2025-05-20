@@ -22,6 +22,17 @@ class ManagerHomeScreen extends StatefulWidget {
 }
 
 class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
+
+
+  
+  int _assignedOrdersCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _assignedOrdersCount = 0;
+  }
+
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
 
@@ -86,6 +97,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                   var data = doc.data() as Map<String, dynamic>;
                   if (data['status'] == 'pending') {
                     pendingOrders++;
+                     _assignedOrdersCount++;
                   } else if (data['status'] == 'Complete') {
                     completedOrders++;
                     if (data['totalPrice'] != null) {
@@ -193,7 +205,26 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
-                    child: _buildButton(Icons.local_shipping, "Order Status")),
+                    child: Stack(children: [ 
+                     _buildButton(Icons.local_shipping, "Order Status"),
+                    if (_assignedOrdersCount > 0)
+                            Positioned(
+                              top: 5,
+                              right: 5,
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '$_assignedOrdersCount',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ),
+                            ),
+                    ],)),
                 InkWell(
                     onTap: () {
                       Navigator.push(
@@ -217,7 +248,7 @@ class _ManagerHomeScreenState extends State<ManagerHomeScreen> {
                     splashColor: Colors.white.withOpacity(0.3),
                     highlightColor: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
-                    child: _buildButton(Icons.manage_accounts, "Profile Management")),
+                    child: _buildButton(Icons.manage_accounts, "Rider Profile")),
                 InkWell(
                     onTap: () {
                       _logout(context);
@@ -255,6 +286,8 @@ Widget _buildButton(IconData icon, String label) {
       borderRadius: BorderRadius.circular(10),
     ),
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(icon, size: 40, color: Colors.black87),
