@@ -53,8 +53,8 @@ class _AdminOrderDetailsState extends State<AdminOrderDetails> {
 
       // Send notification to customer
       if (customerToken.isNotEmpty) {
-        final notificationServices = NotificationServices();
-        await notificationServices.sendNotification(
+       
+        await NotificationService.sendNotification(
           token: customerToken,
           title: 'Order Update',
           body: 'We are working on your order. Stay with us!',

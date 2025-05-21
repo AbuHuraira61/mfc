@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Models/cart_model.dart';
 import 'package:mfc/Helper/cart_provider.dart';
 import 'package:mfc/Helper/db_helper.dart';
@@ -15,7 +17,8 @@ class SearchResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Results'),
+
+        title: Text('Search Results', style: TextStyle(color: secondaryColor),),
         backgroundColor: Color(0xff570101),
       ),
       body: searchResults.isEmpty
@@ -209,12 +212,13 @@ class SearchResultsScreen extends StatelessWidget {
         onPressed: () {
           Navigator.pop(context); // Close dialog
           _addPizzaToCart(context, item, size);
+          
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xff570101),
           minimumSize: Size(double.infinity, 40),
         ),
-        child: Text('$label - Rs. ${_getPizzaPrice(item, size)}'),
+        child: Text('$label - Rs. ${_getPizzaPrice(item, size)}',style: TextStyle(color: secondaryColor),),
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -48,11 +48,11 @@ Future<Widget> determineInitialScreen() async {
         return const HomeScreen();
       case 'rider':
         return const RiderHome();
-      default:
+      default: 
         return const SplashScreen();
     }
   } else {
-    return const HomeScreen(); // Fallback in case role is missing
+    return const SplashScreen(); // Fallback in case role is missing
   }
 }
 
@@ -64,11 +64,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       // Initialize notifications
-    final notificationServices = NotificationServices();
-    notificationServices.requestNotificationPermission();
-    notificationServices.firebaseInit(context);
-    notificationServices.setupInteractMessage(context);
-    notificationServices.isTokenRefresh();
+    final notificationServices = NotificationService();
+    NotificationService.initialize();
+    
 
     return MultiProvider(
         providers: [

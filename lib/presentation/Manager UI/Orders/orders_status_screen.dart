@@ -199,8 +199,8 @@ class OrderCard extends StatelessWidget {
 
                           // Send notification to rider
                           if (riderToken.isNotEmpty) {
-                            final notificationServices = NotificationServices();
-                            await notificationServices.sendNotification(
+                            
+                            await NotificationService.sendNotification(
                               token: riderToken,
                               title: 'New Order Assigned',
                               body: 'You have been assigned a new order from $customerName',

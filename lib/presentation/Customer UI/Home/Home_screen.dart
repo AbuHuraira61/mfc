@@ -22,23 +22,7 @@ import 'package:mfc/Utilities/ImageDecoder.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/single_item_detail_screen.dart';
 import 'package:mfc/presentation/Customer%20UI/Home/Common/Singlepizza_screen.dart';
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen());
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,35 +54,49 @@ class HomeScreenState extends State<HomeScreen> {
       _pageController.jumpToPage(index);
     });
   }
+  Future<bool> _onWillPop() async {
+    if (_currentIndex != 0) {
+      setState(() {
+        _currentIndex = 0;
+        _pageController.jumpToPage(0);
+      });
+      return false; // Prevent popping the route
+    }
+    return true; // Allow popping the route to close the app
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xff570101),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey[400],
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
-        items: [
-          _buildNavItem(Icons.home, "Home", 0),
-          _buildNavItem(Icons.favorite, "Favorite", 1),
-          _buildNavItem(Icons.shopping_bag_outlined, "Orders", 2),
-          _buildNavItem(Icons.person, "Profile", 3),
-        ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: _screens,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: const Color(0xff570101),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey[400],
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
+          items: [
+            _buildNavItem(Icons.home, "Home", 0),
+            _buildNavItem(Icons.favorite, "Favorite", 1),
+            _buildNavItem(Icons.shopping_bag_outlined, "Orders", 2),
+            _buildNavItem(Icons.person, "Profile", 3),
+          ],
+        ),
       ),
     );
   }
 
-  BottomNavigationBarItem _buildNavItem(IconData icon, String label, int index) {
+  BottomNavigationBarItem _buildNavItem(
+      IconData icon, String label, int index) {
     bool isSelected = _currentIndex == index;
     return BottomNavigationBarItem(
       icon: AnimatedContainer(
@@ -106,7 +104,7 @@ class HomeScreenState extends State<HomeScreen> {
         transform: Matrix4.translationValues(0, isSelected ? -4 : 0, 0),
         child: Icon(
           icon,
-          size: isSelected ? 32 : 24,
+          size: isSelected ? 30 : 22,
         ),
       ),
       label: label,
@@ -146,14 +144,14 @@ class HomeContentState extends State<HomeContent> {
 
     try {
       List<QueryDocumentSnapshot> results = [];
-      
+
       // Search in Pizza collection
       var pizzaSnapshot = await FirebaseFirestore.instance
           .collection('food_items')
           .doc('Pizza')
           .collection('items')
           .get();
-      
+
       results.addAll(pizzaSnapshot.docs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
         final name = (data['name'] ?? '').toString().toLowerCase();
@@ -166,7 +164,7 @@ class HomeContentState extends State<HomeContent> {
           .doc('Burger')
           .collection('items')
           .get();
-      
+
       results.addAll(burgerSnapshot.docs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
         final name = (data['name'] ?? '').toString().toLowerCase();
@@ -174,15 +172,22 @@ class HomeContentState extends State<HomeContent> {
       }));
 
       // Search in Others collection
-      var otherCategories = ['Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken'];
-      
+      var otherCategories = [
+        'Fries',
+        'Chicken Roll',
+        'Hot Wings',
+        'Pasta',
+        'Sandwich',
+        'Broast Chicken'
+      ];
+
       for (var category in otherCategories) {
         var othersSnapshot = await FirebaseFirestore.instance
             .collection('food_items')
             .doc(category)
             .collection('items')
             .get();
-        
+
         results.addAll(othersSnapshot.docs.where((doc) {
           final data = doc.data() as Map<String, dynamic>;
           final name = (data['name'] ?? '').toString().toLowerCase();
@@ -191,15 +196,22 @@ class HomeContentState extends State<HomeContent> {
       }
 
       // Search in Deals collection
-      var dealTypes = ['One Person Deal', 'Two Person Deals', 'Student Deals', 'Special Pizza Deals', 'Family Deals', 'Lunch Night Deals'];
-      
+      var dealTypes = [
+        'One Person Deal',
+        'Two Person Deals',
+        'Student Deals',
+        'Special Pizza Deals',
+        'Family Deals',
+        'Lunch Night Deals'
+      ];
+
       for (var dealType in dealTypes) {
         var dealsSnapshot = await FirebaseFirestore.instance
             .collection('deals')
             .doc(dealType)
             .collection('deal')
             .get();
-        
+
         results.addAll(dealsSnapshot.docs.where((doc) {
           final data = doc.data() as Map<String, dynamic>;
           final name = (data['name'] ?? '').toString().toLowerCase();
@@ -208,10 +220,10 @@ class HomeContentState extends State<HomeContent> {
       }
 
       print('Found ${results.length} total results');
-      
+
       if (mounted) {
         setState(() => _isSearching = false);
-        
+
         if (results.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -254,23 +266,42 @@ class HomeContentState extends State<HomeContent> {
             Container(
               color: Color(0xff570101),
               padding: EdgeInsets.only(
-                  top: screenHeight * 0.05, bottom: screenHeight * 0.03),
+                  top: screenHeight * 0.15, bottom: screenHeight * 0.03),
               width: double.infinity,
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: screenWidth * 0.1,
-                    backgroundImage: AssetImage('assets/gentle.png'),
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser?.uid)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var userData = snapshot.data!.data() as Map<String, dynamic>;
+                        return Text('${userData['name'] ?? 'User'}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenWidth * 0.05,
+                              fontWeight: FontWeight.bold,
+                            ));
+                      } else {
+                        return Text('N/A');
+                      }
+                    },
                   ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Text(
-                    'Ali Hassan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  // CircleAvatar(
+                  //   radius: screenWidth * 0.1,
+                  //   backgroundImage: AssetImage('assets/gentle.png'),
+                  // ),
+                  // SizedBox(height: screenHeight * 0.01),
+                  // Text(
+                  //   'Ali Hassan',
+                  //   style: TextStyle(
+                  //     color: Colors.white,
+                  //     fontSize: screenWidth * 0.05,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -279,7 +310,13 @@ class HomeContentState extends State<HomeContent> {
                 color: Colors.white,
                 child: ListView(
                   children: [
-                    _buildDrawerItem(Icons.local_offer, 'Deals', () {}),
+                    // _buildDrawerItem(Icons.local_offer, 'Deals', () {
+                    //    Navigator.push(context, MaterialPageRoute(
+                    //     builder: (context) {
+                    //       return DealsList(dealName: ,);
+                    //     },
+                    //   ));
+                    // }),
                     _buildDrawerItem(Icons.list_alt, 'Orders', () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
@@ -287,17 +324,24 @@ class HomeContentState extends State<HomeContent> {
                         },
                       ));
                     }),
-                    _buildDrawerItem(Icons.location_on, 'Address', () {}),
+                    // _buildDrawerItem(Icons.location_on, 'Address', () {}),
                     _buildDrawerItem(Icons.favorite, 'Favorite', () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FavouritePage()),
+                        MaterialPageRoute(
+                            builder: (context) => FavouritePage()),
                       );
                     }),
-                    _buildDrawerItem(Icons.shopping_cart, 'Cart', () {}),
-                    _buildDrawerItem(
-                        Icons.article, 'Terms or Conditions', () {}),
-                    _buildDrawerItem(Icons.chat, 'Chat with us', () {
+                    _buildDrawerItem(Icons.shopping_cart, 'Cart', () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return CartScreen();
+                        },
+                      ));
+                    }),
+                    // _buildDrawerItem(
+                    //     Icons.article, 'Terms or Conditions', () {}),
+                    _buildDrawerItem(Icons.chat, 'AI Chatbot', () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
                           return ChatBotScreen();
@@ -307,11 +351,13 @@ class HomeContentState extends State<HomeContent> {
                     _buildDrawerItem(Icons.logout, 'Log out', () async {
                       try {
                         setState(() => _isLoggingOut = true);
-                        
+
                         DBHelper dbHelper = DBHelper();
-                        DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
+                        DocumentReference orderRef = FirebaseFirestore.instance
+                            .collection("orders")
+                            .doc();
                         List<Cart> cartItems = await dbHelper.getCartList();
-                        
+
                         // Clear the cart
                         for (var item in cartItems) {
                           await dbHelper.delete(item.id.toString());
@@ -332,20 +378,24 @@ class HomeContentState extends State<HomeContent> {
 
                         String? userId = getCurrentUserId();
                         if (userId != null) {
-                          DocumentReference userRef = FirebaseFirestore.instance.collection("users").doc(userId);
+                          DocumentReference userRef = FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(userId);
                           await userRef.set({
                             "orderId": FieldValue.arrayUnion([orderRef.id]),
                           }, SetOptions(merge: true));
                         }
 
                         if (mounted) {
-                          Provider.of<CartProvider>(context, listen: false).clearCartData();
+                          Provider.of<CartProvider>(context, listen: false)
+                              .clearCartData();
                         }
-                        
+
                         await FirebaseAuth.instance.signOut();
 
                         if (mounted) {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
                             return SplashScreen();
                           }));
                         }
@@ -406,23 +456,23 @@ class HomeContentState extends State<HomeContent> {
                       decoration: InputDecoration(
                         hintText: 'Search products...',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        suffixIcon: _isSearching 
-                          ? Padding(
-                              padding: EdgeInsets.all(10),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Color(0xff570101),
-                              ),
-                            )
-                          : _searchController.text.isNotEmpty
-                              ? IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: () {
-                                    _searchController.clear();
-                                    setState(() {});
-                                  },
-                                )
-                              : null,
+                        suffixIcon: _isSearching
+                            ? Padding(
+                                padding: EdgeInsets.all(10),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Color(0xff570101),
+                                ),
+                              )
+                            : _searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: Icon(Icons.clear),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      setState(() {});
+                                    },
+                                  )
+                                : null,
                         border: InputBorder.none,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: screenHeight * 0.02),
@@ -602,12 +652,38 @@ class SliderSection extends StatefulWidget {
 
 class _SliderSectionState extends State<SliderSection> {
   List<Map<String, dynamic>> imageList = [
-    {"id": 1, "image_path": 'assets/banner4.png', "route": DealsList(dealName: 'One Person Deal',)},
-    {"id": 2, "image_path": 'assets/banner1.png', "route":DealsList(dealName: 'Two Person Deals')},
-    {"id": 3, "image_path": 'assets/banner3.png', "route":DealsList(dealName: 'Student Deals')},
-    {"id": 4, "image_path": 'assets/banner2.png', "route":DealsList(dealName: 'Special Pizza Deals')},
-    {"id": 5, "image_path": 'assets/banner5.jpg', "route":DealsList(dealName: 'Family Deals')},
-    {"id": 6, "image_path": 'assets/banner6.jpg', "route":DealsList(dealName: 'Lunch Night Deals')},
+    {
+      "id": 1,
+      "image_path": 'assets/oneperson.png',
+      "route": DealsList(
+        dealName: 'One Person Deal',
+      )
+    },
+    {
+      "id": 2,
+      "image_path": 'assets/twoperson.png',
+      "route": DealsList(dealName: 'Two Person Deals')
+    },
+    {
+      "id": 3,
+      "image_path": 'assets/student.png',
+      "route": DealsList(dealName: 'Student Deals')
+    },
+    {
+      "id": 4,
+      "image_path": 'assets/pizzadeal.png',
+      "route": DealsList(dealName: 'Special Pizza Deals')
+    },
+    {
+      "id": 5,
+      "image_path": 'assets/familydeals.png',
+      "route": DealsList(dealName: 'Family Deals')
+    },
+    {
+      "id": 6,
+      "image_path": 'assets/midnight.png',
+      "route": DealsList(dealName: 'Lunch & Night Deals')
+    },
   ];
 
   final CarouselSliderController carouselController =
@@ -668,7 +744,7 @@ class _SliderSectionState extends State<SliderSection> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color:
-                          currentIndex == entry.key ? Colors.red : Colors.teal,
+                          currentIndex == entry.key ? Colors.red : Colors.black,
                     ),
                   ),
                 );
@@ -687,16 +763,24 @@ class PopularSection extends StatelessWidget {
   Future<List<Map<String, dynamic>>> _fetchPopularItems() async {
     try {
       List<Map<String, dynamic>> finalItems = [];
-      var collections = ['Pizza', 'Burger', 'Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken'];
-      
+      var collections = [
+        'Pizza',
+        'Burger',
+        'Fries',
+        'Chicken Roll',
+        'Hot Wings',
+        'Pasta',
+        'Sandwich',
+        'Broast Chicken'
+      ];
+
       // First try to get items with order count
-      var ordersSnapshot = await FirebaseFirestore.instance
-          .collection('orders')
-          .get();
+      var ordersSnapshot =
+          await FirebaseFirestore.instance.collection('orders').get();
 
       // Create a map to count item occurrences
       Map<String, int> itemOrderCount = {};
-      
+
       // Count occurrences of each item in orders
       for (var order in ordersSnapshot.docs) {
         var items = order.data()['items'] as List<dynamic>?;
@@ -713,26 +797,23 @@ class PopularSection extends StatelessWidget {
         // Sort items by order count
         var sortedItems = itemOrderCount.entries.toList()
           ..sort((a, b) => b.value.compareTo(a.value));
-        
+
         // Get top item IDs
         var topItemIds = sortedItems.map((e) => e.key).toList();
-        
+
         // Fetch the actual item details
         for (var collection in collections) {
           if (finalItems.length >= 4) break;
-          
+
           var snapshot = await FirebaseFirestore.instance
               .collection('food_items')
               .doc(collection)
               .collection('items')
               .where(FieldPath.documentId, whereIn: topItemIds)
               .get();
-          
-          finalItems.addAll(snapshot.docs.map((doc) => {
-            ...doc.data(),
-            'id': doc.id,
-            'category': collection
-          }));
+
+          finalItems.addAll(snapshot.docs.map(
+              (doc) => {...doc.data(), 'id': doc.id, 'category': collection}));
         }
       }
 
@@ -740,29 +821,24 @@ class PopularSection extends StatelessWidget {
       if (finalItems.length < 4) {
         for (var collection in collections) {
           if (finalItems.length >= 4) break;
-          
+
           var snapshot = await FirebaseFirestore.instance
               .collection('food_items')
               .doc(collection)
               .collection('items')
               .get();
-          
+
           var availableItems = snapshot.docs
               .where((doc) => !finalItems.any((item) => item['id'] == doc.id))
-              .map((doc) => {
-                ...doc.data(),
-                'id': doc.id,
-                'category': collection
-              })
+              .map((doc) =>
+                  {...doc.data(), 'id': doc.id, 'category': collection})
               .toList();
-          
+
           // Shuffle to get random items
           availableItems.shuffle();
-          
+
           // Add items until we have 4 or run out of items
-          finalItems.addAll(
-            availableItems.take(4 - finalItems.length)
-          );
+          finalItems.addAll(availableItems.take(4 - finalItems.length));
         }
       }
 
@@ -770,31 +846,39 @@ class PopularSection extends StatelessWidget {
       return finalItems.take(4).toList();
     } catch (e) {
       print('Error fetching popular items: $e');
-      
+
       // If there's an error, try to get just random items
       try {
         List<Map<String, dynamic>> randomItems = [];
-        var collections = ['Pizza', 'Burger', 'Fries', 'Chicken Roll', 'Hot Wings', 'Pasta', 'Sandwich', 'Broast Chicken'];
-        
+        var collections = [
+          'Pizza',
+          'Burger',
+          'Fries',
+          'Chicken Roll',
+          'Hot Wings',
+          'Pasta',
+          'Sandwich',
+          'Broast Chicken'
+        ];
+
         for (var collection in collections) {
           if (randomItems.length >= 4) break;
-          
+
           var snapshot = await FirebaseFirestore.instance
               .collection('food_items')
               .doc(collection)
               .collection('items')
               .get();
-          
-          var items = snapshot.docs.map((doc) => {
-            ...doc.data(),
-            'id': doc.id,
-            'category': collection
-          }).toList();
-          
+
+          var items = snapshot.docs
+              .map((doc) =>
+                  {...doc.data(), 'id': doc.id, 'category': collection})
+              .toList();
+
           items.shuffle();
           randomItems.addAll(items.take(4 - randomItems.length));
         }
-        
+
         return randomItems.take(4).toList();
       } catch (e) {
         print('Error fetching random items: $e');
@@ -942,7 +1026,10 @@ class PopularItem extends StatelessWidget {
   final String? image;
   final Map<String, dynamic> itemData;
 
-  const PopularItem(this.name, this.price, this.image, {
+  const PopularItem(
+    this.name,
+    this.price,
+    this.image, {
     super.key,
     required this.itemData,
   });
@@ -950,7 +1037,7 @@ class PopularItem extends StatelessWidget {
   void _navigateToDetail(BuildContext context) {
     // Get the category from itemData
     String category = itemData['category'] ?? '';
-    
+
     if (category.toLowerCase() == 'pizza') {
       // For Pizza items, use SinglePizzaScreen
       Navigator.push(
@@ -974,13 +1061,13 @@ class PopularItem extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    
+
     // Calculate responsive dimensions
     double cardHeight = screenHeight * 0.25;
     double cardPadding = screenWidth * 0.02;
     double imageSize = screenWidth * 0.25;
     double iconSize = screenWidth * 0.055;
-    
+
     return GestureDetector(
       onTap: () => _navigateToDetail(context),
       child: Container(

@@ -207,7 +207,7 @@ class _PizzaCardState extends State<PizzaCard> {
     return Stack(
       children: [
         AnimatedContainer(
-          duration: Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 10),
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Color(0xff570101),
@@ -218,18 +218,20 @@ class _PizzaCardState extends State<PizzaCard> {
             children: [
               Spacer(),
               Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child:
-                  widget.pizza['image']!=null && widget.pizza['image'].isNotEmpty?
-                   Image.memory(decodeImage(widget.pizza['image']),
-                      fit: BoxFit.cover, height: 100, width: 100):
-                       Image.asset(
-                  "assets/default-food.png",
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
+                child: RepaintBoundary(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child:
+                    widget.pizza['image']!=null && widget.pizza['image'].isNotEmpty?
+                     Image.memory(decodeImage(widget.pizza['image']),
+                        fit: BoxFit.cover, height: 100, width: 100):
+                         Image.asset(
+                    "assets/default-food.png",
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                  ),
                 ),
               ),
               Spacer(),

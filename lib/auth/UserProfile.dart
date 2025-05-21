@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/auth/SplashScreen/splashscreen.dart';
+import 'package:mfc/presentation/Customer%20UI/Home/Home_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -51,7 +52,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   await _auth.currentUser!.updatePassword(newPassword);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Password updated')),
+                    const SnackBar(content: Text('Password changed successfully')),
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -137,12 +138,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Profiile'),
+        backgroundColor: primaryColor,
+        title: Text(
+          'User Profiile',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                (route) => false,
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
       ),
       body: SafeArea(
         child: StreamBuilder<DocumentSnapshot>(

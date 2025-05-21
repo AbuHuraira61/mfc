@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/presentation/Rider%20UI/Common%20Widgets/check_address_button.dart';
 import 'package:mfc/presentation/Rider%20UI/Common%20Widgets/mark_as_complete_button.dart';
@@ -139,10 +140,10 @@ class DispatchedOrdersScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 8),
+                            SizedBox(width: Get.width * 0.02),
                           ],
                           CheckAdressButton(address: order['address']),
-                          SizedBox(width: 8),
+                          SizedBox(width: Get.width * 0.02),
                           MarkAsCompleteButton(orderId: orderId),
                         ],
                       ),

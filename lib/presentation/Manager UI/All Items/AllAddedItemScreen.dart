@@ -367,7 +367,7 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
                 IconButton(
                   icon: Icon(Icons.delete_outline, color: Colors.white),
                   onPressed: () {
-                    deleteItem(item, category);
+                     deleteItem(item, category);
                   },
                 ),
               ],
@@ -414,17 +414,50 @@ class _AllAddedItemScreenState extends State<AllAddedItemScreen> {
 
   /// **Delete Functionality**
   void deleteItem(QueryDocumentSnapshot item, String category) {
+    
+  if (category == "Deals") {
+    // Deals ko delete karne ka logic
     FirebaseFirestore.instance
-        .collection("food_items")
-        .doc(category)
-        .collection("items")
-        .doc(item.id)
-        .delete()
-        .then((_) {
-      print("Deleted item: ${item.id} from $category");
-    }).catchError((error) {
-      print("Error deleting item: $error");
-    });
+      .collection("deals")
+      .doc(_selectedDealType)
+      .collection("deal")
+      .doc(item.id)
+      .delete()
+      .then((_) {
+        print("Deleted deal item: ${item.id} from $_selectedDealType");
+      })
+      .catchError((error) {
+        print("Error deleting deal item: $error");
+      });
+  } else {
+    // Pizza, Burger, Others wagaira sab yahin se delete honge
+    FirebaseFirestore.instance
+      .collection("food_items")
+      .doc(category)
+      .collection("items")
+      .doc(item.id)
+      .delete()
+      .then((_) {
+        print("Deleted item: ${item.id} from $category");
+      })
+      .catchError((error) {
+        print("Error deleting item: $error");
+      });
+  
+}
+
+    
+    // FirebaseFirestore.instance
+    //     .collection("food_items")
+    //     .doc(category)
+    //     .collection("items")
+    //     .doc(item.id)
+    //     .delete()
+    //     .then((_) {
+    //   print("Deleted item: ${item.id} from $category");
+    // }).catchError((error) {
+    //   print("Error deleting item: $error");
+    // });
   }
 
   void deleteOtherItem(QueryDocumentSnapshot item, String otherCategory) {
