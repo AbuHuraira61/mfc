@@ -293,8 +293,8 @@ class _RiderHomeState extends State<RiderHome> {
 
       // Send notification to customer
       if (customerToken.isNotEmpty) {
-        final notificationServices = NotificationServices();
-        await notificationServices.sendNotification(
+     
+        await NotificationService.sendNotification(
           token: customerToken,
           title: 'Order Update',
           body: 'Your order is on the way!',
@@ -340,8 +340,8 @@ class _RiderHomeState extends State<RiderHome> {
 
       // Send notification to admin
       if (adminToken.isNotEmpty) {
-        final notificationServices = NotificationServices();
-        await notificationServices.sendNotification(
+      
+        await NotificationService.sendNotification(
           token: adminToken,
           title: 'Order Completed',
           body:

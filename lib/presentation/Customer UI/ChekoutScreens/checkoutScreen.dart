@@ -377,8 +377,8 @@ if (await canLaunchUrl(googleMapUrl)) {
     final adminToken = adminDoc.docs.isNotEmpty ? adminDoc.docs.first['deviceToken'] ?? '' : '';
 
     if (adminToken.isNotEmpty) {
-      final notificationServices = NotificationServices();
-      await notificationServices.sendNotification(
+      
+      await NotificationService.sendNotification(
         token: adminToken,
         title: 'New Order Placed',
         body: 'A new order has been placed by ${nameController.text}',
@@ -425,6 +425,48 @@ if (await canLaunchUrl(googleMapUrl)) {
       print("Address: ${addressController.text}");
     }
   }
+
+  Future<void> _placeOrder() async {
+  try {
+    String? customerToken = await NotificationService.getFCMToken();
+    
+    // Create order document
+    DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
+    
+    await orderRef.set({
+      "orderId": orderRef.id,
+      "userId": getCurrentUserId(),
+      "name": nameController.text,
+      "phone": phoneController.text,
+      "address": addressController.text,
+      'customerToken': customerToken, // Store customer's FCM token
+      'status': 'pending',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    // Send notification to admin
+    final adminDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .where('role', isEqualTo: 'admin')
+        .get();
+    final adminToken = adminDoc.docs.isNotEmpty ? adminDoc.docs.first['deviceToken'] ?? '' : '';
+
+    if (adminToken.isNotEmpty) {
+      
+      await NotificationService.sendNotification(
+        token: adminToken,
+        title: 'New Order Placed',
+        body: 'A new order has been placed by ${nameController.text}',
+        data: {
+          'type': 'order',
+          'orderId': orderRef.id,
+        },
+      );
+    }
+  } catch (e) {
+    print('Error placing order: $e');
+  }
+}
 }
 
 

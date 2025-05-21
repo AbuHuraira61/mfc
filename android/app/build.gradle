@@ -41,11 +41,17 @@ android {
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
             signingConfig = signingConfigs.debug
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            
+            // signingConfig = signingConfigs.debug
         }
     }
 
@@ -68,6 +74,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     // Desugaring library for backported Java 8+ APIs
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
 
 // Disable failing tests and lint tasks for specific Flutter plugins

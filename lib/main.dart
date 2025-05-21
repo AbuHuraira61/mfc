@@ -64,11 +64,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       // Initialize notifications
-    final notificationServices = NotificationServices();
-    notificationServices.requestNotificationPermission();
-    notificationServices.firebaseInit(context);
-    notificationServices.setupInteractMessage(context);
-    notificationServices.isTokenRefresh();
+    final notificationServices = NotificationService();
+    NotificationService.initialize();
+    
 
     return MultiProvider(
         providers: [
