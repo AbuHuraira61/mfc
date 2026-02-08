@@ -5,7 +5,7 @@ import 'package:mfc/Constants/colors.dart';
 import 'package:mfc/Services/notification_service.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/LoginScreen.dart';
 import 'package:mfc/auth/LoginSignUpScreen/Commons/SignUpScreen.dart';
-import 'package:mfc/auth/SplashScreen/CustomElevatedButton.dart';
+import 'package:mfc/auth/SplashScreen/custom_elevated_button.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
