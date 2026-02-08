@@ -125,8 +125,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           context)
                                       .then(
                                     (value) {
-                                      CustomSnackbar().showSnackbar('Success!',
-                                          'Email added sccuessfully!');
+                                      CustomSnackbar.showSnackbar(context, 'Success!',
+                                        );
                                       _indicator = false;
                                       _emailController.clear();
                                       _passwordController.clear();

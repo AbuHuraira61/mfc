@@ -80,7 +80,7 @@ class AuthService {
       
       // Show success message
       if (context.mounted) {
-        CustomSnackbar().showSnackbar('Success!', 'Login successful!');
+        CustomSnackbar.showSnackbar(context, 'Success!', );
         // Navigate user based on role
         _navigateUser(role, context);
       }
@@ -104,11 +104,11 @@ class AuthService {
           errorMessage = 'Login failed: ${e.message}';
       }
       print("Firebase Auth Error: ${e.code} - ${e.message}");
-      CustomSnackbar().showSnackbar('Error!', errorMessage);
+      CustomSnackbar.showSnackbar(context, errorMessage);
     } catch (e) {
       // Handle other errors
       print("General Error: $e");
-      CustomSnackbar().showSnackbar('Error!', 'Login failed: $e');
+      CustomSnackbar.showSnackbar(context, 'Login failed: $e');
     }
   }
 
